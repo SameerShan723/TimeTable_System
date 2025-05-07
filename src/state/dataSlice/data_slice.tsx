@@ -3,11 +3,13 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface ITimetable {
   className: string;
-  subject: string;
-  teacher: string;
+  courseDetail: string;
+  facultyAssigned: string;
   day: string;
   time: string;
   room: string;
+  section: string;
+  sem: string;
 }
 
 interface TimetableState {

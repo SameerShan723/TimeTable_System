@@ -1,0 +1,6217 @@
+{
+  "Monday": [
+    {
+      "NAB-R01": [
+        {
+          "Room": "NAB-R01",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Dr Asghar Khan",
+          "Course Details": "Introduction to Earth Sciences",
+          "Subject Code": "ES-401",
+          "Subject TYPE": "Theory",
+          "Domain": "Earth Sc",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Syed Najam Ul Hassan",
+          "Course Details": "Introduction to Remote Sensing",
+          "Subject Code": "GIS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "3:30-4:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        }
+      ]
+    },
+    {
+      "NAB-R02": [
+        {
+          "Room": "NAB-R02",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "Navigation Systems",
+          "Subject Code": "GIS-405",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Sajid Hussain",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "1:30-2:30"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Sherbaz Alam",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "3:30-4:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        }
+      ]
+    },
+    {
+      "NAB-R03": [
+        {
+          "Time": "9:30-10:30"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Nadeem Hussain",
+          "Course Details": "Applied Physics",
+          "Subject Code": "GE2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Phy",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Ms Tazeen Zehra",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "3:30-4:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        }
+      ]
+    },
+    {
+      "NAB-R04": [
+        {
+          "Room": "NAB-R04",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Muhammad Tahir",
+          "Course Details": "Spatial Analysis",
+          "Subject Code": "GIS-406",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Gul Jabeen",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Data Structures and Algorithms",
+          "Subject Code": "CS-401",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Rashid Hussain",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "1:30-2:30"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr Karamat",
+          "Course Details": "Climate Change",
+          "Subject Code": "ENVR-401",
+          "Subject TYPE": "Theory",
+          "Domain": "Env Sc",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R05": [
+        {
+          "Room": "NAB-R05",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Data Structures and Algorithms",
+          "Subject Code": "CS-401",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Ms Saeeda Aman",
+          "Course Details": "Geo-statistics",
+          "Subject Code": "GIS-404",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Nadeem Hussain",
+          "Course Details": "Applied Physics",
+          "Subject Code": "GE2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Phy",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "Expository Writing",
+          "Subject Code": "GE1xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Iqbal Hussain",
+          "Course Details": "Advance Database Management Systems",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "3:30-4:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        }
+      ]
+    },
+    {
+      "NAB-R06": [
+        {
+          "Room": "NAB-R06",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Zar Nawab",
+          "Course Details": "Theory of Automata",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Time": "12:30-1:30"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "Expository Writing",
+          "Subject Code": "GE1xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R07": [
+        {
+          "Room": "NAB-R07",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Muhammad Tahir",
+          "Course Details": "Spatial Decision Support Systems",
+          "Subject Code": "GIS-602",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "Advanced GIS",
+          "Subject Code": "GIS-605",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Syed Najam Ul Hassan",
+          "Course Details": "Remote Sensing Applications",
+          "Subject Code": "GIS-606",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "12:30-1:30"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Asghar Khan",
+          "Course Details": "Research Methods",
+          "Subject Code": "IR-703",
+          "Subject TYPE": "Theory",
+          "Domain": "Research",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Rabia Masood",
+          "Course Details": "Natural Resources",
+          "Subject Code": "GIS-230",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R08": [
+        {
+          "Room": "NAB-R08",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Professional Ethics",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "Ethics",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Asif Ali",
+          "Course Details": "Land Information System",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "GIS for Disaster Management",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Coordinator",
+          "Course Details": "Final Project II",
+          "Subject Code": "",
+          "Subject TYPE": "Project",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "Technical Writing and Presentation Skills",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R09": [
+        {
+          "Room": "NAB-R09",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Operating Systems",
+          "Subject Code": "CS-502",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Artificial Intelligence",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "Technical & Business Writing",
+          "Subject Code": "Eng-302",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Software Engineering",
+          "Subject Code": "CS-503",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R10": [
+        {
+          "Room": "NAB-R10",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Coordinator",
+          "Course Details": "FYP-II",
+          "Subject Code": "",
+          "Subject TYPE": "Project",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Cyber Security",
+          "Subject Code": "CS-602",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Rubi Alam",
+          "Course Details": "Human Resource Management",
+          "Subject Code": "Mgt-501",
+          "Subject TYPE": "Theory",
+          "Domain": "Mgt",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr Habib Ullah",
+          "Course Details": "Data Science",
+          "Subject Code": "CS-601",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R11": [
+        {
+          "Room": "NAB-R11",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Muazzam Ali",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Razia Sharif",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R12": [
+        {
+          "Room": "NAB-R12",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Rashid Hussain",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab1": [
+        {
+          "Room": "Lab1",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr Aftab",
+          "Course Details": "Digital Image Processing",
+          "Subject Code": "CS-609",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Sajid Hussain",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Mohd Ismail",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "3:30-4:30",
+          "Faculty Assigned": "Imran Ali",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        }
+      ]
+    },
+    {
+      "Lab2": [
+        {
+          "Room": "Lab2",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Gul Jabeen",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Data Structures and Algorithms",
+          "Subject Code": "CS-401",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Mohd Ismail",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "3:30-4:30",
+          "Faculty Assigned": "Imran Ali",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        }
+      ]
+    },
+    {
+      "Lab3": [
+        {
+          "Room": "Lab3",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Asif Ali",
+          "Course Details": "Web GIS",
+          "Subject Code": "GIS-603",
+          "Subject TYPE": "Lab",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "Spatial Data Infrastructure",
+          "Subject Code": "GIS-",
+          "Subject TYPE": "Lab",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Computer Networks",
+          "Subject Code": "CS-510",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSIT-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr. Muazzam Ali",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab4": [
+        {
+          "Room": "Lab4",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Muazzam Ali",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Dr Habib Ullah",
+          "Course Details": "Information Security",
+          "Subject Code": "CS-404",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSIT-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Natural Language Processing",
+          "Subject Code": "CS-624",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "3:30-4:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSAI-2nd",
+          "Semester Details": "Spring 2025"
+        }
+      ]
+    },
+    {
+      "R210-Lab": [
+        {
+          "Room": "R210-Lab",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Natural Language Processing",
+          "Subject Code": "CS-624",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Dr Aftab",
+          "Course Details": "Digital Image Processing",
+          "Subject Code": "CS-609",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSDS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Computer Networks",
+          "Subject Code": "CS-510",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr Habib Ullah",
+          "Course Details": "Information Security",
+          "Subject Code": "CS-404",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    }
+  ],
+  "Tuesday": [
+    {
+      "NAB-R01": [
+        {
+          "Room": "NAB-R01",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Rabia Masood",
+          "Course Details": "Human Geography",
+          "Subject Code": "ENR-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Env Sc",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Mr Iqtidar Hussain",
+          "Course Details": "Applied Physics",
+          "Subject Code": "Phy-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Phy",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Sherbaz Alam",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R02": [
+        {
+          "Room": "NAB-R02",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Muazzam Ali",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS-402",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Ms Tazeen Zehra",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Mr. Khalid Saleem",
+          "Course Details": "Multivariable Calculus",
+          "Subject Code": "Math-302",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R03": [
+        {
+          "Time": "9:30-10:30"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Imran Ali",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS-402",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Rashid Hussain",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Jahangir Hussain",
+          "Course Details": "Multivariable Calculus",
+          "Subject Code": "Math-302",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R04": [
+        {
+          "Room": "NAB-R04",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr Karamat",
+          "Course Details": "Climate Change",
+          "Subject Code": "ENVR-401",
+          "Subject TYPE": "Theory",
+          "Domain": "Env Sc",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Ms Saeeda Aman",
+          "Course Details": "Geo-statistics",
+          "Subject Code": "GIS-404",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Dr Asghar Khan",
+          "Course Details": "Introduction to Earth Sciences",
+          "Subject Code": "ES-401",
+          "Subject TYPE": "Theory",
+          "Domain": "Earth Sc",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "12:30-1:30"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "Navigation Systems",
+          "Subject Code": "GIS-405",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R05": [
+        {
+          "Room": "NAB-R05",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Iqbal Hussain",
+          "Course Details": "Advance Database Management Systems",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Iqbal Hussain",
+          "Course Details": "Advance Database Management Systems",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Data Structures and Algorithms",
+          "Subject Code": "CS-401",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "12:30-1:30"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Nadeem Hussain",
+          "Course Details": "Applied Physics",
+          "Subject Code": "GE2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Phy",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Muhammad Tahir",
+          "Course Details": "Spatial Analysis",
+          "Subject Code": "GIS-406",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "3:30-4:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "Expository Writing",
+          "Subject Code": "GE1xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        }
+      ]
+    },
+    {
+      "NAB-R06": [
+        {
+          "Room": "NAB-R06",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "Expository Writing",
+          "Subject Code": "GE1xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Zar Nawab",
+          "Course Details": "Theory of Automata",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Data Structures and Algorithms",
+          "Subject Code": "CS-401",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "3:30-4:30",
+          "Faculty Assigned": "Nadeem Hussain",
+          "Course Details": "Applied Physics",
+          "Subject Code": "GE2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Phy",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        }
+      ]
+    },
+    {
+      "NAB-R07": [
+        {
+          "Room": "NAB-R07",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Rabia Masood",
+          "Course Details": "Natural Resources",
+          "Subject Code": "GIS-230",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Dr. Zar Nawab",
+          "Course Details": "Theory of Automata",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Syed Najam Ul Hassan",
+          "Course Details": "Remote Sensing Applications",
+          "Subject Code": "GIS-606",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "Advanced GIS",
+          "Subject Code": "GIS-605",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Muhammad Tahir",
+          "Course Details": "Spatial Decision Support Systems",
+          "Subject Code": "GIS-602",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr Asghar Khan",
+          "Course Details": "Research Methods",
+          "Subject Code": "IR-703",
+          "Subject TYPE": "Theory",
+          "Domain": "Research",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R08": [
+        {
+          "Room": "NAB-R08",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "Technical Writing and Presentation Skills",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "GIS for Disaster Management",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Asif Ali",
+          "Course Details": "Land Information System",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Coordinator",
+          "Course Details": "Final Project II",
+          "Subject Code": "",
+          "Subject TYPE": "Project",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Professional Ethics",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "Ethics",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R09": [
+        {
+          "Room": "NAB-R09",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Software Engineering",
+          "Subject Code": "CS-503",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mr. Khalid Saleem",
+          "Course Details": "Differential Equations",
+          "Subject Code": "Math-601",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Artificial Intelligence",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Operating Systems",
+          "Subject Code": "CS-502",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "Technical & Business Writing",
+          "Subject Code": "Eng-302",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R10": [
+        {
+          "Room": "NAB-R10",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr Habib Ullah",
+          "Course Details": "Data Science",
+          "Subject Code": "CS-601",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Natural Language Processing",
+          "Subject Code": "CS-624",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Cyber Security",
+          "Subject Code": "CS-602",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Rubi Alam",
+          "Course Details": "Human Resource Management",
+          "Subject Code": "Mgt-501",
+          "Subject TYPE": "Theory",
+          "Domain": "Mgt",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "3:30-4:30",
+          "Faculty Assigned": "Coordinator",
+          "Course Details": "FYP-II",
+          "Subject Code": "",
+          "Subject TYPE": "Project",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        }
+      ]
+    },
+    {
+      "NAB-R11": [
+        {
+          "Room": "NAB-R11",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Mr Kamran Abbas",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS-402",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Razia Sharif",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Wajahat Hussain",
+          "Course Details": "Multivariable Calculus",
+          "Subject Code": "Math-302",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R12": [
+        {
+          "Room": "NAB-R12",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Mr Iqtidar Hussain",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS-402",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Rashid Hussain",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Wajahat Hussain",
+          "Course Details": "Multivariable Calculus",
+          "Subject Code": "Math-302",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab1": [
+        {
+          "Room": "Lab1",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Dr Aftab",
+          "Course Details": "Digital Image Processing",
+          "Subject Code": "CS-609",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Sajid Hussain",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Mohd Ismail",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Imran Ali",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab2": [
+        {
+          "Room": "Lab2",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Gul Jabeen",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Data Structures and Algorithms",
+          "Subject Code": "CS-401",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Mohd Ismail",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Imran Ali",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab3": [
+        {
+          "Room": "Lab3",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Asif Ali",
+          "Course Details": "Web GIS",
+          "Subject Code": "GIS-603",
+          "Subject TYPE": "Lab",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "Spatial Data Infrastructure",
+          "Subject Code": "GIS-",
+          "Subject TYPE": "Lab",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Computer Networks",
+          "Subject Code": "CS-510",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSIT-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr. Muazzam Ali",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab4": [
+        {
+          "Room": "Lab4",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Muazzam Ali",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Dr Habib Ullah",
+          "Course Details": "Information Security",
+          "Subject Code": "CS-404",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSIT-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Natural Language Processing",
+          "Subject Code": "CS-624",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSAI-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "R210-Lab": [
+        {
+          "Room": "R210-Lab",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Natural Language Processing",
+          "Subject Code": "CS-624",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Dr Aftab",
+          "Course Details": "Digital Image Processing",
+          "Subject Code": "CS-609",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSDS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Computer Networks",
+          "Subject Code": "CS-510",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr Habib Ullah",
+          "Course Details": "Information Security",
+          "Subject Code": "CS-404",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    }
+  ],
+  "Wednesday": [
+    {
+      "NAB-R01": [
+        {
+          "Room": "NAB-R01",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Syed Najam Ul Hassan",
+          "Course Details": "Introduction to Remote Sensing",
+          "Subject Code": "GIS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Sherbaz Alam",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R02": [
+        {
+          "Room": "NAB-R02",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Sajid Hussain",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Ms Tazeen Zehra",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R03": [
+        {
+          "Time": "9:30-10:30"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Gul Jabeen",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Rashid Hussain",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R04": [
+        {
+          "Room": "NAB-R04",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Muhammad Tahir",
+          "Course Details": "Spatial Analysis",
+          "Subject Code": "GIS-406",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "Navigation Systems",
+          "Subject Code": "GIS-405",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr Asghar Khan",
+          "Course Details": "Introduction to Earth Sciences",
+          "Subject Code": "ES-401",
+          "Subject TYPE": "Theory",
+          "Domain": "Earth Sc",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms Saeeda Aman",
+          "Course Details": "Geo-statistics",
+          "Subject Code": "GIS-404",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R05": [
+        {
+          "Room": "NAB-R05",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Data Structures and Algorithms",
+          "Subject Code": "CS-401",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Nadeem Hussain",
+          "Course Details": "Applied Physics",
+          "Subject Code": "GE2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Phy",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Iqbal Hussain",
+          "Course Details": "Advance Database Management Systems",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R06": [
+        {
+          "Room": "NAB-R06",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Zar Nawab",
+          "Course Details": "Theory of Automata",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Data Structures and Algorithms",
+          "Subject Code": "CS-401",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Nadeem Hussain",
+          "Course Details": "Applied Physics",
+          "Subject Code": "GE2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Phy",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R07": [
+        {
+          "Room": "NAB-R07",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Muhammad Tahir",
+          "Course Details": "Spatial Decision Support Systems",
+          "Subject Code": "GIS-602",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "Advanced GIS",
+          "Subject Code": "GIS-605",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Syed Najam Ul Hassan",
+          "Course Details": "Remote Sensing Applications",
+          "Subject Code": "GIS-606",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Asghar Khan",
+          "Course Details": "Research Methods",
+          "Subject Code": "IR-703",
+          "Subject TYPE": "Theory",
+          "Domain": "Research",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R08": [
+        {
+          "Room": "NAB-R08",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Professional Ethics",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "Ethics",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Asif Ali",
+          "Course Details": "Land Information System",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "GIS for Disaster Management",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Coordinator",
+          "Course Details": "Final Project II",
+          "Subject Code": "",
+          "Subject TYPE": "Project",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R09": [
+        {
+          "Room": "NAB-R09",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Operating Systems",
+          "Subject Code": "CS-502",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Artificial Intelligence",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "Technical & Business Writing",
+          "Subject Code": "Eng-302",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R10": [
+        {
+          "Room": "NAB-R10",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Coordinator",
+          "Course Details": "FYP-II",
+          "Subject Code": "",
+          "Subject TYPE": "Project",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Cyber Security",
+          "Subject Code": "CS-602",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Rubi Alam",
+          "Course Details": "Human Resource Management",
+          "Subject Code": "Mgt-501",
+          "Subject TYPE": "Theory",
+          "Domain": "Mgt",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R11": [
+        {
+          "Room": "NAB-R11",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Muazzam Ali",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Razia Sharif",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R12": [
+        {
+          "Room": "NAB-R12",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Rashid Hussain",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab1": [
+        {
+          "Room": "Lab1",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr Aftab",
+          "Course Details": "Digital Image Processing",
+          "Subject Code": "CS-609",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Sajid Hussain",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Mohd Ismail",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab2": [
+        {
+          "Room": "Lab2",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Gul Jabeen",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Data Structures and Algorithms",
+          "Subject Code": "CS-401",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Mohd Ismail",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab3": [
+        {
+          "Room": "Lab3",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Asif Ali",
+          "Course Details": "Web GIS",
+          "Subject Code": "GIS-603",
+          "Subject TYPE": "Lab",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "Spatial Data Infrastructure",
+          "Subject Code": "GIS-",
+          "Subject TYPE": "Lab",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Computer Networks",
+          "Subject Code": "CS-510",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSIT-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab4": [
+        {
+          "Room": "Lab4",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Muazzam Ali",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Dr Habib Ullah",
+          "Course Details": "Information Security",
+          "Subject Code": "CS-404",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSIT-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Natural Language Processing",
+          "Subject Code": "CS-624",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "R210-Lab": [
+        {
+          "Room": "R210-Lab",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Natural Language Processing",
+          "Subject Code": "CS-624",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Dr Aftab",
+          "Course Details": "Digital Image Processing",
+          "Subject Code": "CS-609",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSDS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Computer Networks",
+          "Subject Code": "CS-510",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    }
+  ],
+  "Thursday": [
+    {
+      "NAB-R01": [
+        {
+          "Room": "NAB-R01",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Rabia Masood",
+          "Course Details": "Human Geography",
+          "Subject Code": "ENR-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Env Sc",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Mr Iqtidar Hussain",
+          "Course Details": "Applied Physics",
+          "Subject Code": "Phy-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Phy",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Sherbaz Alam",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R02": [
+        {
+          "Room": "NAB-R02",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Muazzam Ali",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS-402",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Ms Tazeen Zehra",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Mr. Khalid Saleem",
+          "Course Details": "Multivariable Calculus",
+          "Subject Code": "Math-302",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R03": [
+        {
+          "Time": "9:30-10:30"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Imran Ali",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS-402",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Rashid Hussain",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Jahangir Hussain",
+          "Course Details": "Multivariable Calculus",
+          "Subject Code": "Math-302",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R04": [
+        {
+          "Room": "NAB-R04",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr Karamat",
+          "Course Details": "Climate Change",
+          "Subject Code": "ENVR-401",
+          "Subject TYPE": "Theory",
+          "Domain": "Env Sc",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Ms Saeeda Aman",
+          "Course Details": "Geo-statistics",
+          "Subject Code": "GIS-404",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr Asghar Khan",
+          "Course Details": "Introduction to Earth Sciences",
+          "Subject Code": "ES-401",
+          "Subject TYPE": "Theory",
+          "Domain": "Earth Sc",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "Navigation Systems",
+          "Subject Code": "GIS-405",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Muhammad Tahir",
+          "Course Details": "Spatial Analysis",
+          "Subject Code": "GIS-406",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R05": [
+        {
+          "Room": "NAB-R05",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Iqbal Hussain",
+          "Course Details": "Advance Database Management Systems",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Dr. Zar Nawab",
+          "Course Details": "Theory of Automata",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Data Structures and Algorithms",
+          "Subject Code": "CS-401",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Nadeem Hussain",
+          "Course Details": "Applied Physics",
+          "Subject Code": "GE2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Phy",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "Expository Writing",
+          "Subject Code": "GE1xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R06": [
+        {
+          "Room": "NAB-R06",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "Expository Writing",
+          "Subject Code": "GE1xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Iqbal Hussain",
+          "Course Details": "Advance Database Management Systems",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Zar Nawab",
+          "Course Details": "Theory of Automata",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Data Structures and Algorithms",
+          "Subject Code": "CS-401",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Nadeem Hussain",
+          "Course Details": "Applied Physics",
+          "Subject Code": "GE2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Phy",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R07": [
+        {
+          "Room": "NAB-R07",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Rabia Masood",
+          "Course Details": "Natural Resources",
+          "Subject Code": "GIS-230",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Syed Najam Ul Hassan",
+          "Course Details": "Remote Sensing Applications",
+          "Subject Code": "GIS-606",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "Advanced GIS",
+          "Subject Code": "GIS-605",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Muhammad Tahir",
+          "Course Details": "Spatial Decision Support Systems",
+          "Subject Code": "GIS-602",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr Asghar Khan",
+          "Course Details": "Research Methods",
+          "Subject Code": "IR-703",
+          "Subject TYPE": "Theory",
+          "Domain": "Research",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R08": [
+        {
+          "Room": "NAB-R08",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "Technical Writing and Presentation Skills",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "GIS for Disaster Management",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Asif Ali",
+          "Course Details": "Land Information System",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "12:30-1:30"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Coordinator",
+          "Course Details": "Final Project II",
+          "Subject Code": "",
+          "Subject TYPE": "Project",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Professional Ethics",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "Ethics",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R09": [
+        {
+          "Room": "NAB-R09",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Software Engineering",
+          "Subject Code": "CS-503",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mr. Khalid Saleem",
+          "Course Details": "Differential Equations",
+          "Subject Code": "Math-601",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Artificial Intelligence",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Operating Systems",
+          "Subject Code": "CS-502",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "Technical & Business Writing",
+          "Subject Code": "Eng-302",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R10": [
+        {
+          "Room": "NAB-R10",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr Habib Ullah",
+          "Course Details": "Data Science",
+          "Subject Code": "CS-601",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Natural Language Processing",
+          "Subject Code": "CS-624",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Cyber Security",
+          "Subject Code": "CS-602",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Rubi Alam",
+          "Course Details": "Human Resource Management",
+          "Subject Code": "Mgt-501",
+          "Subject TYPE": "Theory",
+          "Domain": "Mgt",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Coordinator",
+          "Course Details": "FYP-II",
+          "Subject Code": "",
+          "Subject TYPE": "Project",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R11": [
+        {
+          "Room": "NAB-R11",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Mr Kamran Abbas",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS-402",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Razia Sharif",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Wajahat Hussain",
+          "Course Details": "Multivariable Calculus",
+          "Subject Code": "Math-302",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R12": [
+        {
+          "Room": "NAB-R12",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Mr Iqtidar Hussain",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS-402",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Rashid Hussain",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Wajahat Hussain",
+          "Course Details": "Multivariable Calculus",
+          "Subject Code": "Math-302",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab1": [
+        {
+          "Room": "Lab1",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Dr Aftab",
+          "Course Details": "Digital Image Processing",
+          "Subject Code": "CS-609",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Sajid Hussain",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Mohd Ismail",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Imran Ali",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab2": [
+        {
+          "Room": "Lab2",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Gul Jabeen",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Data Structures and Algorithms",
+          "Subject Code": "CS-401",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Mohd Ismail",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Imran Ali",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab3": [
+        {
+          "Room": "Lab3",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Asif Ali",
+          "Course Details": "Web GIS",
+          "Subject Code": "GIS-603",
+          "Subject TYPE": "Lab",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "Spatial Data Infrastructure",
+          "Subject Code": "GIS-",
+          "Subject TYPE": "Lab",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Computer Networks",
+          "Subject Code": "CS-510",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSIT-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr. Muazzam Ali",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab4": [
+        {
+          "Room": "Lab4",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Muazzam Ali",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Dr Habib Ullah",
+          "Course Details": "Information Security",
+          "Subject Code": "CS-404",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSIT-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Natural Language Processing",
+          "Subject Code": "CS-624",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSAI-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "R210-Lab": [
+        {
+          "Room": "R210-Lab",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Natural Language Processing",
+          "Subject Code": "CS-624",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Dr Aftab",
+          "Course Details": "Digital Image Processing",
+          "Subject Code": "CS-609",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSDS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Computer Networks",
+          "Subject Code": "CS-510",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr Habib Ullah",
+          "Course Details": "Information Security",
+          "Subject Code": "CS-404",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    }
+  ],
+  "Friday": [
+    {
+      "NAB-R01": [
+        {
+          "Room": "NAB-R01",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Syed Najam Ul Hassan",
+          "Course Details": "Introduction to Remote Sensing",
+          "Subject Code": "GIS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Sherbaz Alam",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R01",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R02": [
+        {
+          "Room": "NAB-R02",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Sajid Hussain",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Ms Tazeen Zehra",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R02",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R03": [
+        {
+          "Time": "9:30-10:30"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Gul Jabeen",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Rashid Hussain",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R03",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R04": [
+        {
+          "Room": "NAB-R04",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Muhammad Tahir",
+          "Course Details": "Spatial Analysis",
+          "Subject Code": "GIS-406",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "Navigation Systems",
+          "Subject Code": "GIS-405",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr Asghar Khan",
+          "Course Details": "Introduction to Earth Sciences",
+          "Subject Code": "ES-401",
+          "Subject TYPE": "Theory",
+          "Domain": "Earth Sc",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms Saeeda Aman",
+          "Course Details": "Geo-statistics",
+          "Subject Code": "GIS-404",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R04",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr Karamat",
+          "Course Details": "Climate Change",
+          "Subject Code": "ENVR-401",
+          "Subject TYPE": "Theory",
+          "Domain": "Env Sc",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R05": [
+        {
+          "Room": "NAB-R05",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Data Structures and Algorithms",
+          "Subject Code": "CS-401",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Nadeem Hussain",
+          "Course Details": "Applied Physics",
+          "Subject Code": "GE2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Phy",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Iqbal Hussain",
+          "Course Details": "Advance Database Management Systems",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R05",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "Expository Writing",
+          "Subject Code": "GE1xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R06": [
+        {
+          "Room": "NAB-R06",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Zar Nawab",
+          "Course Details": "Theory of Automata",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Data Structures and Algorithms",
+          "Subject Code": "CS-401",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Nadeem Hussain",
+          "Course Details": "Applied Physics",
+          "Subject Code": "GE2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Phy",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R06",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "Expository Writing",
+          "Subject Code": "GE1xx",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R07": [
+        {
+          "Room": "NAB-R07",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Muhammad Tahir",
+          "Course Details": "Spatial Decision Support Systems",
+          "Subject Code": "GIS-602",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "Advanced GIS",
+          "Subject Code": "GIS-605",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Syed Najam Ul Hassan",
+          "Course Details": "Remote Sensing Applications",
+          "Subject Code": "GIS-606",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Asghar Khan",
+          "Course Details": "Research Methods",
+          "Subject Code": "IR-703",
+          "Subject TYPE": "Theory",
+          "Domain": "Research",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R07",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Rabia Masood",
+          "Course Details": "Natural Resources",
+          "Subject Code": "GIS-230",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R08": [
+        {
+          "Room": "NAB-R08",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Professional Ethics",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "Ethics",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Asif Ali",
+          "Course Details": "Land Information System",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "GIS for Disaster Management",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Coordinator",
+          "Course Details": "Final Project II",
+          "Subject Code": "",
+          "Subject TYPE": "Project",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R08",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "Technical Writing and Presentation Skills",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "GIS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R09": [
+        {
+          "Room": "NAB-R09",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Operating Systems",
+          "Subject Code": "CS-502",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Artificial Intelligence",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "Technical & Business Writing",
+          "Subject Code": "Eng-302",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R09",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Software Engineering",
+          "Subject Code": "CS-503",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R10": [
+        {
+          "Room": "NAB-R10",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Coordinator",
+          "Course Details": "FYP-II",
+          "Subject Code": "",
+          "Subject TYPE": "Project",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Dr Habib Ullah",
+          "Course Details": "Information Security",
+          "Subject Code": "CS-404",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Cyber Security",
+          "Subject Code": "CS-602",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Rubi Alam",
+          "Course Details": "Human Resource Management",
+          "Subject Code": "Mgt-501",
+          "Subject TYPE": "Theory",
+          "Domain": "Mgt",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R10",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr Habib Ullah",
+          "Course Details": "Data Science",
+          "Subject Code": "CS-601",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R11": [
+        {
+          "Room": "NAB-R11",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr. Muazzam Ali",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mubashir Ayaz",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Razia Sharif",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R11",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "NAB-R12": [
+        {
+          "Room": "NAB-R12",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "10:30-11:30"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Ms Kamni",
+          "Course Details": "English Composition",
+          "Subject Code": "Eng-301",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Rashid Hussain",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Ponum Almas",
+          "Course Details": "Pakistan Studies",
+          "Subject Code": "Edu-007",
+          "Subject TYPE": "Theory",
+          "Domain": "Edu",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "NAB-R12",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Zahid Ullah",
+          "Course Details": "Fundamentals of Programming",
+          "Subject Code": "CS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab1": [
+        {
+          "Room": "Lab1",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Dr Aftab",
+          "Course Details": "Digital Image Processing",
+          "Subject Code": "CS-609",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Sajid Hussain",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Mohd Ismail",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab1",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Imran Ali",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab2": [
+        {
+          "Room": "Lab2",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Gul Jabeen",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Mr Saleem Ullah Baig",
+          "Course Details": "Spatial Data Infrastructure",
+          "Subject Code": "GIS-",
+          "Subject TYPE": "Lab",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Data Structures and Algorithms",
+          "Subject Code": "CS-401",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Mohd Ismail",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSCS-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab2",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Imran Ali",
+          "Course Details": "Database Systems",
+          "Subject Code": "CS-504",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSSE-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab3": [
+        {
+          "Time": "9:30-10:30"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Dr. Muazzam Ali",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Dr Habib Ullah",
+          "Course Details": "Information Security",
+          "Subject Code": "CS-404",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Computer Networks",
+          "Subject Code": "CS-510",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSIT-2nd-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab3",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr. Muazzam Ali",
+          "Course Details": "Computer Organization & Assembly Language",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    },
+    {
+      "Lab4": [
+        {
+          "Time": "9:30-10:30"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Syed Mazhar Ali Shah",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSIT-2nd-B",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSAI-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Natural Language Processing",
+          "Subject Code": "CS-624",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Room": "Lab4",
+          "Time": "3:30-4:30",
+          "Faculty Assigned": "Asif Ali",
+          "Course Details": "Web GIS",
+          "Subject Code": "GIS-603",
+          "Subject TYPE": "Lab",
+          "Domain": "GIS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
+        }
+      ]
+    },
+    {
+      "R210-Lab": [
+        {
+          "Room": "R210-Lab",
+          "Time": "9:30-10:30",
+          "Faculty Assigned": "Ms Chand Safi",
+          "Course Details": "Natural Language Processing",
+          "Subject Code": "CS-624",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "8th",
+          "Section": "BSCS-8th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "10:30-11:30",
+          "Faculty Assigned": "Dr Aftab",
+          "Course Details": "Digital Image Processing",
+          "Subject Code": "CS-609",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "4th",
+          "Section": "GIS-4th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "12:30-1:30",
+          "Faculty Assigned": "Dr. Dostdar",
+          "Course Details": "Object Oriented Programming",
+          "Subject Code": "CS-304",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "2nd",
+          "Section": "BSDS-2nd",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Room": "R210-Lab",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Dr Sabit",
+          "Course Details": "Computer Networks",
+          "Subject Code": "CS-510",
+          "Subject TYPE": "Lab",
+          "Domain": "CS",
+          "Pre-Req": "None",
+          "Sem": "6th",
+          "Section": "BSCS-6th",
+          "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
+          "Time": "3:30-4:30"
+        }
+      ]
+    }
+  ]
+}

@@ -3,14 +3,11 @@ import { useFormik } from "formik";
 import { timetableSchema } from "@/lib/validation/formValidationSchema";
 import React, { useState } from "react";
 import FileUploader from "@/Components/FileUploder/page";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useDispatch } from "react-redux";
 import { setData } from "@/state/dataSlice/data_slice";
 import { useRouter } from "next/navigation";
 
 export interface FormValues {
-  maxClasses: string;
-  classBreakTime: string;
   preferMorningClass: boolean;
   teacherData: Record<string, string>[];
   rulesData: Record<string, string>[];
@@ -19,16 +16,18 @@ export interface FormValues {
 export default function Home() {
   const [teacherFileName, setTeacherFileName] = useState<string | null>("");
   const [rulesFileName, setRulesFileName] = useState<string | null>("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
   const router = useRouter();
-
+  const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+  console.log(apiKey, "api key");
   const generateDynamicPrompt = (data: FormValues): string => {
     let prompt = `You are an AI assistant responsible for generating a university-level timetable using the provided teacher and room data. The timetable must follow these strict rules and return structured JSON data.\n\n`;
 
     // Constraints
     prompt += `Constraints:\n`;
     prompt += `- Each class duration: 1 hour.\n`;
-    prompt += `- Minimum break between two classes in the same room: ${data.classBreakTime} minutes.\n`;
     prompt += `- University working hours: 9:30 AM to 4:30 PM (7 one-hour slots).\n`;
     prompt += `- Prefer morning classes: ${
       data.preferMorningClass ? "Yes" : "No"
@@ -143,58 +142,64 @@ export default function Home() {
 
     // Notes
     prompt += `Notes:\n`;
-    prompt += `- Each day's array contains a single object.\n`;
     prompt += `- Each key in the object is a room name, and its value is a list of class objects.\n`;
     prompt += `- Each class object must include: Room, Time, Faculty Assigned, Course Details, Subject Code, Subject TYPE, Domain, Pre-Req, Sem, Section, Semester Details.\n`;
     prompt += `- Time slots must be non-overlapping per room.\n`;
     prompt += `- Use every room every day.\n`;
-    prompt += `- Ensure all subjects have at least one class each day.\n`;
     prompt += `- Return only valid raw JSON. No extra text or formatting.\n`;
     prompt += `- Do not leave any weekday (e.g. Friday) empty. Every weekday must have a full schedule.\n`;
 
     return prompt;
   };
-
   const formik = useFormik<FormValues>({
     initialValues: {
-      maxClasses: "",
-      classBreakTime: "",
       preferMorningClass: false,
       teacherData: [],
       rulesData: [],
     },
     validationSchema: timetableSchema,
     onSubmit: async (values, { resetForm }) => {
-      const prompt = generateDynamicPrompt(values);
-
-      const genAI = new GoogleGenerativeAI(
-        "AIzaSyAivK1xtsLV9P5QQEezUk8RrDG_CQZcWv4"
-      );
-      const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-      });
-
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-
-      const rawData = await response.text();
-      console.log(rawData, "raw data");
-      // dispatch(setData(rawData));
-
-      const jsonData = rawData.replace(/```json|```/g, "").trim();
+      setIsLoading(true);
+      setError("");
 
       try {
-        const parsedData = JSON.parse(jsonData);
-        dispatch(setData(parsedData.timetable));
-        console.log("Parsed Timetable Data:", parsedData);
-      } catch (e) {
-        console.error("Error parsing JSON:", e);
-      }
+        const prompt = generateDynamicPrompt(values);
 
-      resetForm();
-      setTeacherFileName(null);
-      setRulesFileName(null);
-      router.push("/timetable");
+        const res = await fetch("/api/generate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ prompt }),
+        });
+
+        if (!res.ok) {
+          throw new Error(`API Error: ${res.status}`);
+        }
+
+        const data = await res.json();
+        console.log(data, "data");
+        const generatedContent = data.choices?.[0]?.message?.content || "";
+        console.log(generatedContent, "generated content");
+        // clean & parse JSON
+        const cleaned = generatedContent
+          .replace(/```json|```/g, "")
+          .replace(/(\w+):/g, '"$1":') // quote unquoted keys
+          .replace(/'/g, '"') // single to double quotes
+          .replace(/\/\*[\s\S]*?\*\//g, "") // remove comments
+          .trim();
+
+        dispatch(setData(cleaned));
+        resetForm();
+        setTeacherFileName(null);
+        setRulesFileName(null);
+        router.push("/timetable");
+      } catch (err) {
+        console.error("Error:", err);
+        setError("Failed to generate timetable.");
+      } finally {
+        setIsLoading(false);
+      }
     },
   });
 
@@ -205,6 +210,11 @@ export default function Home() {
           <h1 className="font-semibold text-3xl mb-4">
             Upload Teacher &<br /> Subject Assignment
           </h1>
+          {error && (
+            <p className="text-red-500 mb-4 break-words whitespace-normal">
+              {error}
+            </p>
+          )}
 
           <form onSubmit={formik.handleSubmit}>
             <FileUploader
@@ -244,41 +254,6 @@ export default function Home() {
             <p className="font-medium text-xl mb-2">Or manually enter rules</p>
 
             <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <p className="text-[19px]">Max classes per day:</p>
-                <input
-                  type="text"
-                  name="maxClasses"
-                  value={formik.values.maxClasses}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className="border-2 border-gray-400 w-20 rounded-lg focus:ring-0 outline-none"
-                />
-              </div>
-              {formik.touched.maxClasses && formik.errors.maxClasses && (
-                <p className="text-red-500 text-sm">
-                  {formik.errors.maxClasses}
-                </p>
-              )}
-
-              <div className="flex items-center gap-2">
-                <p className="text-[19px]">Classes break time:</p>
-                <input
-                  type="text"
-                  name="classBreakTime"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.classBreakTime}
-                  className="border-2 border-gray-400 w-20 rounded-lg focus:ring-0 outline-none ml-2"
-                />
-              </div>
-              {formik.touched.classBreakTime &&
-                formik.errors.classBreakTime && (
-                  <p className="text-red-500 text-sm">
-                    {formik.errors.classBreakTime}
-                  </p>
-                )}
-
               <div className="flex gap-3 items-center">
                 <p className="text-[19px]">Prefer morning classes:</p>
                 <input
@@ -292,9 +267,12 @@ export default function Home() {
               </div>
               <button
                 type="submit"
-                className="bg-black text-white rounded-full p-3 mt-4"
+                className={`bg-black text-white rounded-full p-3 mt-4 ${
+                  isLoading ? "bg-gray-400" : "bg-black"
+                }`}
+                disabled={isLoading}
               >
-                Generate TimeTable
+                {isLoading ? "Generating..." : "Generate TimeTable"}
               </button>
             </div>
           </form>
