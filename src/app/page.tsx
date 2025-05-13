@@ -1,8 +1,10 @@
-import Home from "@/Components/homepage/page";
+import Timetable from "./timetable/page";
 const Main = () => {
   return (
     <main>
-      <Home />
+      <div className="flex">
+        <Timetable />
+      </div>
     </main>
   );
 };

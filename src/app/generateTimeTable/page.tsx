@@ -13,7 +13,7 @@ export interface FormValues {
   rulesData: Record<string, string>[];
 }
 
-export default function Home() {
+export default function GenerateTimeTable() {
   const [teacherFileName, setTeacherFileName] = useState<string | null>("");
   const [rulesFileName, setRulesFileName] = useState<string | null>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -204,7 +204,7 @@ export default function Home() {
   });
 
   return (
-    <main className="h-screen flex justify-center items-center">
+    <main className="max-h-screen h-full flex justify-center items-center">
       <div className="flex justify-center items-center border-2 rounded-2xl p-20 shadow-2xl border-gray-400">
         <div>
           <h1 className="font-semibold text-3xl mb-4">

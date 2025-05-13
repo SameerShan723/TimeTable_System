@@ -45,8 +45,14 @@
           "Semester Details": "Spring 2025"
         },
         {
+          "Time": "1:30-2:30"
+        },
+        {
+          "Time": "2:30-3:30"
+        },
+        {
           "Room": "New Academic Block Room 16",
-          "Time": "1:30-2:30",
+          "Time": "3:30-4:30",
           "Faculty Assigned": "Ms. Kamni",
           "Course Details": "Technical Writing and Presentation Skills",
           "Subject Code": "",
@@ -56,20 +62,17 @@
           "Sem": "8th",
           "Section": "GIS-8th",
           "Semester Details": "Spring 2025"
-        },
-        {
-          "Time": "2:30-3:30"
-        },
-        {
-          "Time": "3:30-4:30"
         }
       ]
     },
     {
       "New Academic Block Room 02": [
         {
+          "Time": "9:30-10:30"
+        },
+        {
           "Room": "New Academic Block Room 02",
-          "Time": "9:30-10:30",
+          "Time": "10:30-11:30",
           "Faculty Assigned": "Sajid Hussain",
           "Course Details": "Object Oriented Programming",
           "Subject Code": "CS-304",
@@ -79,9 +82,6 @@
           "Sem": "2nd",
           "Section": "BSCS-2nd-A",
           "Semester Details": "Spring 2025"
-        },
-        {
-          "Time": "10:30-11:30"
         },
         {
           "Room": "New Academic Block Room 02",
@@ -97,17 +97,7 @@
           "Semester Details": "Spring 2025"
         },
         {
-          "Room": "New Academic Block Room 02",
-          "Time": "12:30-1:30",
-          "Faculty Assigned": "Dr. Zar Nawab",
-          "Course Details": "Theory of Automata",
-          "Subject Code": "CS2xx",
-          "Subject TYPE": "Theory",
-          "Domain": "CS",
-          "Pre-Req": "N/A",
-          "Sem": "4th",
-          "Section": "BSCS-4th-A",
-          "Semester Details": "Spring 2025"
+          "Time": "12:30-1:30"
         },
         {
           "Room": "New Academic Block Room 02",
@@ -123,7 +113,17 @@
           "Semester Details": "Spring 2025"
         },
         {
-          "Time": "2:30-3:30"
+          "Room": "New Academic Block Room 02",
+          "Time": "2:30-3:30",
+          "Faculty Assigned": "Dr. Zar Nawab",
+          "Course Details": "Theory of Automata",
+          "Subject Code": "CS2xx",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "N/A",
+          "Sem": "4th",
+          "Section": "BSCS-4th-A",
+          "Semester Details": "Spring 2025"
         },
         {
           "Time": "3:30-4:30"
@@ -2013,11 +2013,8 @@
           "Semester Details": "Spring 2025"
         },
         {
-          "Time": "10:30-11:30"
-        },
-        {
           "Room": "Lab3",
-          "Time": "12:30-1:30",
+          "Time": "10:30-11:30",
           "Faculty Assigned": "Razia Sharif",
           "Course Details": "Linear Algebra",
           "Subject Code": "Math-303",
@@ -2027,6 +2024,9 @@
           "Sem": "2nd",
           "Section": "BSSE-2nd-A",
           "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
         },
         {
           "Room": "Lab3",
@@ -5232,17 +5232,7 @@
           "Time": "10:30-11:30"
         },
         {
-          "Room": "Lab2",
-          "Time": "12:30-1:30",
-          "Faculty Assigned": "Dr. Faqeer Shah",
-          "Course Details": "Linear Algebra",
-          "Subject Code": "Math-303",
-          "Subject TYPE": "Theory",
-          "Domain": "Math",
-          "Pre-Req": "N/A",
-          "Sem": "2nd",
-          "Section": "BSAI-2nd",
-          "Semester Details": "Spring 2025"
+          "Time": "11:30-12:30"
         },
         {
           "Room": "Lab2",
@@ -5264,7 +5254,17 @@
           "Time": "2:30-3:30"
         },
         {
-          "Time": "3:30-4:30"
+          "Room": "Lab2",
+          "Time": "3:30-4:30",
+          "Faculty Assigned": "Dr. Faqeer Shah",
+          "Course Details": "Linear Algebra",
+          "Subject Code": "Math-303",
+          "Subject TYPE": "Theory",
+          "Domain": "Math",
+          "Pre-Req": "N/A",
+          "Sem": "2nd",
+          "Section": "BSAI-2nd",
+          "Semester Details": "Spring 2025"
         }
       ]
     },
@@ -5284,11 +5284,8 @@
           "Semester Details": "Spring 2025"
         },
         {
-          "Time": "10:30-11:30"
-        },
-        {
           "Room": "Lab3",
-          "Time": "12:30-1:30",
+          "Time": "10:30-11:30",
           "Faculty Assigned": "Rashid Hussain",
           "Course Details": "Linear Algebra",
           "Subject Code": "Math-303",
@@ -5298,6 +5295,9 @@
           "Sem": "2nd",
           "Section": "BSDS-2nd",
           "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
         },
         {
           "Room": "Lab3",
@@ -5313,7 +5313,17 @@
           "Semester Details": "Spring 2025"
         },
         {
-          "Time": "1:30-2:30"
+          "Room": "Lab3",
+          "Time": "1:30-2:30",
+          "Faculty Assigned": "Ms. Kamni",
+          "Course Details": "English-II (Technical & Business Writing)",
+          "Subject Code": "",
+          "Subject TYPE": "Theory",
+          "Domain": "Eng",
+          "Pre-Req": "N/A",
+          "Sem": "6th",
+          "Section": "GIS-6th",
+          "Semester Details": "Spring 2025"
         },
         {
           "Time": "2:30-3:30"
@@ -5397,17 +5407,7 @@
           "Time": "10:30-11:30"
         },
         {
-          "Room": "Room 210(Lab)",
-          "Time": "12:30-1:30",
-          "Faculty Assigned": "Ms. Kamni",
-          "Course Details": "English-II (Technical & Business Writing)",
-          "Subject Code": "",
-          "Subject TYPE": "Theory",
-          "Domain": "Eng",
-          "Pre-Req": "N/A",
-          "Sem": "6th",
-          "Section": "GIS-6th",
-          "Semester Details": "Spring 2025"
+          "Time": "11:30-12:30"
         },
         {
           "Room": "Room 210(Lab)",
