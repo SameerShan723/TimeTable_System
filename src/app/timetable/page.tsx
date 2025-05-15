@@ -342,7 +342,7 @@ const Timetable = () => {
     const { setNodeRef, isOver } = useDroppable({ id });
     const className = useMemo(
       () =>
-        `border p-2 transition-all duration-200 ${
+        `border  p-2 transition-all duration-200 ${
           isOver ? "bg-blue-100 border-2 border-blue-400" : ""
         } ${isDraggingOver && isEmpty ? "bg-gray-100 opacity-50" : ""}`,
       [isOver, isDraggingOver, isEmpty]
@@ -407,8 +407,8 @@ const Timetable = () => {
               Saving changes...
             </div>
           )} */}
-        <div className="bg-red-200  max-w-screen w-full flex items-center h-15 px-2 sticky top-0 justify-center z-50 flex-1">
-          <div>
+        <div className="bg-red-400  max-w-screen w-full flex items-center h-15 px-2 sticky top-0 justify-center z-50 flex-1">
+          <div className="font-medium">
             Please check your time table &quot;Daily&quot; for any possible
             change!
           </div>
@@ -489,7 +489,7 @@ const Timetable = () => {
                                 isPlaceholder
                               />
                             ) : (
-                              <div className="text-center text-gray-300">-</div>
+                              <div className="text-center text-gray-300"></div>
                             )}
                           </DroppableCell>
                         );

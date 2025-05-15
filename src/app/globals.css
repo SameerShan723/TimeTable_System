@@ -1,3 +1,4 @@
+/* app/globals.css */
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -34,6 +35,10 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  /* Define font variables for Tailwind */
+  --font-sans: var(--font-inter), sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+  --font-serif: var(--font-roboto), sans-serif;
 }
 
 .dark {
@@ -68,4 +73,20 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* Custom font classes for specific use cases */
+@layer base {
+  .font-inter {
+    font-family: var(--font-inter), sans-serif;
+  }
+  .font-roboto {
+    font-family: var(--font-roboto), sans-serif;
+  }
+  .font-geist-sans {
+    font-family: var(--font-geist-sans), sans-serif;
+  }
+  .font-geist-mono {
+    font-family: var(--font-geist-mono), monospace;
+  }
 }

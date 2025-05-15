@@ -3,17 +3,7 @@
     {
       "New Academic Block Room 16": [
         {
-          "Room": "New Academic Block Room 16",
-          "Time": "9:30-10:30",
-          "Faculty Assigned": "Syed Najam Ul Hassan",
-          "Course Details": "Introduction to Remote Sensing",
-          "Subject Code": "GIS-302",
-          "Subject TYPE": "Theory",
-          "Domain": "CS",
-          "Pre-Req": "N/A",
-          "Sem": "2nd",
-          "Section": "GIS-2nd",
-          "Semester Details": "Spring 2025"
+          "Time": "9:30-10:30"
         },
         {
           "Room": "New Academic Block Room 16",
@@ -29,7 +19,17 @@
           "Semester Details": "Spring 2025"
         },
         {
-          "Time": "11:30-12:30"
+          "Room": "New Academic Block Room 16",
+          "Time": "11:30-12:30",
+          "Faculty Assigned": "Syed Najam Ul Hassan",
+          "Course Details": "Introduction to Remote Sensing",
+          "Subject Code": "GIS-302",
+          "Subject TYPE": "Theory",
+          "Domain": "CS",
+          "Pre-Req": "N/A",
+          "Sem": "2nd",
+          "Section": "GIS-2nd",
+          "Semester Details": "Spring 2025"
         },
         {
           "Room": "New Academic Block Room 16",
@@ -198,8 +198,11 @@
     {
       "NAB-1": [
         {
+          "Time": "9:30-10:30"
+        },
+        {
           "Room": "NAB-1",
-          "Time": "9:30-10:30",
+          "Time": "10:30-11:30",
           "Faculty Assigned": "Dr. Dostdar",
           "Course Details": "Object Oriented Programming",
           "Subject Code": "CS-304",
@@ -209,9 +212,6 @@
           "Sem": "2nd",
           "Section": "BSSE-2nd-A",
           "Semester Details": "Spring 2025"
-        },
-        {
-          "Time": "10:30-11:30"
         },
         {
           "Room": "NAB-1",
@@ -2310,11 +2310,8 @@
           "Semester Details": "Spring 2025"
         },
         {
-          "Time": "10:30-11:30"
-        },
-        {
           "Room": "Room 02",
-          "Time": "11:30-12:30",
+          "Time": "10:30-11:30",
           "Faculty Assigned": "Iqbal Hussain",
           "Course Details": "Advance Database Management Systems",
           "Subject Code": "CS2xx",
@@ -2324,6 +2321,9 @@
           "Sem": "4th",
           "Section": "BSCS-4th-B",
           "Semester Details": "Spring 2025"
+        },
+        {
+          "Time": "11:30-12:30"
         },
         {
           "Room": "Room 02",

@@ -20,8 +20,8 @@ export default function GenerateTimeTable() {
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const router = useRouter();
-  const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
-  console.log(apiKey, "api key");
+  // const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+  // console.log(apiKey, "api key");
   const generateDynamicPrompt = (data: FormValues): string => {
     let prompt = `You are an AI assistant responsible for generating a university-level timetable using the provided teacher and room data. The timetable must follow these strict rules and return structured JSON data.\n\n`;
 
@@ -204,7 +204,7 @@ export default function GenerateTimeTable() {
   });
 
   return (
-    <main className="max-h-screen h-full flex justify-center items-center">
+    <main className=" flex h-[calc(100vh-4rem)] justify-center items-center overflow-hidden">
       <div className="flex justify-center items-center border-2 rounded-2xl p-20 shadow-2xl border-gray-400">
         <div>
           <h1 className="font-semibold text-3xl mb-4">

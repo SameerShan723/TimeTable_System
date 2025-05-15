@@ -24,13 +24,13 @@ interface TimetableData {
 
 export default function TeacherTimetable() {
   const [timetable, setTimetable] = useState<TimetableData>({});
-  const [teachers, setTeachers] = useState<string[]>([]);
-  const [selectedTeacher, setSelectedTeacher] = useState<string>("");
+  const [sections, setSection] = useState<string[]>([]);
+  const [selectedSection, setSelectedSection] = useState<string>("");
   const [selectedDay, setSelectedDay] = useState<string[]>([]);
   const [results, setResult] = useState<(ClassItem & { Room: string })[]>([]);
   const [error, setError] = useState<string>("");
 
-  const teacherSelectedId = useId();
+  const sectionSelectedId = useId();
   const daySelectedId = useId();
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const timeSlots = [
@@ -51,20 +51,20 @@ export default function TeacherTimetable() {
       .then((data: TimetableData) => {
         setTimetable(data);
 
-        const teacherSet = new Set<string>();
+        const studentSet = new Set<string>();
         Object.values(data).forEach((dayRooms) => {
           dayRooms.forEach((roomObj) => {
             const roomName = Object.keys(roomObj)[0];
             const classes = roomObj[roomName];
             classes.forEach((cls) => {
-              if (cls["Faculty Assigned"]) {
-                teacherSet.add(cls["Faculty Assigned"]);
+              if (cls.Section) {
+                studentSet.add(cls.Section);
               }
             });
           });
         });
 
-        setTeachers(Array.from(teacherSet));
+        setSection(Array.from(studentSet));
       });
   };
   const dayOptions = Object.keys(timetable).map((day) => ({
@@ -94,8 +94,8 @@ export default function TeacherTimetable() {
 
   const handleChange = () => {
     setError("");
-    if (!selectedTeacher) {
-      setError("Please select a teacher!");
+    if (!selectedSection) {
+      setError("Please select a section");
       setResult([]);
       return;
     }
@@ -117,18 +117,13 @@ export default function TeacherTimetable() {
         const classes = roomObj[roomName];
 
         classes.forEach((cls) => {
-          if (cls["Faculty Assigned"] === selectedTeacher) {
+          if (cls.Section === selectedSection) {
             result.push({ ...cls, Room: roomName, Day: day });
           }
         });
       });
     });
 
-    if (result.length === 0) {
-      setError("No classes found for the selected teacher on this day.");
-    } else {
-      setError("");
-    }
     setResult(result);
   };
   console.log(results, "results");
@@ -141,26 +136,28 @@ export default function TeacherTimetable() {
     : [allOption, ...dayOptions];
   return (
     <>
-      <div className="flex items-center justify-center flex-col mt-4">
-        <h1 className="font-bold text-2xl">Check Teachers Timetable</h1>
+      <div className="flex items-center justify-center flex-col mt-4 mb-3">
+        <h1 className="font-bold text-2xl ">
+          Check Students Timetable By Section
+        </h1>
         <div className="mb-4 flex flex-col w-full max-w-md">
-          <label className="text-xl mb-2">Teacher:</label>
+          <label className="text-xl mb-2">Section:</label>
           <Select
-            instanceId={teacherSelectedId}
-            options={teachers.map((teacher) => ({
-              value: teacher,
-              label: teacher,
+            instanceId={sectionSelectedId}
+            options={sections.map((section) => ({
+              value: section,
+              label: section,
             }))}
             value={
-              selectedTeacher
-                ? { value: selectedTeacher, label: selectedTeacher }
+              selectedSection
+                ? { value: selectedSection, label: selectedSection }
                 : null
             }
             onChange={(selectedOption) =>
-              setSelectedTeacher(selectedOption ? selectedOption.value : "")
+              setSelectedSection(selectedOption ? selectedOption.value : "")
             }
             className="text-black"
-            placeholder="Select teacher"
+            placeholder="Select Section"
             isClearable
           />
         </div>

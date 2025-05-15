@@ -3,6 +3,22 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReduxProvider } from "./redux-provider";
 import Sidebar from "@/Components/sidebar/page";
+import Header from "./header/page";
+import { Inter, Roboto } from "next/font/google";
+import "./globals.css";
+
+// Configure fonts
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter", // CSS variable for styling
+});
+const roboto = Roboto({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-roboto",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,14 +41,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${roboto.variable}`}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex h-screen overflow-hidden">
-          <div className="w-54 text-white h-full">
+        <div className="h-16 sticky top-0 z-50 shadow-xl ">
+          <Header />
+        </div>
+
+        <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
+          <div className="w-60 h-full sticky top-16 bg-black">
             <Sidebar />
           </div>
+
           <div className="flex-1 overflow-y-auto px-4">
             <ReduxProvider>{children}</ReduxProvider>
           </div>

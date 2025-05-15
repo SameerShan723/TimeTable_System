@@ -144,7 +144,7 @@ export default function FileUploader({
     <div className="mb-4">
       <label className="block mb-1 text-[20px]">{label}</label>
       <div
-        className="cursor-pointer border p-4 rounded-md text-center text-gray-600 hover:bg-gray-50 transition w-[250px] h-[60px] overflow-hidden whitespace-nowrap text-ellipsis"
+        className="cursor-pointer border p-4 rounded-md text-center text-gray-600 hover:bg-gray-50 transition w-[300px] h-[60px] overflow-hidden whitespace-nowrap text-ellipsis"
         onClick={handleClickBox}
       >
         {labelName || placeholder}
