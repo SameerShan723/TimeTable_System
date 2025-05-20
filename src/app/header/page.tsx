@@ -5,10 +5,10 @@ export default function Header() {
     <div className="">
       <div className="flex items-center ">
         <Image
-          src="/logo.png" // or from public folder
+          src="/logo.png"
           alt="Description of image"
-          width={232} // required
-          height={52} // required
+          width={232}
+          height={52}
           style={{ objectFit: "cover" }}
         />
         <div className="flex flex-1 justify-center">

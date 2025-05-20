@@ -76,7 +76,7 @@ export default function TeacherTimetable() {
   const handleDayOptions = (
     selected: MultiValue<{ value: string; label: string }>
   ) => {
-    console.log(selected, "selected");
+    // console.log(selected, "selected");
     if (!selected) {
       setSelectedDay([]);
       return;
@@ -131,7 +131,7 @@ export default function TeacherTimetable() {
     }
     setResult(result);
   };
-  console.log(results, "results");
+  // console.log(results, "results");
   const getTimetable = (day: string, time: string) => {
     return results.find((course) => course.Time === time && course.Day === day);
   };

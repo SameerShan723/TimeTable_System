@@ -16,8 +16,8 @@ import {
 } from "@dnd-kit/core";
 import { produce } from "immer";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-// import { useRouter } from "next/navigation";
-// Define types for our data structure
+import { supabase } from "@/lib/supabase/supabase";
+
 interface Session {
   Room: string;
   Time: string;
@@ -26,7 +26,6 @@ interface Session {
   "Subject Type": string;
   Domain: string;
   "Pre-Req": string;
-  // Sem: string;
   Section: string;
   "Semester Details": string;
 }
@@ -55,7 +54,6 @@ const timeSlots = [
   "3:30-4:30",
 ];
 
-// Reusable component to display session details
 const SessionDetails = React.memo<{
   session: Session;
   isPlaceholder?: boolean;
@@ -79,28 +77,30 @@ const Timetable = () => {
   const [data, setData] = useState<TimetableData>({});
   const [activeSession, setActiveSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  // const [saving, setSaving] = useState(false);
-  const hasLoaded = useRef(false);
-  // const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [versions, setVersions] = useState<number[]>([]);
+  const [selectedVersion, setSelectedVersion] = useState<number | null>(null);
 
-  // const handleTeacherButton = () => {
-  //   router.push("/checkTeachersTimetable");
-  // };
-  // Normalize data to handle empty slots and validate required fields
+  const hasLoaded = useRef(false);
+
   const normalizeData = useCallback((rawData: unknown): TimetableData => {
     const normalized: TimetableData = {};
     if (!rawData || typeof rawData !== "object") {
+      console.warn("Invalid raw data:", rawData);
       return normalized;
     }
 
     Object.entries(rawData).forEach(([day, daySchedule]) => {
+      if (day === "version_number") return; // Skip metadata
       if (!Array.isArray(daySchedule)) {
+        console.warn(`Invalid schedule for ${day}:`, daySchedule);
         return;
       }
 
       const validRooms: RoomSchedule[] = [];
       daySchedule.forEach((roomSchedule) => {
         if (!roomSchedule || typeof roomSchedule !== "object") {
+          console.warn("Invalid room schedule:", roomSchedule);
           return;
         }
 
@@ -136,47 +136,114 @@ const Timetable = () => {
     return normalized;
   }, []);
 
-  // Load data from API
+  const loadData = async (versionOverride?: string | number | null) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { data: versionData, error: versionError } = await supabase
+        .from("timetable_data")
+        .select("version_number")
+        .order("version_number", { ascending: true });
+
+      if (versionError) {
+        console.error("Version fetch error:", versionError);
+        throw new Error(versionError.message);
+      }
+
+      const versionNumbers = versionData.map((v) => v.version_number);
+      setVersions(versionNumbers);
+
+      // Decide version to use for API
+      const versionToUse =
+        versionOverride ||
+        selectedVersion ||
+        versionNumbers[versionNumbers.length - 1] ||
+        null;
+
+      // Set default version on first load if not set
+      if (!selectedVersion && versionToUse) {
+        setSelectedVersion(versionToUse);
+      }
+
+      if (!versionToUse) {
+        throw new Error("No valid version available.");
+      }
+
+      const url = `/api/timetable?version=${versionToUse}`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Fetch error:", errorData);
+        throw new Error(errorData.error || `HTTP error: ${response.status}`);
+      }
+
+      const jsonData = await response.json();
+      const normalized = normalizeData(jsonData);
+      setData(normalized);
+    } catch (error) {
+      console.error("Error loading timetable:", error);
+      setError(error.message || "Failed to load timetable");
+      setData({});
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔁 Initial load and subscription
   useEffect(() => {
     if (hasLoaded.current) return;
+
     hasLoaded.current = true;
+    loadData(); // initial load
 
-    const loadData = async () => {
-      try {
-        const response = await fetch("/api/timetable");
-        if (!response.ok) {
-          throw new Error(`HTTP error: ${response.status}`);
+    const subscription = supabase
+      .channel("timetable_data")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "timetable_data" },
+        async () => {
+          console.log("New timetable data inserted, reloading...");
+          await loadData(); // keep using selectedVersion
         }
-        const jsonData = await response.json();
-        setData(normalizeData(jsonData));
-      } catch (error) {
-        console.error("Error loading timetable from API:", error);
-        setData({});
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadData();
-  }, [normalizeData]);
+      )
+      .subscribe((status, error) => {
+        if (error) {
+          console.error("Subscription error:", error);
+          setError("Real-time updates failed");
+        }
+      });
 
-  // Save data to API function
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!hasLoaded.current || !selectedVersion) return;
+    loadData(selectedVersion);
+  }, [selectedVersion]);
+
   const saveData = useCallback(async (dataToSave: TimetableData) => {
-    // setSaving(true);
     try {
       const response = await fetch("/api/timetable", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataToSave),
       });
-      if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-    } catch (error) {
-      console.error("Error saving timetable to API:", error);
-    } finally {
-      // setSaving(false);
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Save error:", errorData);
+        throw new Error(errorData.error || `HTTP error: ${response.status}`);
+      }
+    } catch (error: any) {
+      console.error("Error saving timetable:", error);
+      setError(error.message || "Failed to save timetable");
     }
   }, []);
 
-  // Memoize all rooms to prevent recalculations
   const allRooms = useMemo(() => {
     return Array.from(
       new Set(
@@ -189,7 +256,6 @@ const Timetable = () => {
     );
   }, [data]);
 
-  // Parse cell ID into components
   const parseCellId = useCallback((id: string) => {
     const [day, ...rest] = id.split("-");
     const timeIndex = rest.findIndex((p) => p.includes(":"));
@@ -198,7 +264,6 @@ const Timetable = () => {
     return { day, room, time };
   }, []);
 
-  // Handle drag start to set active session
   const handleDragStart = useCallback(
     (event: DragStartEvent) => {
       const sourceId = event.active.id as string;
@@ -228,7 +293,6 @@ const Timetable = () => {
     [data, parseCellId]
   );
 
-  // Handle drag end to update timetable
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       const { active, over } = event;
@@ -253,7 +317,6 @@ const Timetable = () => {
         time: destTime,
       } = parseCellId(destId);
 
-      // Skip if dragging to the same spot
       if (
         sourceDay === destDay &&
         sourceRoom === destRoom &&
@@ -271,6 +334,7 @@ const Timetable = () => {
         );
 
         if (!sourceRoomData || !destRoomData) {
+          console.warn("Missing room data:", { sourceRoomData, destRoomData });
           return;
         }
 
@@ -278,6 +342,7 @@ const Timetable = () => {
         const destSessions = destRoomData[destRoom];
 
         if (!sourceSessions || !destSessions) {
+          console.warn("Missing sessions:", { sourceSessions, destSessions });
           return;
         }
 
@@ -289,6 +354,7 @@ const Timetable = () => {
         );
 
         if (sourceIndex === -1 || destIndex === -1) {
+          console.warn("Invalid indices:", { sourceIndex, destIndex });
           return;
         }
 
@@ -323,16 +389,12 @@ const Timetable = () => {
         }
       });
 
-      // Update state first
       setData(updatedData);
-
-      // Then save to API
       saveData(updatedData);
     },
     [data, parseCellId, saveData]
   );
 
-  // Droppable cell component
   const DroppableCell = React.memo<{
     id: string;
     children: React.ReactNode;
@@ -342,7 +404,7 @@ const Timetable = () => {
     const { setNodeRef, isOver } = useDroppable({ id });
     const className = useMemo(
       () =>
-        `border  p-2 transition-all duration-200 ${
+        `border p-2 transition-all duration-200 ${
           isOver ? "bg-blue-100 border-2 border-blue-400" : ""
         } ${isDraggingOver && isEmpty ? "bg-gray-100 opacity-50" : ""}`,
       [isOver, isDraggingOver, isEmpty]
@@ -356,7 +418,6 @@ const Timetable = () => {
   });
   DroppableCell.displayName = "DroppableCell";
 
-  // Draggable session component
   const DraggableSession = React.memo<{
     id: string;
     session: Session;
@@ -388,12 +449,19 @@ const Timetable = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64 flex-1">
-        <div className="text-xl">Loading timetable...</div>
+      <div className="flex justify-center items-center h-[calc(100vh-3rem)]  flex-1">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-64 flex-1">
+        <div className="text-xl text-red-500">Error: {error}</div>
+      </div>
+    );
+  }
   return (
     <main>
       <DndContext
@@ -401,107 +469,111 @@ const Timetable = () => {
         onDragEnd={handleDragEnd}
         modifiers={[restrictToWindowEdges]}
       >
-        {/* <div className="overflow-x-auto p-4">
-          {saving && (
-            <div className="fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded shadow-md">
-              Saving changes...
-            </div>
-          )} */}
-        <div className="bg-red-400  max-w-screen w-full flex items-center h-15 px-2 sticky top-0 justify-center z-50 flex-1">
-          <div className="font-medium">
-            Please check your time table &quot;Daily&quot; for any possible
-            change!
-          </div>
-          {/* <button
-            className="bg-blue-400 px-4 py-2 cursor-pointer"
-            onClick={() => handleTeacherButton()}
-          >
-            Check Timetable By Teacher
-          </button> */}
-        </div>
-        <table className="min-w-full border-collapse border">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border p-2">Day</th>
-              <th>Room</th>
-              {timeSlots.map((time) => (
-                <th key={time} className="border p-2 text-center">
-                  {time}
-                </th>
+        <div className="p-4">
+          <div className="mb-4 sticky top-0">
+            <label className="mr-2">Select Version:</label>
+            <select
+              value={selectedVersion || ""}
+              onChange={(e) =>
+                setSelectedVersion(Number(e.target.value) || null)
+              }
+              className="border p-2 rounded text-[13px]"
+            >
+              {versions.map((version) => (
+                <option key={version} value={version}>
+                  Version {version}
+                </option>
               ))}
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(data).map(([day, rooms]) => (
-              <React.Fragment key={day}>
-                <tr>
-                  <td
-                    rowSpan={allRooms.length + 1}
-                    className="border align-middle bg-gray-50"
-                  >
-                    <div className="-rotate-90 font-medium">{day}</div>
-                  </td>
-                </tr>
-                {allRooms.map((roomName) => {
-                  const roomData = rooms.find(
-                    (room: RoomSchedule) => Object.keys(room)[0] === roomName
-                  );
-                  const sessions = roomData
-                    ? roomData[roomName] ||
-                      timeSlots.map((time) => ({ Time: time }))
-                    : timeSlots.map((time) => ({ Time: time }));
+            </select>
+          </div>
+          <div className="bg-red-400 max-w-screen w-full flex items-center h-15 px-2 sticky top-0 justify-center z-50 flex-1">
+            <div className="font-medium">
+              Please check your time table Daily for any possible change!
+            </div>
+          </div>
+          <table className="min-w-full border-collapse border">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border p-2">Day</th>
+                <th>Room</th>
+                {timeSlots.map((time) => (
+                  <th key={time} className="border p-2 text-center">
+                    {time}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(data).map(([day, rooms]) => (
+                <React.Fragment key={day}>
+                  <tr>
+                    <td
+                      rowSpan={allRooms.length + 1}
+                      className="border align-middle bg-gray-50"
+                    >
+                      <div className="-rotate-90 font-medium">{day}</div>
+                    </td>
+                  </tr>
+                  {allRooms.map((roomName) => {
+                    const roomData = rooms.find(
+                      (room: RoomSchedule) => Object.keys(room)[0] === roomName
+                    );
+                    const sessions = roomData
+                      ? roomData[roomName] ||
+                        timeSlots.map((time) => ({ Time: time }))
+                      : timeSlots.map((time) => ({ Time: time }));
 
-                  return (
-                    <tr key={`${day}-${roomName}`}>
-                      <td className="border p-2">{roomName}</td>
-                      {timeSlots.map((timeSlot) => {
-                        const session = sessions.find(
-                          (s: Session | EmptySlot) => s.Time === timeSlot
-                        ) as Session | EmptySlot;
-                        const isEmpty =
-                          !session || !("Faculty Assigned" in session);
-                        const cellId = `${day}-${roomName}-${timeSlot}`;
-                        const isDraggingThisSession =
-                          activeSession &&
-                          session &&
-                          "Faculty Assigned" in session &&
-                          session["Course Details"] ===
-                            activeSession["Course Details"] &&
-                          session.Time === activeSession.Time;
+                    return (
+                      <tr key={`${day}-${roomName}`}>
+                        <td className="border p-2">{roomName}</td>
+                        {timeSlots.map((timeSlot) => {
+                          const session = sessions.find(
+                            (s: Session | EmptySlot) => s.Time === timeSlot
+                          ) as Session | EmptySlot;
+                          const isEmpty =
+                            !session || !("Faculty Assigned" in session);
+                          const cellId = `${day}-${roomName}-${timeSlot}`;
+                          const isDraggingThisSession =
+                            activeSession &&
+                            session &&
+                            "Faculty Assigned" in session &&
+                            session["Course Details"] ===
+                              activeSession["Course Details"] &&
+                            session.Time === activeSession.Time;
 
-                        return (
-                          <DroppableCell
-                            key={cellId}
-                            id={cellId}
-                            isEmpty={isEmpty}
-                            isDraggingOver={!!isDraggingThisSession}
-                          >
-                            {!isEmpty && !isDraggingThisSession ? (
-                              <DraggableSession
-                                id={`${cellId}-${
-                                  session["Course Details"] || "session"
-                                }`}
-                                session={session as Session}
-                              />
-                            ) : isDraggingThisSession ? (
-                              <SessionDetails
-                                session={session as Session}
-                                isPlaceholder
-                              />
-                            ) : (
-                              <div className="text-center text-gray-300"></div>
-                            )}
-                          </DroppableCell>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </React.Fragment>
-            ))}
-          </tbody>
-        </table>
-        {/* </div> */}
+                          return (
+                            <DroppableCell
+                              key={cellId}
+                              id={cellId}
+                              isEmpty={isEmpty}
+                              isDraggingOver={!!isDraggingThisSession}
+                            >
+                              {!isEmpty && !isDraggingThisSession ? (
+                                <DraggableSession
+                                  id={`${cellId}-${
+                                    session["Course Details"] || "session"
+                                  }`}
+                                  session={session as Session}
+                                />
+                              ) : isDraggingThisSession ? (
+                                <SessionDetails
+                                  session={session as Session}
+                                  isPlaceholder
+                                />
+                              ) : (
+                                <div className="text-center text-gray-300"></div>
+                              )}
+                            </DroppableCell>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <DragOverlay>
           {activeSession ? (
             <DraggableSession
