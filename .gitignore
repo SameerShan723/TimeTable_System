@@ -41,3 +41,4 @@ next-env.d.ts
 # .lib/prompt.ts
 lib/prompt.ts
 
+.env
