@@ -83,7 +83,6 @@ export async function GET(request: NextRequest) {
 
     console.log("Fetched data from Supabase:", data);
 
-    // Filter for predefined rooms, handling nested arrays and enforce day order
     const filteredData = Object.fromEntries(
       DAY_ORDER.map((day) => {
         const rooms = data.data[day] || [];
@@ -92,12 +91,12 @@ export async function GET(request: NextRequest) {
           return [day, []];
         }
         const validRooms = rooms
-          .flatMap((roomObj: any) => {
+          .flatMap((roomObj: string) => {
             const roomName = Object.keys(roomObj)[0];
             console.log(`Checking room: ${roomName} against PREDEFINED_ROOMS`);
             return PREDEFINED_ROOMS.includes(roomName) ? [roomObj] : [];
           })
-          .filter((room: any) => Object.keys(room).length > 0);
+          .filter((room: string) => Object.keys(room).length > 0);
         return [day, validRooms.length > 0 ? validRooms : []];
       })
     );
@@ -108,12 +107,14 @@ export async function GET(request: NextRequest) {
       ...filteredData,
       version_number: data.version_number,
     });
-  } catch (error: any) {
-    console.error("Error fetching timetable:", error);
-    return NextResponse.json(
-      { error: "Could not load data", detail: error.message },
-      { status: 500 }
-    );
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error fetching timetable:", error);
+      return NextResponse.json(
+        { error: "Could not load data", detail: error.message },
+        { status: 500 }
+      );
+    }
   }
 }
 
@@ -134,7 +135,7 @@ export async function POST(request: NextRequest) {
         return [
           day,
           Array.isArray(rooms)
-            ? rooms.filter((roomObj: any) => {
+            ? rooms.filter((roomObj: string) => {
                 const roomName = Object.keys(roomObj)[0];
                 return PREDEFINED_ROOMS.includes(roomName);
               })
@@ -176,11 +177,13 @@ export async function POST(request: NextRequest) {
     console.log("Saved timetable successfully with version:", newVersion);
 
     return NextResponse.json({ success: true, version_number: newVersion });
-  } catch (error: any) {
-    console.error("Error saving timetable:", error);
-    return NextResponse.json(
-      { error: "Could not save data", detail: error.message },
-      { status: 500 }
-    );
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error saving timetable:", error);
+      return NextResponse.json(
+        { error: "Could not save data", detail: error.message },
+        { status: 500 }
+      );
+    }
   }
 }

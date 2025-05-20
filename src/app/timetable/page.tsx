@@ -161,7 +161,6 @@ const Timetable = () => {
         versionNumbers[versionNumbers.length - 1] ||
         null;
 
-      // Set default version on first load if not set
       if (!selectedVersion && versionToUse) {
         setSelectedVersion(versionToUse);
       }
@@ -184,21 +183,20 @@ const Timetable = () => {
       const normalized = normalizeData(jsonData);
       setData(normalized);
     } catch (error) {
-      console.error("Error loading timetable:", error);
-      setError(error.message || "Failed to load timetable");
-      setData({});
+      if (error instanceof Error) {
+        setError(error.message || "Failed to load timetable");
+        setData({});
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔁 Initial load and subscription
   useEffect(() => {
     if (hasLoaded.current) return;
 
     hasLoaded.current = true;
-    loadData(); // initial load
-
+    loadData();
     const subscription = supabase
       .channel("timetable_data")
       .on(
@@ -238,9 +236,10 @@ const Timetable = () => {
         console.error("Save error:", errorData);
         throw new Error(errorData.error || `HTTP error: ${response.status}`);
       }
-    } catch (error: any) {
-      console.error("Error saving timetable:", error);
-      setError(error.message || "Failed to save timetable");
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message || "Failed to save timetable");
+      }
     }
   }, []);
 
@@ -470,24 +469,24 @@ const Timetable = () => {
         modifiers={[restrictToWindowEdges]}
       >
         <div className="p-4">
-          <div className="mb-4 sticky top-0">
-            <label className="mr-2">Select Version:</label>
-            <select
-              value={selectedVersion || ""}
-              onChange={(e) =>
-                setSelectedVersion(Number(e.target.value) || null)
-              }
-              className="border p-2 rounded text-[13px]"
-            >
-              {versions.map((version) => (
-                <option key={version} value={version}>
-                  Version {version}
-                </option>
-              ))}
-            </select>
-          </div>
           <div className="bg-red-400 max-w-screen w-full flex items-center h-15 px-2 sticky top-0 justify-center z-50 flex-1">
-            <div className="font-medium">
+            <div className="flex items-center w-[30%]">
+              <label className="mr-2 flex ">Select Version:</label>
+              <select
+                value={selectedVersion || ""}
+                onChange={(e) =>
+                  setSelectedVersion(Number(e.target.value) || null)
+                }
+                className="border p-2 rounded text-[13px]"
+              >
+                {versions.map((version) => (
+                  <option key={version} value={version}>
+                    Version {version}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="font-medium w-[70%]">
               Please check your time table Daily for any possible change!
             </div>
           </div>
