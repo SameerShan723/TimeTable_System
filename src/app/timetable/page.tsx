@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useRef,
   useState,
+  useId,
 } from "react";
 import {
   DndContext,
@@ -18,8 +19,18 @@ import {
 import { produce } from "immer";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { supabase } from "@/lib/supabase/supabase";
-import { RiArrowDropUpLine } from "react-icons/ri";
-import { RiArrowDropDownLine } from "react-icons/ri";
+import { FaRegTrashAlt } from "react-icons/fa";
+import Select from "react-select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Session {
   Room: string;
@@ -85,9 +96,9 @@ const Timetable = () => {
   const [selectedVersion, setSelectedVersion] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pendingData, setPendingData] = useState<TimetableData | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const dropDownRef = useRef<HTMLDivElement>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [versionToDelete, setVersionToDelete] = useState<number | null>(null);
+  const versionId = useId();
 
   const hasLoaded = useRef(false);
 
@@ -144,7 +155,7 @@ const Timetable = () => {
     return normalized;
   }, []);
 
-  const loadData = async (versionOverride?: string | number | null) => {
+  const loadData = async (versionOverride?: number | null) => {
     setLoading(true);
     setError(null);
 
@@ -155,7 +166,6 @@ const Timetable = () => {
         .order("version_number", { ascending: true });
 
       if (versionError) {
-        // console.error("Version fetch error:", versionError);
         throw new Error(versionError.message);
       }
 
@@ -177,18 +187,17 @@ const Timetable = () => {
       }
 
       const url = `/api/timetable?version=${versionToUse}`;
-
       const response = await fetch(url);
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Fetch error:", errorData);
         throw new Error(errorData.error || `HTTP error: ${response.status}`);
       }
 
       const jsonData = await response.json();
       const normalized = normalizeData(jsonData);
       setData(normalized);
+      setLoading(false);
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message || "Failed to load timetable");
@@ -210,7 +219,6 @@ const Timetable = () => {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "timetable_data" },
         async () => {
-          // console.log("New timetable data inserted, reloading...");
           await loadData();
         }
       )
@@ -230,21 +238,6 @@ const Timetable = () => {
     if (!hasLoaded.current || !selectedVersion) return;
     loadData(selectedVersion);
   }, [selectedVersion]);
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        dropDownRef.current &&
-        !dropDownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside, true);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside, true);
-    };
-  }, []);
 
   const saveData = useCallback(
     async (dataToSave: TimetableData, version?: number) => {
@@ -259,10 +252,8 @@ const Timetable = () => {
         });
         if (!response.ok) {
           const errorData = await response.json();
-          console.error("Save error:", errorData);
           throw new Error(errorData.error || `HTTP error: ${response.status}`);
         }
-        // Reload data to ensure UI reflects the latest state
         await loadData(version || undefined);
       } catch (error) {
         if (error instanceof Error) {
@@ -418,7 +409,6 @@ const Timetable = () => {
         }
       });
 
-      // Store pending changes and open modal
       setPendingData(updatedData);
       setIsModalOpen(true);
     },
@@ -497,6 +487,40 @@ const Timetable = () => {
   });
   DraggableSession.displayName = "DraggableSession";
 
+  const deleteVersion = useCallback(
+    async (version: number) => {
+      try {
+        const response = await fetch(
+          `/api/timetable?version_number=${version}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            errorData.error || `HTTP error! Status: ${response.status}`
+          );
+        }
+
+        const result = await response.json();
+        console.log("Delete successful:", result);
+
+        setVersions((prev) => prev.filter((v) => v !== version));
+        if (selectedVersion === version) {
+          setSelectedVersion(null);
+          await loadData();
+        }
+      } catch (error) {
+        console.error("Failed to delete version:", error);
+      } finally {
+        setIsDeleteDialogOpen(false);
+      }
+    },
+    [selectedVersion, loadData]
+  );
+
   if (error) {
     return (
       <div className="flex justify-center items-center h-64 flex-1">
@@ -504,12 +528,6 @@ const Timetable = () => {
       </div>
     );
   }
-
-  const deleteVersion = async (version: number) => {
-    await fetch(`api/timetable?version_number=${version}`, {
-      method: "DELETE",
-    });
-  };
 
   return (
     <main className="w-full max-w-full">
@@ -522,48 +540,62 @@ const Timetable = () => {
           <div className="bg-red-400 w-full flex items-center h-15 px-2 sticky top-0 justify-center z-50">
             <div className="flex items-center w-[30%]">
               <label className="mr-2 flex">Select Version:</label>
-              <div ref={dropDownRef} className="relative w-40 text-sm">
-                <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="w-full border p-2 rounded  flex justify-between px-3 items-center"
-                >
-                  {selectedVersion
-                    ? `Version ${selectedVersion}`
-                    : "Select Version"}
-
-                  {isOpen ? (
-                    <RiArrowDropUpLine size={28} />
-                  ) : (
-                    <RiArrowDropDownLine size={28} />
-                  )}
-                </button>
-
-                {isOpen && (
-                  <ul className="absolute w-full border mt-1 bg-white rounded shadow z-10">
-                    {versions.map((version) => (
-                      <li
-                        key={version}
-                        className="flex justify-between items-center p-2 hover:bg-gray-100"
+              <div className="relative w-40 text-sm">
+                <Select
+                  instanceId={versionId}
+                  options={versions.map((version) => ({
+                    value: version,
+                    label: `Version ${version}`,
+                  }))}
+                  value={
+                    selectedVersion
+                      ? {
+                          value: selectedVersion,
+                          label: `Version ${selectedVersion}`,
+                        }
+                      : null
+                  }
+                  onChange={(selectedOption) => {
+                    setSelectedVersion(
+                      selectedOption ? selectedOption.value : null
+                    );
+                  }}
+                  placeholder="Select Version"
+                  components={{
+                    Option: ({ innerRef, innerProps, data, isSelected }) => (
+                      <div
+                        ref={innerRef}
+                        {...innerProps}
+                        className={`flex justify-between items-center px-4 py-2 hover:bg-blue-300  ${
+                          isSelected
+                            ? "bg-blue-900 text-white hover:bg-blue-900"
+                            : ""
+                        }`}
                       >
-                        <span
-                          onClick={() => {
-                            setSelectedVersion(version);
-                            setIsOpen(false);
-                          }}
-                          className="cursor-pointer"
-                        >
-                          Version {version}
-                        </span>
+                        <span className="cursor-pointer">{data.label}</span>
                         <button
-                          onClick={() => deleteVersion(version)}
-                          className="text-red-500 hover:text-red-700"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setVersionToDelete(data.value);
+                            setIsDeleteDialogOpen(true);
+                          }}
+                          className="text-red-500 hover:text-red-700 w-10 pl-6"
                         >
-                          ❌
+                          <FaRegTrashAlt />
                         </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                      </div>
+                    ),
+                  }}
+                  className="text-black"
+                  styles={{
+                    control: (provided, state) => ({
+                      ...provided,
+                      border: state.isFocused ? "0px" : provided.border,
+                      outline: state.isFocused ? "none" : provided.outline,
+                      boxShadow: state.isFocused ? "none" : provided.boxShadow,
+                    }),
+                  }}
+                />
               </div>
             </div>
             <div className="font-medium w-[70%]">
@@ -571,7 +603,7 @@ const Timetable = () => {
             </div>
           </div>
           {loading ? (
-            <div className="flex justify-center items-center h-[calc(100vh-4rem)] flex-1">
+            <div className="flex justify-center items-center h-[calc(100vh-8rem)] flex-1">
               <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : (
@@ -671,38 +703,70 @@ const Timetable = () => {
           ) : null}
         </DragOverlay>
         {isModalOpen && (
-          <div className="fixed inset-0 bg-gray-900/60 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <h2 className="text-lg font-semibold mb-4">
-                Save Timetable Changes
-              </h2>
-              <p className="mb-4">
-                Do you want to save the changes to the current version, create a
-                new version, or cancel?
-              </p>
-              <div className="flex justify-end space-x-4">
-                <button
+          <AlertDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <AlertDialogContent className="bg-black text-white">
+              <AlertDialogHeader>
+                <AlertDialogTitle>Save Timetable Changes</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Do you want to save the changes to the current version, create
+                  a new version, or cancel?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel
                   onClick={() => handleModalAction("cancel")}
-                  className="px-4 py-2 bg-red-800 rounded hover:bg-red-900 text-white"
+                  className="bg-red-800 hover:bg-red-900 text-white"
                 >
                   Cancel
-                </button>
-                <button
+                </AlertDialogCancel>
+                <AlertDialogAction
                   onClick={() => handleModalAction("same")}
-                  className="px-4 py-2 bg-blue-900 text-white rounded hover:bg-blue-800"
+                  className="bg-blue-900 hover:bg-blue-800 text-white"
                 >
                   Save in Same Version
-                </button>
-                <button
+                </AlertDialogAction>
+                <AlertDialogAction
                   onClick={() => handleModalAction("new")}
-                  className="px-4 py-2 bg-blue-900 text-white rounded hover:bg-blue-800"
+                  className="bg-blue-900 hover:bg-blue-800 text-white"
                 >
                   Save in New Version
-                </button>
-              </div>
-            </div>
-          </div>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         )}
+        <AlertDialog
+          open={isDeleteDialogOpen}
+          onOpenChange={setIsDeleteDialogOpen}
+        >
+          <AlertDialogContent className="bg-black text-white">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete Version {versionToDelete}? This
+                action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel
+                onClick={() => setIsDeleteDialogOpen(false)}
+                className="bg-red-800 hover:bg-red-900 text-white"
+              >
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  if (versionToDelete) {
+                    deleteVersion(versionToDelete);
+                  }
+                }}
+                className="bg-blue-900 hover:bg-blue-800 text-white"
+              >
+                Confirm
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </DndContext>
     </main>
   );

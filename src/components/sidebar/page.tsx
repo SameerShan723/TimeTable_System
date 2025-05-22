@@ -52,13 +52,16 @@ export default function Sidebar() {
 
     `}
           >
-            <Link href="/students" className="w-full">
+            <Link href="/advanceFilters/students" className="w-full">
               <div className="flex items-center pl-8 hover:bg-[#051f3e] hover:text-white text-[14px] pb-2.5 pt-2 gap-1">
                 <LuSlidersHorizontal />
                 <span>For students</span>
               </div>
             </Link>
-            <Link href="/checkTeachersTimetable" className="w-full">
+            <Link
+              href="/advanceFilters/checkTeachersTimetable"
+              className="w-full"
+            >
               <div className="flex items-center pl-8 hover:bg-[#051f3e] hover:text-white text-[14px] py-2.5 gap-1">
                 <LuSlidersHorizontal />
                 <span>For teachers</span>

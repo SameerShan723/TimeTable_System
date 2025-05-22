@@ -29,10 +29,10 @@ interface TimetableData {
   [day: string]: DaySchedule;
 }
 
-export default function StudentTimetable() {
+export default function TeacherTimetable() {
   const [timetable, setTimetable] = useState<TimetableData>({});
-  const [sections, setSections] = useState<string[]>([]);
-  const [selectedSection, setSelectedSection] = useState<string>("");
+  const [teachers, setTeachers] = useState<string[]>([]);
+  const [selectedTeacher, setSelectedTeacher] = useState<string>("");
   const [selectedDay, setSelectedDay] = useState<string[]>([]);
   const [results, setResult] = useState<(ClassItem & { Room: string })[]>([]);
   const [error, setError] = useState<string>("");
@@ -40,7 +40,7 @@ export default function StudentTimetable() {
   const [selectedVersion, setSelectedVersion] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const sectionSelectedId = useId();
+  const teacherSelectedId = useId();
   const daySelectedId = useId();
   const versionSelectedId = useId();
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -58,11 +58,6 @@ export default function StudentTimetable() {
     async (versionOverride?: number | null) => {
       setError("");
       setLoading(true);
-      // if (loading) {
-      //   setError("please wait loading version");
-      // } else {
-      //   setError("");
-      // }
 
       try {
         // Fetch available versions
@@ -72,12 +67,12 @@ export default function StudentTimetable() {
           .order("version_number", { ascending: true });
 
         if (versionError) {
-          console.error("Version fetch error:", versionError);
+          // console.error("Version fetch error:", versionError);
           throw new Error(versionError.message);
         }
 
         const versionNumbers = versionData.map((v) => v.version_number);
-        console.log("Available versions:", versionNumbers);
+        // console.log("Available versions:", versionNumbers);
         setVersions(versionNumbers);
 
         const versionToUse =
@@ -87,7 +82,7 @@ export default function StudentTimetable() {
           null;
 
         if (!selectedVersion && versionToUse) {
-          console.log("Setting initial selectedVersion:", versionToUse);
+          // console.log("Setting initial selectedVersion:", versionToUse);
           setSelectedVersion(versionToUse);
         }
 
@@ -95,7 +90,7 @@ export default function StudentTimetable() {
           throw new Error("No valid version available.");
         }
 
-        console.log("Fetching timetable for version:", versionToUse);
+        // console.log("Fetching timetable for version:", versionToUse);
         const url = `/api/timetable?version=${versionToUse}`;
         const response = await fetch(url);
 
@@ -106,20 +101,20 @@ export default function StudentTimetable() {
         }
 
         const data = await response.json();
-        console.log("Fetched timetable data:", data);
+        // console.log("Fetched timetable data:", data);
 
         const filteredData: TimetableData = Object.fromEntries(
           Object.entries(data).filter(([key]) => days.includes(key))
         ) as TimetableData;
-        console.log("Filtered timetable data:", filteredData);
+        // console.log("Filtered timetable data:", filteredData);
         setTimetable(filteredData);
         setLoading(false);
 
-        const sectionSet = new Set<string>();
+        const teacherSet = new Set<string>();
         Object.entries(filteredData).forEach(([day, dayRooms]) => {
-          console.log(dayRooms, "dayroom");
+          // console.log(dayRooms, "dayroom");
           if (!Array.isArray(dayRooms)) {
-            console.warn(`Invalid dayRooms for ${day}:`, dayRooms);
+            // console.warn(`Invalid dayRooms for ${day}:`, dayRooms);
 
             return;
           }
@@ -135,24 +130,25 @@ export default function StudentTimetable() {
               return;
             }
             classes.forEach((cls) => {
-              if (cls.Section) {
-                sectionSet.add(cls.Section);
+              if (cls["Faculty Assigned"]) {
+                teacherSet.add(cls["Faculty Assigned"]);
               }
             });
           });
         });
 
-        setSections(Array.from(sectionSet));
+        setTeachers(Array.from(teacherSet));
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message || "Failed to load timetable");
           setTimetable({});
-          setSections([]);
+          setTeachers([]);
         }
       } finally {
         setLoading(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [selectedVersion]
   );
 
@@ -173,16 +169,23 @@ export default function StudentTimetable() {
           );
           await getData(selectedVersion || undefined);
         }
-      );
+      )
+      .subscribe((status, error) => {
+        if (error) {
+          // console.error("Subscription error:", error);
+          setError("Real-time updates failed");
+        }
+      });
 
     return () => {
       supabase.removeChannel(subscription);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getData]);
 
   useEffect(() => {
     if (selectedVersion) {
-      console.log("Selected version changed, reloading:", selectedVersion);
+      // console.log("Selected version changed, reloading:", selectedVersion);
       getData(selectedVersion);
     }
   }, [selectedVersion, getData]);
@@ -214,7 +217,7 @@ export default function StudentTimetable() {
 
   const handleChange = () => {
     setError("");
-    if (!selectedSection) {
+    if (!selectedTeacher) {
       setError("Please select a teacher!");
       setResult([]);
       return;
@@ -237,7 +240,7 @@ export default function StudentTimetable() {
         const classes = roomObj[roomName];
 
         classes.forEach((cls) => {
-          if (cls.Section === selectedSection) {
+          if (cls["Faculty Assigned"] === selectedTeacher) {
             result.push({ ...cls, Room: roomName, Day: day });
           }
         });
@@ -271,9 +274,9 @@ export default function StudentTimetable() {
 
   return (
     <>
-      <div className="flex items-center justify-center flex-col mt-4">
-        <h1 className="font-bold text-2xl">
-          Check Students Timetable by Section
+      <div className="flex items-center justify-center flex-col ">
+        <h1 className="font-bold text-3xl mt-6 mb-6">
+          Check Teachers Timetable
         </h1>
         <div className="mb-4 flex flex-col w-full max-w-md">
           <label className="text-xl mb-2">Version:</label>
@@ -303,23 +306,23 @@ export default function StudentTimetable() {
           </div>
         </div>
         <div className="mb-4 flex flex-col w-full max-w-md">
-          <label className="text-xl mb-2">Section :</label>
+          <label className="text-xl mb-2">Teacher:</label>
           <Select
-            instanceId={sectionSelectedId}
-            options={sections.map((section) => ({
-              value: section,
-              label: section,
+            instanceId={teacherSelectedId}
+            options={teachers.map((teacher) => ({
+              value: teacher,
+              label: teacher,
             }))}
             value={
-              selectedSection
-                ? { value: selectedSection, label: selectedSection }
+              selectedTeacher
+                ? { value: selectedTeacher, label: selectedTeacher }
                 : null
             }
             onChange={(selectedOption) =>
-              setSelectedSection(selectedOption ? selectedOption.value : "")
+              setSelectedTeacher(selectedOption ? selectedOption.value : "")
             }
             className="text-black"
-            placeholder="Select Section"
+            placeholder="Select teacher"
             isDisabled={loading}
             isClearable
           />
