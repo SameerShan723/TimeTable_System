@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+
 "use client";
 import React, {
   useCallback,
@@ -31,6 +32,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { toast, Toaster } from "sonner";
 
 interface Session {
   Room: string;
@@ -88,12 +90,23 @@ const SessionDetails = React.memo<{
 SessionDetails.displayName = "SessionDetails";
 
 const Timetable = () => {
+  // Initialize selectedVersion from localStorage directly
+  const initialVersion = localStorage.getItem("selectedTimetableVersion");
+  const parsedInitialVersion =
+    initialVersion &&
+    !isNaN(Number(initialVersion)) &&
+    Number.isInteger(Number(initialVersion))
+      ? Number(initialVersion)
+      : null;
+
   const [data, setData] = useState<TimetableData>({});
   const [activeSession, setActiveSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [versions, setVersions] = useState<number[]>([]);
-  const [selectedVersion, setSelectedVersion] = useState<number | null>(null);
+  const [selectedVersion, setSelectedVersion] = useState<number | null>(
+    parsedInitialVersion
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pendingData, setPendingData] = useState<TimetableData | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -101,6 +114,18 @@ const Timetable = () => {
   const versionId = useId();
 
   const hasLoaded = useRef(false);
+
+  // Save selectedVersion to localStorage whenever it changes
+  useEffect(() => {
+    if (selectedVersion !== null) {
+      localStorage.setItem(
+        "selectedTimetableVersion",
+        selectedVersion.toString()
+      );
+    } else {
+      localStorage.removeItem("selectedTimetableVersion"); // Clean up if null
+    }
+  }, [selectedVersion]);
 
   const normalizeData = useCallback((rawData: unknown): TimetableData => {
     const normalized: TimetableData = {};
@@ -173,12 +198,13 @@ const Timetable = () => {
       setVersions(versionNumbers);
 
       const versionToUse =
-        versionOverride ||
-        selectedVersion ||
-        versionNumbers[versionNumbers.length - 1] ||
-        null;
+        versionOverride !== undefined
+          ? versionOverride
+          : selectedVersion !== null
+          ? selectedVersion
+          : versionNumbers[versionNumbers.length - 1] || null;
 
-      if (!selectedVersion && versionToUse) {
+      if (!selectedVersion && versionToUse && versionOverride === undefined) {
         setSelectedVersion(versionToUse);
       }
 
@@ -197,7 +223,6 @@ const Timetable = () => {
       const jsonData = await response.json();
       const normalized = normalizeData(jsonData);
       setData(normalized);
-      setLoading(false);
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message || "Failed to load timetable");
@@ -212,14 +237,14 @@ const Timetable = () => {
     if (hasLoaded.current) return;
 
     hasLoaded.current = true;
-    loadData();
+    loadData(); // This will now use the initial selectedVersion from localStorage
     const subscription = supabase
       .channel("timetable_data")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "timetable_data" },
         async () => {
-          await loadData();
+          await loadData(selectedVersion);
         }
       )
       .subscribe((status, error) => {
@@ -254,14 +279,14 @@ const Timetable = () => {
           const errorData = await response.json();
           throw new Error(errorData.error || `HTTP error: ${response.status}`);
         }
-        await loadData(version || undefined);
+        await loadData(version || selectedVersion || undefined);
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message || "Failed to save timetable");
         }
       }
     },
-    []
+    [selectedVersion]
   );
 
   const allRooms = useMemo(() => {
@@ -422,10 +447,14 @@ const Timetable = () => {
         setPendingData(null);
         return;
       }
+      if (action === "new") {
+        toast("Changes Save in New Version");
+      }
 
       setData(pendingData);
       if (action === "same") {
         saveData(pendingData, selectedVersion || undefined);
+        toast("Changes Save in Same Version");
       } else {
         saveData(pendingData);
       }
@@ -503,22 +532,52 @@ const Timetable = () => {
             errorData.error || `HTTP error! Status: ${response.status}`
           );
         }
+        const res = await response.json();
 
-        const result = await response.json();
-        console.log("Delete successful:", result);
-
+        toast(`Version ${res.version_number} delete successful!`);
+        // Update versions array after deletion
         setVersions((prev) => prev.filter((v) => v !== version));
-        if (selectedVersion === version) {
-          setSelectedVersion(null);
-          await loadData();
+
+        // Determine new selectedVersion based on remaining versions
+        let newSelectedVersion = null;
+        const currentIndex = versions.indexOf(version);
+        if (versions.length > 1) {
+          if (currentIndex === 0) {
+            // If deleting first version, move to second version
+            newSelectedVersion = versions[1];
+          } else if (currentIndex === versions.length - 1) {
+            // If deleting last version, move to previous version
+            newSelectedVersion = versions[versions.length - 2];
+          } else {
+            // If deleting middle version, move to next version
+            newSelectedVersion =
+              versions[currentIndex + 1] || versions[currentIndex - 1];
+          }
+        } else if (versions.length === 1) {
+          // If only one version remains, select it
+          newSelectedVersion = versions[0];
         }
+
+        // Update selectedVersion and localStorage
+        setSelectedVersion(newSelectedVersion);
+        if (newSelectedVersion === null) {
+          localStorage.removeItem("selectedTimetableVersion");
+        } else {
+          localStorage.setItem(
+            "selectedTimetableVersion",
+            newSelectedVersion.toString()
+          );
+        }
+
+        // Reload data with new selected version
+        await loadData(newSelectedVersion);
       } catch (error) {
         console.error("Failed to delete version:", error);
       } finally {
         setIsDeleteDialogOpen(false);
       }
     },
-    [selectedVersion, loadData]
+    [versions, loadData]
   );
 
   if (error) {
@@ -566,9 +625,9 @@ const Timetable = () => {
                       <div
                         ref={innerRef}
                         {...innerProps}
-                        className={`flex justify-between items-center px-4 py-2 hover:bg-blue-300  ${
+                        className={`flex justify-between items-center p-2 hover:bg-blue-200 hover:text-black ${
                           isSelected
-                            ? "bg-blue-900 text-white hover:bg-blue-900"
+                            ? "bg-blue-500 text-white hover:bg-blue-400"
                             : ""
                         }`}
                       >
@@ -579,7 +638,7 @@ const Timetable = () => {
                             setVersionToDelete(data.value);
                             setIsDeleteDialogOpen(true);
                           }}
-                          className="text-red-500 hover:text-red-700 w-10 pl-6"
+                          className="text-red-500 hover:text-red-700"
                         >
                           <FaRegTrashAlt />
                         </button>
@@ -768,6 +827,7 @@ const Timetable = () => {
           </AlertDialogContent>
         </AlertDialog>
       </DndContext>
+      <Toaster />
     </main>
   );
 };
