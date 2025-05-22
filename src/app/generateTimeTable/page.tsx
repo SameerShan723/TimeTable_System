@@ -2,7 +2,7 @@
 import { useFormik } from "formik";
 import { timetableSchema } from "@/lib/validation/formValidationSchema";
 import React, { useState } from "react";
-import FileUploader from "@/Components/FileUploder/page";
+import FileUploader from "@/components/fileuploader/page";
 import { useDispatch } from "react-redux";
 import { setData } from "@/state/dataSlice/data_slice";
 import { useRouter } from "next/navigation";

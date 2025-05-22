@@ -18,6 +18,8 @@ import {
 import { produce } from "immer";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { supabase } from "@/lib/supabase/supabase";
+import { RiArrowDropUpLine } from "react-icons/ri";
+import { RiArrowDropDownLine } from "react-icons/ri";
 
 interface Session {
   Room: string;
@@ -81,6 +83,11 @@ const Timetable = () => {
   const [error, setError] = useState<string | null>(null);
   const [versions, setVersions] = useState<number[]>([]);
   const [selectedVersion, setSelectedVersion] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pendingData, setPendingData] = useState<TimetableData | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const dropDownRef = useRef<HTMLDivElement>(null);
 
   const hasLoaded = useRef(false);
 
@@ -92,7 +99,7 @@ const Timetable = () => {
     }
 
     Object.entries(rawData).forEach(([day, daySchedule]) => {
-      if (day === "version_number") return; // Skip metadata
+      if (day === "version_number") return;
       if (!Array.isArray(daySchedule)) {
         console.warn(`Invalid schedule for ${day}:`, daySchedule);
         return;
@@ -148,14 +155,13 @@ const Timetable = () => {
         .order("version_number", { ascending: true });
 
       if (versionError) {
-        console.error("Version fetch error:", versionError);
+        // console.error("Version fetch error:", versionError);
         throw new Error(versionError.message);
       }
 
       const versionNumbers = versionData.map((v) => v.version_number);
       setVersions(versionNumbers);
 
-      // Decide version to use for API
       const versionToUse =
         versionOverride ||
         selectedVersion ||
@@ -204,8 +210,8 @@ const Timetable = () => {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "timetable_data" },
         async () => {
-          console.log("New timetable data inserted, reloading...");
-          await loadData(); // keep using selectedVersion
+          // console.log("New timetable data inserted, reloading...");
+          await loadData();
         }
       )
       .subscribe((status, error) => {
@@ -224,25 +230,48 @@ const Timetable = () => {
     if (!hasLoaded.current || !selectedVersion) return;
     loadData(selectedVersion);
   }, [selectedVersion]);
-
-  const saveData = useCallback(async (dataToSave: TimetableData) => {
-    try {
-      const response = await fetch("/api/timetable", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dataToSave),
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Save error:", errorData);
-        throw new Error(errorData.error || `HTTP error: ${response.status}`);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message || "Failed to save timetable");
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropDownRef.current &&
+        !dropDownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
       }
     }
+
+    document.addEventListener("mousedown", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside, true);
+    };
   }, []);
+
+  const saveData = useCallback(
+    async (dataToSave: TimetableData, version?: number) => {
+      try {
+        const response = await fetch("/api/timetable", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...dataToSave,
+            version_number: version,
+          }),
+        });
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Save error:", errorData);
+          throw new Error(errorData.error || `HTTP error: ${response.status}`);
+        }
+        // Reload data to ensure UI reflects the latest state
+        await loadData(version || undefined);
+      } catch (error) {
+        if (error instanceof Error) {
+          setError(error.message || "Failed to save timetable");
+        }
+      }
+    },
+    []
+  );
 
   const allRooms = useMemo(() => {
     return Array.from(
@@ -389,10 +418,31 @@ const Timetable = () => {
         }
       });
 
-      setData(updatedData);
-      saveData(updatedData);
+      // Store pending changes and open modal
+      setPendingData(updatedData);
+      setIsModalOpen(true);
     },
-    [data, parseCellId, saveData]
+    [data, parseCellId]
+  );
+
+  const handleModalAction = useCallback(
+    (action: "cancel" | "same" | "new") => {
+      if (action === "cancel" || !pendingData) {
+        setIsModalOpen(false);
+        setPendingData(null);
+        return;
+      }
+
+      setData(pendingData);
+      if (action === "same") {
+        saveData(pendingData, selectedVersion || undefined);
+      } else {
+        saveData(pendingData);
+      }
+      setIsModalOpen(false);
+      setPendingData(null);
+    },
+    [pendingData, saveData, selectedVersion]
   );
 
   const DroppableCell = React.memo<{
@@ -447,14 +497,6 @@ const Timetable = () => {
   });
   DraggableSession.displayName = "DraggableSession";
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-[calc(100vh-3rem)]  flex-1">
-        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="flex justify-center items-center h-64 flex-1">
@@ -462,117 +504,162 @@ const Timetable = () => {
       </div>
     );
   }
+
+  const deleteVersion = async (version: number) => {
+    await fetch(`api/timetable?version_number=${version}`, {
+      method: "DELETE",
+    });
+  };
+
   return (
-    <main>
+    <main className="w-full max-w-full">
       <DndContext
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         modifiers={[restrictToWindowEdges]}
       >
-        <div className="p-4">
-          <div className="bg-red-400 max-w-screen w-full flex items-center h-15 px-2 sticky top-0 justify-center z-50 flex-1">
+        <div className="w-full">
+          <div className="bg-red-400 w-full flex items-center h-15 px-2 sticky top-0 justify-center z-50">
             <div className="flex items-center w-[30%]">
-              <label className="mr-2 flex ">Select Version:</label>
-              <select
-                value={selectedVersion || ""}
-                onChange={(e) =>
-                  setSelectedVersion(Number(e.target.value) || null)
-                }
-                className="border p-2 rounded text-[13px]"
-              >
-                {versions.map((version) => (
-                  <option key={version} value={version}>
-                    Version {version}
-                  </option>
-                ))}
-              </select>
+              <label className="mr-2 flex">Select Version:</label>
+              <div ref={dropDownRef} className="relative w-40 text-sm">
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="w-full border p-2 rounded  flex justify-between px-3 items-center"
+                >
+                  {selectedVersion
+                    ? `Version ${selectedVersion}`
+                    : "Select Version"}
+
+                  {isOpen ? (
+                    <RiArrowDropUpLine size={28} />
+                  ) : (
+                    <RiArrowDropDownLine size={28} />
+                  )}
+                </button>
+
+                {isOpen && (
+                  <ul className="absolute w-full border mt-1 bg-white rounded shadow z-10">
+                    {versions.map((version) => (
+                      <li
+                        key={version}
+                        className="flex justify-between items-center p-2 hover:bg-gray-100"
+                      >
+                        <span
+                          onClick={() => {
+                            setSelectedVersion(version);
+                            setIsOpen(false);
+                          }}
+                          className="cursor-pointer"
+                        >
+                          Version {version}
+                        </span>
+                        <button
+                          onClick={() => deleteVersion(version)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          ❌
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
             <div className="font-medium w-[70%]">
-              Please check your time table Daily for any possible change!
+              Please check your timetable daily for any possible change!
             </div>
           </div>
-          <table className="min-w-full border-collapse border">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border p-2">Day</th>
-                <th>Room</th>
-                {timeSlots.map((time) => (
-                  <th key={time} className="border p-2 text-center">
-                    {time}
-                  </th>
+          {loading ? (
+            <div className="flex justify-center items-center h-[calc(100vh-4rem)] flex-1">
+              <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            <table className="min-w-full border-collapse border">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border p-2">Day</th>
+                  <th>Room</th>
+                  {timeSlots.map((time) => (
+                    <th key={time} className="border p-2 text-center">
+                      {time}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+
+              <tbody>
+                {Object.entries(data).map(([day, rooms]) => (
+                  <React.Fragment key={day}>
+                    <tr>
+                      <td
+                        rowSpan={allRooms.length + 1}
+                        className="border align-middle bg-gray-50"
+                      >
+                        <div className="-rotate-90 font-medium">{day}</div>
+                      </td>
+                    </tr>
+                    {allRooms.map((roomName) => {
+                      const roomData = rooms.find(
+                        (room: RoomSchedule) =>
+                          Object.keys(room)[0] === roomName
+                      );
+                      const sessions = roomData
+                        ? roomData[roomName] ||
+                          timeSlots.map((time) => ({ Time: time }))
+                        : timeSlots.map((time) => ({ Time: time }));
+
+                      return (
+                        <tr key={`${day}-${roomName}`}>
+                          <td className="border p-2">{roomName}</td>
+                          {timeSlots.map((timeSlot) => {
+                            const session = sessions.find(
+                              (s: Session | EmptySlot) => s.Time === timeSlot
+                            ) as Session | EmptySlot;
+                            const isEmpty =
+                              !session || !("Faculty Assigned" in session);
+                            const cellId = `${day}-${roomName}-${timeSlot}`;
+                            const isDraggingThisSession =
+                              activeSession &&
+                              session &&
+                              "Faculty Assigned" in session &&
+                              session["Course Details"] ===
+                                activeSession["Course Details"] &&
+                              session.Time === activeSession.Time;
+
+                            return (
+                              <DroppableCell
+                                key={cellId}
+                                id={cellId}
+                                isEmpty={isEmpty}
+                                isDraggingOver={!!isDraggingThisSession}
+                              >
+                                {!isEmpty && !isDraggingThisSession ? (
+                                  <DraggableSession
+                                    id={`${cellId}-${
+                                      session["Course Details"] || "session"
+                                    }`}
+                                    session={session as Session}
+                                  />
+                                ) : isDraggingThisSession ? (
+                                  <SessionDetails
+                                    session={session as Session}
+                                    isPlaceholder
+                                  />
+                                ) : (
+                                  <div className="text-center text-gray-300"></div>
+                                )}
+                              </DroppableCell>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
+                  </React.Fragment>
                 ))}
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(data).map(([day, rooms]) => (
-                <React.Fragment key={day}>
-                  <tr>
-                    <td
-                      rowSpan={allRooms.length + 1}
-                      className="border align-middle bg-gray-50"
-                    >
-                      <div className="-rotate-90 font-medium">{day}</div>
-                    </td>
-                  </tr>
-                  {allRooms.map((roomName) => {
-                    const roomData = rooms.find(
-                      (room: RoomSchedule) => Object.keys(room)[0] === roomName
-                    );
-                    const sessions = roomData
-                      ? roomData[roomName] ||
-                        timeSlots.map((time) => ({ Time: time }))
-                      : timeSlots.map((time) => ({ Time: time }));
-
-                    return (
-                      <tr key={`${day}-${roomName}`}>
-                        <td className="border p-2">{roomName}</td>
-                        {timeSlots.map((timeSlot) => {
-                          const session = sessions.find(
-                            (s: Session | EmptySlot) => s.Time === timeSlot
-                          ) as Session | EmptySlot;
-                          const isEmpty =
-                            !session || !("Faculty Assigned" in session);
-                          const cellId = `${day}-${roomName}-${timeSlot}`;
-                          const isDraggingThisSession =
-                            activeSession &&
-                            session &&
-                            "Faculty Assigned" in session &&
-                            session["Course Details"] ===
-                              activeSession["Course Details"] &&
-                            session.Time === activeSession.Time;
-
-                          return (
-                            <DroppableCell
-                              key={cellId}
-                              id={cellId}
-                              isEmpty={isEmpty}
-                              isDraggingOver={!!isDraggingThisSession}
-                            >
-                              {!isEmpty && !isDraggingThisSession ? (
-                                <DraggableSession
-                                  id={`${cellId}-${
-                                    session["Course Details"] || "session"
-                                  }`}
-                                  session={session as Session}
-                                />
-                              ) : isDraggingThisSession ? (
-                                <SessionDetails
-                                  session={session as Session}
-                                  isPlaceholder
-                                />
-                              ) : (
-                                <div className="text-center text-gray-300"></div>
-                              )}
-                            </DroppableCell>
-                          );
-                        })}
-                      </tr>
-                    );
-                  })}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          )}
         </div>
         <DragOverlay>
           {activeSession ? (
@@ -583,6 +670,39 @@ const Timetable = () => {
             />
           ) : null}
         </DragOverlay>
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-gray-900/60 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-lg font-semibold mb-4">
+                Save Timetable Changes
+              </h2>
+              <p className="mb-4">
+                Do you want to save the changes to the current version, create a
+                new version, or cancel?
+              </p>
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={() => handleModalAction("cancel")}
+                  className="px-4 py-2 bg-red-800 rounded hover:bg-red-900 text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleModalAction("same")}
+                  className="px-4 py-2 bg-blue-900 text-white rounded hover:bg-blue-800"
+                >
+                  Save in Same Version
+                </button>
+                <button
+                  onClick={() => handleModalAction("new")}
+                  className="px-4 py-2 bg-blue-900 text-white rounded hover:bg-blue-800"
+                >
+                  Save in New Version
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </DndContext>
     </main>
   );

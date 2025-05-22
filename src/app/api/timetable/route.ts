@@ -36,7 +36,11 @@ export async function GET(request: NextRequest) {
     let version: number | null = null;
     if (versionParam) {
       const parsedVersion = Number(versionParam);
-      if (!isNaN(parsedVersion) && parsedVersion > 0) {
+      if (
+        !isNaN(parsedVersion) &&
+        parsedVersion > 0 &&
+        Number.isInteger(parsedVersion)
+      ) {
         version = parsedVersion;
         console.log("Parsed and validated version:", version);
       } else {
@@ -45,17 +49,17 @@ export async function GET(request: NextRequest) {
     } else {
       console.log("No version parameter provided, defaulting to latest");
     }
-    console.log("Requested version:", version ?? "default (latest)");
+    // console.log("Requested version:", version ?? "default (latest)");
 
     // Build the query
     let query = supabase
       .from("timetable_data")
       .select("data, version_number")
       .order("version_number", { ascending: false });
-    console.log(query, "query");
+    // console.log("Query built:", query);
 
     if (version !== null) {
-      console.log("Filtering for version:", version);
+      // console.log("Filtering for version:", version);
       query = query.eq("version_number", version).limit(1);
     } else {
       console.log("Fetching the latest version");
@@ -81,7 +85,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    console.log("Fetched data from Supabase:", data);
+    // console.log("Fetched data from Supabase:", data);
 
     const filteredData = Object.fromEntries(
       DAY_ORDER.map((day) => {
@@ -115,6 +119,10 @@ export async function GET(request: NextRequest) {
         { status: 500 }
       );
     }
+    return NextResponse.json(
+      { error: "Unknown error occurred" },
+      { status: 500 }
+    );
   }
 }
 
@@ -122,20 +130,22 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    console.log("Saving timetable:", body);
+    console.log("Received timetable data:", body);
 
     if (!body || typeof body !== "object") {
       return NextResponse.json({ error: "Invalid JSON data" }, { status: 400 });
     }
 
+    const { version_number, ...timetableData } = body;
+
     // Only include days from DAY_ORDER and filter rooms
     const filteredData = Object.fromEntries(
       DAY_ORDER.map((day) => {
-        const rooms = body[day] || [];
+        const rooms = timetableData[day] || [];
         return [
           day,
           Array.isArray(rooms)
-            ? rooms.filter((roomObj: string) => {
+            ? rooms.filter((roomObj: string[]) => {
                 const roomName = Object.keys(roomObj)[0];
                 return PREDEFINED_ROOMS.includes(roomName);
               })
@@ -144,39 +154,104 @@ export async function POST(request: NextRequest) {
       })
     );
 
-    // Automatically increment version_number
-    const { data: latestData, error: latestError } = await supabase
-      .from("timetable_data")
-      .select("version_number")
-      .order("version_number", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+    // console.log("Filtered data for saving:", filteredData);
+    // console.log("Version number received:", version_number);
 
-    if (latestError) {
-      console.error("Error fetching latest version:", latestError);
-      return NextResponse.json(
-        { error: "Could not fetch version", detail: latestError.message },
-        { status: 500 }
+    if (
+      version_number !== null &&
+      version_number !== undefined &&
+      Number.isInteger(version_number) &&
+      version_number > 0
+    ) {
+      // Check if the version exists
+      const { data: existingVersion, error: versionError } = await supabase
+        .from("timetable_data")
+        .select("version_number, data")
+        .eq("version_number", version_number)
+        .maybeSingle();
+
+      if (versionError) {
+        console.error("Error checking version:", versionError);
+        return NextResponse.json(
+          { error: "Could not verify version", detail: versionError.message },
+          { status: 500 }
+        );
+      }
+
+      if (!existingVersion) {
+        console.warn(`Version ${version_number} does not exist`);
+        return NextResponse.json(
+          { error: "Specified version does not exist" },
+          { status: 404 }
+        );
+      }
+
+      // Update existing version
+      const { data, error } = await supabase
+        .from("timetable_data")
+        .update({ data: filteredData })
+        .eq("version_number", version_number)
+        .select("version_number, data")
+        .single();
+
+      if (error) {
+        console.error("Supabase UPDATE error:", error);
+        return NextResponse.json(
+          { error: "Could not update data", detail: error.message },
+          { status: 500 }
+        );
+      }
+
+      console.log(`Updated timetable for version: ${version_number}`, data);
+      return NextResponse.json({
+        success: true,
+        version_number: data.version_number,
+        data: data.data,
+      });
+    } else {
+      // Create new version
+      const { data: latestData, error: latestError } = await supabase
+        .from("timetable_data")
+        .select("version_number")
+        .order("version_number", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (latestError) {
+        console.error("Error fetching latest version:", latestError);
+        return NextResponse.json(
+          { error: "Could not fetch version", detail: latestError.message },
+          { status: 500 }
+        );
+      }
+
+      const newVersion = latestData ? latestData.version_number + 1 : 1;
+
+      const { data, error } = await supabase
+        .from("timetable_data")
+        .insert([{ data: filteredData, version_number: newVersion }])
+        .select("version_number, data")
+        .single();
+
+      if (error) {
+        console.error("Supabase POST error:", error);
+        return NextResponse.json(
+          { error: "Could not save data", detail: error.message },
+          { status: 500 }
+        );
+      }
+
+      console.log(
+        "Saved timetable successfully with version:",
+        newVersion,
+        data
       );
+      return NextResponse.json({
+        success: true,
+        version_number: newVersion,
+        data: data.data,
+      });
     }
-
-    const newVersion = latestData ? latestData.version_number + 1 : 1;
-
-    const { error } = await supabase
-      .from("timetable_data")
-      .insert([{ data: filteredData, version_number: newVersion }]);
-
-    if (error) {
-      console.error("Supabase POST error:", error);
-      return NextResponse.json(
-        { error: "Could not save data", detail: error.message },
-        { status: 500 }
-      );
-    }
-
-    console.log("Saved timetable successfully with version:", newVersion);
-
-    return NextResponse.json({ success: true, version_number: newVersion });
   } catch (error) {
     if (error instanceof Error) {
       console.error("Error saving timetable:", error);
@@ -185,5 +260,53 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+    return NextResponse.json(
+      { error: "Unknown error occurred" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const versionNumber = request.nextUrl.searchParams.get("version_number");
+
+    if (!versionNumber || isNaN(parseInt(versionNumber))) {
+      return NextResponse.json(
+        {
+          error: "version_number is required and must be a valid number",
+        },
+        { status: 400 }
+      );
+    }
+
+    const versionNum = parseInt(versionNumber);
+
+    const { error } = await supabase
+      .from("timetable_data")
+      .delete()
+      .eq("version_number", versionNum);
+
+    if (error) {
+      console.error("Deletion error:", error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({
+      message: "Version deleted successfully",
+      version_number: versionNum,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error deleting timetable:", error);
+      return NextResponse.json(
+        { error: "Could not delete data", detail: error.message },
+        { status: 500 }
+      );
+    }
+    return NextResponse.json(
+      { error: "Unknown error occurred" },
+      { status: 500 }
+    );
   }
 }
