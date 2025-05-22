@@ -1,3 +1,4 @@
+"use client";
 import Timetable from "./timetable/page";
 
 const Main = () => {
