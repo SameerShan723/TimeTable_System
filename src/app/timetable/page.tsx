@@ -90,23 +90,12 @@ const SessionDetails = React.memo<{
 SessionDetails.displayName = "SessionDetails";
 
 const Timetable = () => {
-  // Initialize selectedVersion from localStorage directly
-  const initialVersion = localStorage.getItem("selectedTimetableVersion");
-  const parsedInitialVersion =
-    initialVersion &&
-    !isNaN(Number(initialVersion)) &&
-    Number.isInteger(Number(initialVersion))
-      ? Number(initialVersion)
-      : null;
-
   const [data, setData] = useState<TimetableData>({});
   const [activeSession, setActiveSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [versions, setVersions] = useState<number[]>([]);
-  const [selectedVersion, setSelectedVersion] = useState<number | null>(
-    parsedInitialVersion
-  );
+  const [selectedVersion, setSelectedVersion] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pendingData, setPendingData] = useState<TimetableData | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -114,16 +103,40 @@ const Timetable = () => {
   const versionId = useId();
 
   const hasLoaded = useRef(false);
+  const hasMounted = useRef(false);
+
+  // Load selectedVersion from localStorage after component mounts on the client
+  useEffect(() => {
+    if (hasMounted.current) return;
+    hasMounted.current = true;
+
+    // Ensure we're in a browser environment
+    if (typeof window !== "undefined") {
+      const savedVersion = localStorage.getItem("selectedTimetableVersion");
+      if (savedVersion) {
+        const parsedVersion = Number(savedVersion);
+        if (
+          !isNaN(parsedVersion) &&
+          parsedVersion > 0 &&
+          Number.isInteger(parsedVersion)
+        ) {
+          setSelectedVersion(parsedVersion);
+        }
+      }
+    }
+  }, []);
 
   // Save selectedVersion to localStorage whenever it changes
   useEffect(() => {
-    if (selectedVersion !== null) {
-      localStorage.setItem(
-        "selectedTimetableVersion",
-        selectedVersion.toString()
-      );
-    } else {
-      localStorage.removeItem("selectedTimetableVersion"); // Clean up if null
+    if (typeof window !== "undefined") {
+      if (selectedVersion !== null) {
+        localStorage.setItem(
+          "selectedTimetableVersion",
+          selectedVersion.toString()
+        );
+      } else {
+        localStorage.removeItem("selectedTimetableVersion");
+      }
     }
   }, [selectedVersion]);
 
@@ -208,6 +221,12 @@ const Timetable = () => {
         setSelectedVersion(versionToUse);
       }
 
+      if (!versionToUse && versionNumbers.length === 0) {
+        setData({});
+        setSelectedVersion(null);
+        return;
+      }
+
       if (!versionToUse) {
         throw new Error("No valid version available.");
       }
@@ -237,7 +256,11 @@ const Timetable = () => {
     if (hasLoaded.current) return;
 
     hasLoaded.current = true;
-    loadData(); // This will now use the initial selectedVersion from localStorage
+    // Wait until the component is mounted and selectedVersion is set
+    if (hasMounted.current) {
+      loadData();
+    }
+
     const subscription = supabase
       .channel("timetable_data")
       .on(
@@ -260,7 +283,8 @@ const Timetable = () => {
   }, []);
 
   useEffect(() => {
-    if (!hasLoaded.current || !selectedVersion) return;
+    if (!hasLoaded.current || !hasMounted.current || selectedVersion === null)
+      return;
     loadData(selectedVersion);
   }, [selectedVersion]);
 
@@ -447,14 +471,10 @@ const Timetable = () => {
         setPendingData(null);
         return;
       }
-      if (action === "new") {
-        toast("Changes Save in New Version");
-      }
 
       setData(pendingData);
       if (action === "same") {
         saveData(pendingData, selectedVersion || undefined);
-        toast("Changes Save in Same Version");
       } else {
         saveData(pendingData);
       }
@@ -534,45 +554,43 @@ const Timetable = () => {
         }
         const res = await response.json();
 
-        toast(`Version ${res.version_number} delete successful!`);
-        // Update versions array after deletion
+        toast(`${res.version_number} delete successful`);
         setVersions((prev) => prev.filter((v) => v !== version));
 
-        // Determine new selectedVersion based on remaining versions
         let newSelectedVersion = null;
         const currentIndex = versions.indexOf(version);
         if (versions.length > 1) {
           if (currentIndex === 0) {
-            // If deleting first version, move to second version
             newSelectedVersion = versions[1];
           } else if (currentIndex === versions.length - 1) {
-            // If deleting last version, move to previous version
             newSelectedVersion = versions[versions.length - 2];
           } else {
-            // If deleting middle version, move to next version
             newSelectedVersion =
               versions[currentIndex + 1] || versions[currentIndex - 1];
           }
         } else if (versions.length === 1) {
-          // If only one version remains, select it
           newSelectedVersion = versions[0];
         }
 
-        // Update selectedVersion and localStorage
         setSelectedVersion(newSelectedVersion);
-        if (newSelectedVersion === null) {
-          localStorage.removeItem("selectedTimetableVersion");
-        } else {
-          localStorage.setItem(
-            "selectedTimetableVersion",
-            newSelectedVersion.toString()
-          );
+        if (typeof window !== "undefined") {
+          if (newSelectedVersion === null) {
+            localStorage.removeItem("selectedTimetableVersion");
+          } else {
+            localStorage.setItem(
+              "selectedTimetableVersion",
+              newSelectedVersion.toString()
+            );
+          }
         }
 
-        // Reload data with new selected version
         await loadData(newSelectedVersion);
       } catch (error) {
         console.error("Failed to delete version:", error);
+        toast("Deletion Failed", {
+          description: "Could not delete the version. Please try again.",
+          duration: 3000,
+        });
       } finally {
         setIsDeleteDialogOpen(false);
       }
@@ -625,9 +643,9 @@ const Timetable = () => {
                       <div
                         ref={innerRef}
                         {...innerProps}
-                        className={`flex justify-between items-center p-2 hover:bg-blue-200 hover:text-black ${
+                        className={`flex justify-between items-center p-2 hover:bg-blue-300 hover:text-white ${
                           isSelected
-                            ? "bg-blue-500 text-white hover:bg-blue-400"
+                            ? "bg-blue-900 text-white hover:bg-blue-900"
                             : ""
                         }`}
                       >

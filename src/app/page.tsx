@@ -1,4 +1,5 @@
 import Timetable from "./timetable/page";
+
 const Main = () => {
   return (
     <main>
