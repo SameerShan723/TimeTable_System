@@ -1,6 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-
 "use client";
+
 import React, {
   useCallback,
   useMemo,
@@ -92,25 +91,22 @@ SessionDetails.displayName = "SessionDetails";
 const Timetable = () => {
   const [data, setData] = useState<TimetableData>({});
   const [activeSession, setActiveSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [versions, setVersions] = useState<number[]>([]);
-  const [selectedVersion, setSelectedVersion] = useState<number | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedVersion, setSelectedVersion] = useState<number | undefined>(
+    undefined
+  ); // Changed type to number | undefined
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [pendingData, setPendingData] = useState<TimetableData | null>(null);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
   const [versionToDelete, setVersionToDelete] = useState<number | null>(null);
   const versionId = useId();
 
-  const hasLoaded = useRef(false);
-  const hasMounted = useRef(false);
+  const hasLoadedInitial = useRef(false);
 
-  // Load selectedVersion from localStorage after component mounts on the client
+  // Load selectedVersion from localStorage after mount
   useEffect(() => {
-    if (hasMounted.current) return;
-    hasMounted.current = true;
-
-    // Ensure we're in a browser environment
     if (typeof window !== "undefined") {
       const savedVersion = localStorage.getItem("selectedTimetableVersion");
       if (savedVersion) {
@@ -121,15 +117,17 @@ const Timetable = () => {
           Number.isInteger(parsedVersion)
         ) {
           setSelectedVersion(parsedVersion);
+        } else {
+          setSelectedVersion(undefined); // Ensure undefined if invalid
         }
       }
     }
   }, []);
 
-  // Save selectedVersion to localStorage whenever it changes
+  // Save selectedVersion to localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
-      if (selectedVersion !== null) {
+      if (selectedVersion !== undefined) {
         localStorage.setItem(
           "selectedTimetableVersion",
           selectedVersion.toString()
@@ -193,104 +191,88 @@ const Timetable = () => {
     return normalized;
   }, []);
 
-  const loadData = async (versionOverride?: number | null) => {
-    setLoading(true);
-    setError(null);
+  const loadData = useCallback(
+    async (versionOverride?: number | undefined) => {
+      setLoading(true);
+      setError(null);
 
-    try {
-      const { data: versionData, error: versionError } = await supabase
-        .from("timetable_data")
-        .select("version_number")
-        .order("version_number", { ascending: true });
+      try {
+        const { data: versionData, error: versionError } = await supabase
+          .from("timetable_data")
+          .select("version_number")
+          .order("version_number", { ascending: true });
 
-      if (versionError) {
-        throw new Error(versionError.message);
-      }
-
-      const versionNumbers = versionData.map((v) => v.version_number);
-      setVersions(versionNumbers);
-
-      const versionToUse =
-        versionOverride !== undefined
-          ? versionOverride
-          : selectedVersion !== null
-          ? selectedVersion
-          : versionNumbers[versionNumbers.length - 1] || null;
-
-      if (!selectedVersion && versionToUse && versionOverride === undefined) {
-        setSelectedVersion(versionToUse);
-      }
-
-      if (!versionToUse && versionNumbers.length === 0) {
-        setData({});
-        setSelectedVersion(null);
-        return;
-      }
-
-      if (!versionToUse) {
-        throw new Error("No valid version available.");
-      }
-
-      const url = `/api/timetable?version=${versionToUse}`;
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `HTTP error: ${response.status}`);
-      }
-
-      const jsonData = await response.json();
-      const normalized = normalizeData(jsonData);
-      setData(normalized);
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message || "Failed to load timetable");
-        setData({});
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (hasLoaded.current) return;
-
-    hasLoaded.current = true;
-    // Wait until the component is mounted and selectedVersion is set
-    if (hasMounted.current) {
-      loadData();
-    }
-
-    const subscription = supabase
-      .channel("timetable_data")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "timetable_data" },
-        async () => {
-          await loadData(selectedVersion);
+        if (versionError) {
+          throw new Error(versionError.message);
         }
-      )
-      .subscribe((status, error) => {
-        if (error) {
-          console.error("Subscription error:", error);
-          setError("Real-time updates failed");
+
+        const versionNumbers = versionData.map((v) => v.version_number);
+        setVersions(versionNumbers);
+
+        const versionToUse =
+          versionOverride !== undefined
+            ? versionOverride
+            : selectedVersion !== undefined
+            ? selectedVersion
+            : versionNumbers[versionNumbers.length - 1];
+
+        if (versionToUse === undefined && versionNumbers.length === 0) {
+          setData({});
+          setSelectedVersion(undefined);
+          return;
         }
-      });
 
-    return () => {
-      supabase.removeChannel(subscription);
-    };
-  }, []);
+        if (versionToUse === undefined) {
+          throw new Error("No valid version available.");
+        }
 
+        // console.log("Loading version:", versionToUse);
+        const url = `/api/timetable?version=${versionToUse}`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `HTTP error: ${response.status}`);
+        }
+
+        const jsonData = await response.json();
+        const normalized = normalizeData(jsonData);
+        setData(normalized);
+      } catch (error) {
+        if (error instanceof Error) {
+          setError(error.message || "Failed to load timetable");
+          setData({});
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [
+      setLoading,
+      setError,
+      setVersions,
+      setData,
+      setSelectedVersion,
+      normalizeData,
+      selectedVersion,
+    ]
+  );
+
+  // Initial load and reload on selectedVersion change
   useEffect(() => {
-    if (!hasLoaded.current || !hasMounted.current || selectedVersion === null)
-      return;
-    loadData(selectedVersion);
-  }, [selectedVersion]);
+    if (hasLoadedInitial.current) {
+      loadData(selectedVersion);
+    } else if (selectedVersion !== undefined) {
+      // console.log("Initial load with selectedVersion:", selectedVersion);
+      loadData(selectedVersion);
+      hasLoadedInitial.current = true;
+    }
+  }, [selectedVersion, loadData]);
 
   const saveData = useCallback(
     async (dataToSave: TimetableData, version?: number) => {
       try {
+        console.log("Saving data with version:", version);
         const response = await fetch("/api/timetable", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -299,18 +281,73 @@ const Timetable = () => {
             version_number: version,
           }),
         });
+
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || `HTTP error: ${response.status}`);
         }
-        await loadData(version || selectedVersion || undefined);
+
+        // Fetch the updated list of versions
+        const { data: versionData, error: versionError } = await supabase
+          .from("timetable_data")
+          .select("version_number")
+          .order("version_number", { ascending: true });
+
+        if (versionError) {
+          throw new Error(versionError.message);
+        }
+
+        const versionNumbers = versionData.map((v) => v.version_number);
+        const latestVersion = versionNumbers[versionNumbers.length - 1];
+        setVersions(versionNumbers);
+
+        // console.log("Latest version after save:", latestVersion);
+        return latestVersion;
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message || "Failed to save timetable");
+          toast.error("Save Failed", {
+            description: error.message,
+            duration: 3000,
+          });
         }
+        return undefined; // Changed to return undefined on error
       }
     },
-    [selectedVersion]
+    [setError, setVersions]
+  );
+
+  const handleModalAction = useCallback(
+    async (action: "cancel" | "same" | "new") => {
+      if (action === "cancel" || !pendingData) {
+        setIsModalOpen(false);
+        setPendingData(null);
+        return;
+      }
+
+      if (action === "same") {
+        const result = await saveData(pendingData, selectedVersion);
+        if (result !== undefined) {
+          toast.success("Changes", {
+            description: "Changes successfully saved in same version",
+          });
+          await loadData(selectedVersion);
+        }
+      } else if (action === "new") {
+        const latestVersion = await saveData(pendingData);
+        if (latestVersion !== undefined) {
+          setSelectedVersion(latestVersion);
+          toast.success("Changes", {
+            description: "Changes successfully saved in new version",
+          });
+          await loadData(latestVersion);
+        }
+      }
+
+      setIsModalOpen(false);
+      setPendingData(null);
+    },
+    [pendingData, saveData, selectedVersion, loadData, setSelectedVersion]
   );
 
   const allRooms = useMemo(() => {
@@ -464,26 +501,6 @@ const Timetable = () => {
     [data, parseCellId]
   );
 
-  const handleModalAction = useCallback(
-    (action: "cancel" | "same" | "new") => {
-      if (action === "cancel" || !pendingData) {
-        setIsModalOpen(false);
-        setPendingData(null);
-        return;
-      }
-
-      setData(pendingData);
-      if (action === "same") {
-        saveData(pendingData, selectedVersion || undefined);
-      } else {
-        saveData(pendingData);
-      }
-      setIsModalOpen(false);
-      setPendingData(null);
-    },
-    [pendingData, saveData, selectedVersion]
-  );
-
   const DroppableCell = React.memo<{
     id: string;
     children: React.ReactNode;
@@ -554,10 +571,10 @@ const Timetable = () => {
         }
         const res = await response.json();
 
-        toast(`${res.version_number} delete successful`);
+        toast.success(`Version ${res.version_number} delete successful`);
         setVersions((prev) => prev.filter((v) => v !== version));
 
-        let newSelectedVersion = null;
+        let newSelectedVersion: number | undefined = undefined;
         const currentIndex = versions.indexOf(version);
         if (versions.length > 1) {
           if (currentIndex === 0) {
@@ -568,13 +585,11 @@ const Timetable = () => {
             newSelectedVersion =
               versions[currentIndex + 1] || versions[currentIndex - 1];
           }
-        } else if (versions.length === 1) {
-          newSelectedVersion = versions[0];
         }
 
         setSelectedVersion(newSelectedVersion);
         if (typeof window !== "undefined") {
-          if (newSelectedVersion === null) {
+          if (newSelectedVersion === undefined) {
             localStorage.removeItem("selectedTimetableVersion");
           } else {
             localStorage.setItem(
@@ -587,7 +602,7 @@ const Timetable = () => {
         await loadData(newSelectedVersion);
       } catch (error) {
         console.error("Failed to delete version:", error);
-        toast("Deletion Failed", {
+        toast.error("Deletion Failed", {
           description: "Could not delete the version. Please try again.",
           duration: 3000,
         });
@@ -595,7 +610,7 @@ const Timetable = () => {
         setIsDeleteDialogOpen(false);
       }
     },
-    [versions, loadData]
+    [versions, loadData, setVersions, setSelectedVersion]
   );
 
   if (error) {
@@ -625,7 +640,7 @@ const Timetable = () => {
                     label: `Version ${version}`,
                   }))}
                   value={
-                    selectedVersion
+                    selectedVersion !== undefined
                       ? {
                           value: selectedVersion,
                           label: `Version ${selectedVersion}`,
@@ -634,7 +649,7 @@ const Timetable = () => {
                   }
                   onChange={(selectedOption) => {
                     setSelectedVersion(
-                      selectedOption ? selectedOption.value : null
+                      selectedOption ? selectedOption.value : undefined
                     );
                   }}
                   placeholder="Select Version"
@@ -696,7 +711,6 @@ const Timetable = () => {
                   ))}
                 </tr>
               </thead>
-
               <tbody>
                 {Object.entries(data).map(([day, rooms]) => (
                   <React.Fragment key={day}>
