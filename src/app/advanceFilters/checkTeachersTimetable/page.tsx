@@ -1,222 +1,144 @@
 "use client";
 
-import { useEffect, useState, useId, useCallback } from "react";
-import Select, { MultiValue } from "react-select";
-import { supabase } from "@/lib/supabase/supabase";
+import { useState, useId, useCallback, useEffect, useMemo, JSX } from "react";
+import Select, { MultiValue, SingleValue } from "react-select";
 import SpinnerLoader from "@/components/loaders/FadeLoader";
+import { useTimetableVersions } from "../../hooks/useTimetableVersion";
 
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] as const;
+const TIME_SLOTS = [
+  "9:30-10:30",
+  "10:30-11:30",
+  "11:30-12:30",
+  "12:30-1:30",
+  "1:30-2:30",
+  "2:30-3:30",
+  "3:30-4:30",
+] as const;
+
+type DayType = (typeof DAYS)[number];
+type TimeSlotType = (typeof TIME_SLOTS)[number];
+
+// Define the structure of a class item
 interface ClassItem {
-  "Faculty Assigned": string;
-  Time: string;
-  Section: string;
   "Course Details": string;
-  Day: string;
-  Domain: string;
-  "Pre-Req": string;
-  Room: string;
-  Sem: string;
-  "Subject Code": string;
-  "Subject TYPE": string;
+  "Faculty Assigned": string;
+  Section: string;
+  Time: string;
+
+  [key: string]: string;
 }
-
-type RoomObject = {
-  [roomName: string]: ClassItem[];
-};
-
-type DaySchedule = RoomObject[];
 
 interface TimetableData {
-  [day: string]: DaySchedule;
+  Monday: Record<string, ClassItem[]>[];
+  Tuesday: Record<string, ClassItem[]>[];
+  Wednesday: Record<string, ClassItem[]>[];
+  Thursday: Record<string, ClassItem[]>[];
+  Friday: Record<string, ClassItem[]>[];
+  // Add index signature to satisfy Record<string, unknown>
+  [key: string]: Record<string, ClassItem[]>[];
 }
 
-export default function TeacherTimetable() {
-  const [timetable, setTimetable] = useState<TimetableData>({});
-  const [teachers, setTeachers] = useState<string[]>([]);
-  const [selectedTeacher, setSelectedTeacher] = useState<string>("");
-  const [selectedDay, setSelectedDay] = useState<string[]>([]);
-  const [results, setResult] = useState<(ClassItem & { Room: string })[]>([]);
-  const [error, setError] = useState<string>("");
-  const [versions, setVersions] = useState<number[]>([]);
-  const [selectedVersion, setSelectedVersion] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
+interface EnhancedClassItem extends ClassItem {
+  Room: string;
+  Day: string;
+}
 
-  const teacherSelectedId = useId();
-  const daySelectedId = useId();
-  const versionSelectedId = useId();
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-  const timeSlots = [
-    "9:30-10:30",
-    "10:30-11:30",
-    "11:30-12:30",
-    "12:30-1:30",
-    "1:30-2:30",
-    "2:30-3:30",
-    "3:30-4:30",
-  ];
+// Option types for react-select
+interface SelectOption {
+  value: string;
+  label: string;
+}
 
-  const getData = useCallback(
-    async (versionOverride?: number | null) => {
-      setError("");
-      setLoading(true);
+interface VersionOption {
+  value: number; // Changed to number to match setSelectedVersion expectation
+  label: string;
+}
 
-      try {
-        // Fetch available versions
-        const { data: versionData, error: versionError } = await supabase
-          .from("timetable_data")
-          .select("version_number")
-          .order("version_number", { ascending: true });
-
-        if (versionError) {
-          // console.error("Version fetch error:", versionError);
-          throw new Error(versionError.message);
-        }
-
-        const versionNumbers = versionData.map((v) => v.version_number);
-        // console.log("Available versions:", versionNumbers);
-        setVersions(versionNumbers);
-
-        const versionToUse =
-          versionOverride ||
-          selectedVersion ||
-          versionNumbers[versionNumbers.length - 1] ||
-          null;
-
-        if (!selectedVersion && versionToUse) {
-          // console.log("Setting initial selectedVersion:", versionToUse);
-          setSelectedVersion(versionToUse);
-        }
-
-        if (!versionToUse) {
-          throw new Error("No valid version available.");
-        }
-
-        // console.log("Fetching timetable for version:", versionToUse);
-        const url = `/api/timetable?version=${versionToUse}`;
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Fetch error:", errorData);
-          throw new Error(errorData.error || `HTTP error: ${response.status}`);
-        }
-
-        const data = await response.json();
-        // console.log("Fetched timetable data:", data);
-
-        const filteredData: TimetableData = Object.fromEntries(
-          Object.entries(data).filter(([key]) => days.includes(key))
-        ) as TimetableData;
-        // console.log("Filtered timetable data:", filteredData);
-        setTimetable(filteredData);
-        setLoading(false);
-
-        const teacherSet = new Set<string>();
-        Object.entries(filteredData).forEach(([day, dayRooms]) => {
-          // console.log(dayRooms, "dayroom");
-          if (!Array.isArray(dayRooms)) {
-            // console.warn(`Invalid dayRooms for ${day}:`, dayRooms);
-
-            return;
-          }
-          dayRooms.forEach((roomObj) => {
-            const roomName = Object.keys(roomObj)[0];
-            const classes = roomObj[roomName];
-            if (!Array.isArray(classes)) {
-              console.warn(
-                `Invalid classes for ${roomName} on ${day}:`,
-                classes
-              );
-              // console.log(classes, "classes");
-              return;
-            }
-            classes.forEach((cls) => {
-              if (cls["Faculty Assigned"]) {
-                teacherSet.add(cls["Faculty Assigned"]);
-              }
-            });
-          });
-        });
-
-        setTeachers(Array.from(teacherSet));
-      } catch (error) {
-        if (error instanceof Error) {
-          setError(error.message || "Failed to load timetable");
-          setTimetable({});
-          setTeachers([]);
-        }
-      } finally {
-        setLoading(false);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectedVersion]
+export default function TeacherTimetable(): JSX.Element {
+  const {
+    versions,
+    selectedVersion,
+    timetableData,
+    loading,
+    error: hookError,
+    setSelectedVersion,
+  } = useTimetableVersions<TimetableData>(
+    { Monday: [], Tuesday: [], Wednesday: [], Thursday: [], Friday: [] },
+    [],
+    null
   );
 
-  useEffect(() => {
-    getData();
+  const [selectedTeacher, setSelectedTeacher] = useState<string>("");
+  const [selectedDay, setSelectedDay] = useState<DayType[]>([]);
+  const [results, setResult] = useState<EnhancedClassItem[]>([]);
+  const [error, setError] = useState<string>("");
 
-    const subscription = supabase
-      .channel("timetable_data")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "timetable_data" },
-        async (payload) => {
-          console.log(
-            "Timetable data changed:",
-            payload,
-            "Reloading for version:",
-            selectedVersion
-          );
-          await getData(selectedVersion || undefined);
-        }
-      )
-      .subscribe((status, error) => {
-        if (error) {
-          // console.error("Subscription error:", error);
-          setError("Real-time updates failed");
+  const teacherSelectedId: string = useId();
+  const daySelectedId: string = useId();
+  const versionSelectedId: string = useId();
+
+  // Extract unique teachers from timetable data with memoization
+  const teachers: string[] = useMemo(() => {
+    const teacherSet = new Set<string>();
+
+    DAYS.forEach((day: DayType) => {
+      if (!timetableData[day] || !Array.isArray(timetableData[day])) return;
+
+      timetableData[day].forEach((roomObj: Record<string, ClassItem[]>) => {
+        const roomName: string = Object.keys(roomObj)[0];
+        const classes: ClassItem[] = roomObj[roomName];
+
+        if (Array.isArray(classes)) {
+          classes.forEach((cls: ClassItem) => {
+            if (cls["Faculty Assigned"] && cls["Faculty Assigned"].trim()) {
+              teacherSet.add(cls["Faculty Assigned"].trim());
+            }
+          });
         }
       });
+    });
 
-    return () => {
-      supabase.removeChannel(subscription);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getData]);
+    return Array.from(teacherSet).sort();
+  }, [timetableData]);
 
-  useEffect(() => {
-    if (selectedVersion) {
-      // console.log("Selected version changed, reloading:", selectedVersion);
-      getData(selectedVersion);
-    }
-  }, [selectedVersion, getData]);
+  const dayOptions: SelectOption[] = useMemo(
+    () =>
+      DAYS.map((day: DayType) => ({
+        value: day,
+        label: day,
+      })),
+    []
+  );
 
-  const dayOptions = Object.keys(timetable).map((day) => ({
-    value: day,
-    label: day,
-  }));
+  const allOption: SelectOption = useMemo(
+    () => ({ value: "all", label: "Select All Days" }),
+    []
+  );
 
-  const allOption = { value: "all", label: "Select All Days" };
-
-  const handleDayOptions = (
-    selected: MultiValue<{ value: string; label: string }>
-  ) => {
+  const handleDayOptions = useCallback((selected: MultiValue<SelectOption>) => {
     if (!selected) {
       setSelectedDay([]);
       return;
     }
 
-    const isAllSelected = selected.find((opt) => opt.value === "all");
+    const isAllSelected: SelectOption | undefined = selected.find(
+      (opt: SelectOption) => opt.value === "all"
+    );
 
     if (isAllSelected) {
-      setSelectedDay(dayOptions.map((opt) => opt.value));
+      setSelectedDay([...DAYS]);
     } else {
-      const filtered = selected.filter((opt) => opt.value !== "all");
-      setSelectedDay(filtered.map((opt) => opt.value));
+      const filtered: SelectOption[] = selected.filter(
+        (opt: SelectOption) => opt.value !== "all"
+      );
+      setSelectedDay(filtered.map((opt: SelectOption) => opt.value as DayType));
     }
-  };
+  }, []);
 
-  const handleChange = () => {
+  const handleSearch = useCallback((): void => {
     setError("");
+
     if (!selectedTeacher) {
       setError("Please select a teacher!");
       setResult([]);
@@ -228,74 +150,93 @@ export default function TeacherTimetable() {
       setResult([]);
       return;
     }
-    setError("");
 
-    const result: (ClassItem & { Room: string; Day: string })[] = [];
+    const result: EnhancedClassItem[] = [];
 
-    selectedDay.forEach((day) => {
-      if (!timetable[day]) return;
+    selectedDay.forEach((day: DayType) => {
+      if (!timetableData[day] || !Array.isArray(timetableData[day])) return;
 
-      timetable[day].forEach((roomObj) => {
-        const roomName = Object.keys(roomObj)[0];
-        const classes = roomObj[roomName];
+      timetableData[day].forEach((roomObj: Record<string, ClassItem[]>) => {
+        const roomName: string = Object.keys(roomObj)[0];
+        const classes: ClassItem[] = roomObj[roomName];
 
-        classes.forEach((cls) => {
-          if (cls["Faculty Assigned"] === selectedTeacher) {
-            result.push({ ...cls, Room: roomName, Day: day });
-          }
-        });
+        if (Array.isArray(classes)) {
+          classes.forEach((cls: ClassItem) => {
+            if (cls["Faculty Assigned"] === selectedTeacher) {
+              result.push({ ...cls, Room: roomName, Day: day });
+            }
+          });
+        }
       });
     });
 
     if (result.length === 0) {
-      setError("No classes found for the selected teacher on this day.");
+      setError("No classes found for the selected teacher on selected days.");
     } else {
       setError("");
     }
     setResult(result);
-  };
+  }, [selectedTeacher, selectedDay, timetableData]);
 
-  const getTimetable = (day: string, time: string) => {
-    return results.find((course) => course.Time === time && course.Day === day);
-  };
+  const getTimetable = useCallback(
+    (day: string, time: string): EnhancedClassItem | undefined => {
+      return results.find(
+        (course: EnhancedClassItem) =>
+          course.Time === time && course.Day === day
+      );
+    },
+    [results]
+  );
 
-  const isAllSelected = selectedDay.length === dayOptions.length;
-  const filteredOptions = isAllSelected
+  // Clear results and errors when version changes
+  useEffect((): void => {
+    setResult([]);
+    setError("");
+    setSelectedTeacher("");
+    setSelectedDay([]);
+  }, [selectedVersion]);
+
+  const isAllSelected: boolean = selectedDay.length === DAYS.length;
+  const filteredOptions: SelectOption[] = isAllSelected
     ? dayOptions
     : [allOption, ...dayOptions];
 
-  if (error && !timetable.Monday) {
+  if (
+    hookError &&
+    (!timetableData.Monday || timetableData.Monday.length === 0)
+  ) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-xl text-red-500">Error: {error}</div>
+        <div className="text-xl text-red-500">Error: {hookError}</div>
       </div>
     );
   }
 
   return (
     <>
-      <div className="flex items-center justify-center flex-col ">
+      <div className="flex items-center justify-center flex-col">
         <h1 className="font-bold text-3xl mt-6 mb-6">
           Check Teachers Timetable
         </h1>
+
         <div className="mb-4 flex flex-col w-full max-w-md">
           <label className="text-xl mb-2">Version:</label>
           <div className="flex w-full items-center gap-2">
-            <Select
+            <Select<VersionOption>
               instanceId={versionSelectedId}
-              options={versions.map((version) => ({
+              options={versions.map((version: number) => ({
                 value: version,
                 label: `Version ${version}`,
               }))}
               value={
-                selectedVersion
+                selectedVersion !== null
                   ? {
                       value: selectedVersion,
                       label: `Version ${selectedVersion}`,
                     }
                   : null
               }
-              onChange={(selectedOption) =>
+              onChange={(selectedOption: SingleValue<VersionOption>) =>
                 setSelectedVersion(selectedOption ? selectedOption.value : null)
               }
               className="text-black w-full"
@@ -305,11 +246,12 @@ export default function TeacherTimetable() {
             {loading && <SpinnerLoader />}
           </div>
         </div>
+
         <div className="mb-4 flex flex-col w-full max-w-md">
           <label className="text-xl mb-2">Teacher:</label>
-          <Select
+          <Select<SelectOption>
             instanceId={teacherSelectedId}
-            options={teachers.map((teacher) => ({
+            options={teachers.map((teacher: string) => ({
               value: teacher,
               label: teacher,
             }))}
@@ -318,86 +260,118 @@ export default function TeacherTimetable() {
                 ? { value: selectedTeacher, label: selectedTeacher }
                 : null
             }
-            onChange={(selectedOption) =>
+            onChange={(selectedOption: SingleValue<SelectOption>) =>
               setSelectedTeacher(selectedOption ? selectedOption.value : "")
             }
             className="text-black"
             placeholder="Select teacher"
-            isDisabled={loading}
+            isDisabled={loading || teachers.length === 0}
             isClearable
           />
+          {teachers.length === 0 && !loading && (
+            <p className="text-sm text-gray-500 mt-1">
+              No teachers available. Please select a version first.
+            </p>
+          )}
         </div>
 
+        {/* Day Selection */}
         <div className="mb-4 flex flex-col w-full max-w-md">
           <label className="text-xl mb-2">Days:</label>
-          <Select
+          <Select<SelectOption, true>
             instanceId={daySelectedId}
             isMulti
             options={filteredOptions}
             onChange={handleDayOptions}
             className="text-black"
             placeholder="Select days"
-            value={dayOptions.filter((opt) => selectedDay.includes(opt.value))}
+            value={dayOptions.filter((opt: SelectOption) =>
+              selectedDay.includes(opt.value as DayType)
+            )}
             isDisabled={loading}
           />
         </div>
+
         <div>
           <button
-            className="bg-blue-900 py-2 px-20 cursor-pointer text-[#ccd8e8]"
-            onClick={handleChange}
+            className="bg-blue-900 py-2 px-20 cursor-pointer text-[#ccd8e8] disabled:opacity-50 hover:bg-blue-800 transition-colors"
+            onClick={handleSearch}
             disabled={loading}
           >
             Show Classes
           </button>
         </div>
-        <div className="text-2xl">
+
+        {/* Error Display */}
+        <div className="text-2xl mt-4">
           {error && <p className="text-red-500">{error}</p>}
+          {hookError && <p className="text-red-500">Hook Error: {hookError}</p>}
         </div>
+
+        {/* Results Summary */}
+        {results.length > 0 && (
+          <div className="mt-4 text-lg text-green-600">
+            Found {results.length} class{results.length !== 1 ? "es" : ""} for{" "}
+            {selectedTeacher}
+          </div>
+        )}
       </div>
 
-      <div className="overflow-x-auto mt-6 mb-10 px-10">
-        <table className="table-auto w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-300 p-2">Day</th>
-              {timeSlots.map((time) => (
-                <th key={time} className="border border-gray-300 p-2">
-                  {time}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {days.map((day) => (
-              <tr key={day}>
-                <td className="border border-gray-300 p-2 font-medium">
-                  {day}
-                </td>
-                {timeSlots.map((time) => {
-                  const course = getTimetable(day, time);
-                  return (
-                    <td
-                      key={`${day}-${time}`}
-                      className="border border-gray-300 p-2 hover:bg-gray-50"
-                    >
-                      {course && (
-                        <div className="flex flex-col items-center">
-                          <p className="font-bold">
-                            {course["Course Details"]}
-                          </p>
-                          <p>{course["Faculty Assigned"]}</p>
-                          <p>{course.Section}</p>
-                          <p>{course.Room}</p>
-                        </div>
-                      )}
-                    </td>
-                  );
-                })}
+      {/* Timetable Display */}
+      {results.length > 0 && (
+        <div className="overflow-x-auto mt-6 mb-10 px-10">
+          <table className="table-auto w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border border-gray-300 p-2">Day</th>
+                {TIME_SLOTS.map((time: TimeSlotType) => (
+                  <th key={time} className="border border-gray-300 p-2">
+                    {time}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {DAYS.map((day: DayType) => (
+                <tr key={day}>
+                  <td className="border border-gray-300 p-2 font-medium bg-gray-50">
+                    {day}
+                  </td>
+                  {TIME_SLOTS.map((time: TimeSlotType) => {
+                    const course: EnhancedClassItem | undefined = getTimetable(
+                      day,
+                      time
+                    );
+                    return (
+                      <td
+                        key={`${day}-${time}`}
+                        className={`border border-gray-300 p-2 hover:bg-gray-50 ${
+                          course ? "bg-blue-50" : ""
+                        }`}
+                      >
+                        {course && (
+                          <div className="flex flex-col items-center text-sm">
+                            <p className="font-bold text-blue-800">
+                              {course["Course Details"]}
+                            </p>
+                            <p className="text-gray-600">
+                              {course["Faculty Assigned"]}
+                            </p>
+                            <p className="text-gray-600">{course.Section}</p>
+                            <p className="text-gray-500 text-xs">
+                              {course.Room}
+                            </p>
+                          </div>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </>
   );
 }

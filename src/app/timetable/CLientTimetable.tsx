@@ -1,13 +1,6 @@
 "use client";
 
-import React, {
-  useCallback,
-  useMemo,
-  useEffect,
-  useRef,
-  useState,
-  useId,
-} from "react";
+import React, { useCallback, useMemo, useState, useId } from "react";
 import {
   DndContext,
   useDraggable,
@@ -18,7 +11,6 @@ import {
 } from "@dnd-kit/core";
 import { produce } from "immer";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import { supabase } from "@/lib/supabase/supabase";
 import { FaRegTrashAlt } from "react-icons/fa";
 import Select from "react-select";
 import {
@@ -32,34 +24,15 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast, Toaster } from "sonner";
+import {
+  TimetableData,
+  Session,
+  EmptySlot,
+  RoomSchedule,
+  VersionOption,
+} from "./types";
 
-interface Session {
-  Room: string;
-  Time: string;
-  "Faculty Assigned": string;
-  "Course Details": string;
-  "Subject Type": string;
-  Domain: string;
-  "Pre-Req": string;
-  Section: string;
-  "Semester Details": string;
-}
-
-interface EmptySlot {
-  Time: string;
-}
-
-interface RoomSchedule {
-  [roomName: string]: (Session | EmptySlot)[] | undefined;
-}
-
-type DaySchedule = RoomSchedule[];
-
-interface TimetableData {
-  [day: string]: DaySchedule;
-}
-
-const timeSlots = [
+const timeSlots: string[] = [
   "9:30-10:30",
   "10:30-11:30",
   "11:30-12:30",
@@ -69,210 +42,152 @@ const timeSlots = [
   "3:30-4:30",
 ];
 
-const SessionDetails = React.memo<{
+const DAY_ORDER: string[] = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+];
+
+const PREDEFINED_ROOMS: string[] = [
+  "NAB-R01",
+  "NAB-R02",
+  "NAB-R03",
+  "NAB-R04",
+  "NAB-R05",
+  "NAB-R06",
+  "NAB-R07",
+  "NAB-R08",
+  "NAB-R09",
+  "NAB-R10",
+  "NAB-R11",
+  "NAB-R12",
+  "Lab1",
+  "Lab2",
+  "Lab3",
+  "Lab4",
+  "R210-lab",
+];
+
+interface ClientTimetableProps {
+  initialData: TimetableData;
+  versions: number[];
+  initialSelectedVersion: number | undefined;
+}
+
+interface SessionDetailsProps {
   session: Session;
   isPlaceholder?: boolean;
-}>(({ session, isPlaceholder = false }) => {
-  return (
-    <div
-      className={`text-center p-2 rounded-md ${
-        isPlaceholder ? "text-gray-300 bg-gray-100 opacity-50" : "bg-white"
-      }`}
-    >
-      <div className="font-medium">{session["Course Details"]}</div>
-      <div className="text-sm">{session["Faculty Assigned"]}</div>
-      <div className="text-sm">{session["Section"]}</div>
-      <div className="text-xs text-gray-500">{session["Subject Type"]}</div>
-    </div>
-  );
-});
+}
+
+interface DroppableCellProps {
+  id: string;
+  children: React.ReactNode;
+  isEmpty: boolean;
+  isDraggingOver: boolean;
+}
+
+interface DraggableSessionProps {
+  id: string;
+  session: Session;
+  isDragging?: boolean;
+}
+
+const SessionDetails: React.FC<SessionDetailsProps> = React.memo(
+  ({ session, isPlaceholder = false }) => {
+    return (
+      <div
+        className={`text-center p-2 rounded-md ${
+          isPlaceholder ? "text-gray-300 bg-gray-100 opacity-50" : "bg-white"
+        }`}
+      >
+        <div className="font-medium">
+          {session["Course Details"] || "Unknown Course"}
+        </div>
+        <div className="text-sm">
+          {session["Faculty Assigned"] || "No Faculty"}
+        </div>
+        <div className="text-sm">{session["Section"] || ""}</div>
+        <div className="text-xs text-gray-500">
+          {session["Subject Type"] || ""}
+        </div>
+      </div>
+    );
+  }
+);
 SessionDetails.displayName = "SessionDetails";
 
-const Timetable = () => {
-  const [data, setData] = useState<TimetableData>({});
+const DroppableCell: React.FC<DroppableCellProps> = React.memo(
+  ({ id, children, isEmpty, isDraggingOver }) => {
+    const { setNodeRef, isOver } = useDroppable({ id });
+    const className = `border p-2 transition-all duration-200 ${
+      isOver ? "bg-blue-100 border-2 border-blue-400" : ""
+    } ${isDraggingOver && isEmpty ? "bg-gray-100 opacity-50" : ""}`;
+
+    return (
+      <td ref={setNodeRef} className={className}>
+        {children}
+      </td>
+    );
+  }
+);
+DroppableCell.displayName = "DroppableCell";
+
+const DraggableSession: React.FC<DraggableSessionProps> = React.memo(
+  ({ id, session, isDragging = false }) => {
+    const { attributes, listeners, setNodeRef } = useDraggable({ id });
+    const className = `cursor-move transition-all ease-in-out ${
+      isDragging
+        ? "opacity-70 scale-105 rotate-1 shadow-xl bg-blue-50 z-50"
+        : "hover:bg-gray-50"
+    }`;
+
+    const staticAttributes = {
+      ...attributes,
+      "aria-describedby": `DndDescribedBy-${id.replace(/[^a-zA-Z0-9]/g, "")}`,
+    };
+
+    return (
+      <div
+        ref={setNodeRef}
+        {...listeners}
+        {...staticAttributes}
+        className={className}
+      >
+        <SessionDetails session={session} />
+      </div>
+    );
+  }
+);
+DraggableSession.displayName = "DraggableSession";
+
+export default function ClientTimetable({
+  initialData,
+  versions: initialVersions,
+  initialSelectedVersion,
+}: ClientTimetableProps) {
+  const [data, setData] = useState<TimetableData>(initialData);
   const [activeSession, setActiveSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [versions, setVersions] = useState<number[]>([]);
+  const [versions, setVersions] = useState<number[]>(initialVersions);
   const [selectedVersion, setSelectedVersion] = useState<number | undefined>(
-    undefined
-  ); // Changed type to number | undefined
+    initialSelectedVersion
+  );
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [pendingData, setPendingData] = useState<TimetableData | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
   const [versionToDelete, setVersionToDelete] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [isDragProcessing, setIsDragProcessing] = useState<boolean>(false); // New state for drag operations
   const versionId = useId();
 
-  const hasLoadedInitial = useRef(false);
-
-  // Load selectedVersion from localStorage after mount
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedVersion = localStorage.getItem("selectedTimetableVersion");
-      if (savedVersion) {
-        const parsedVersion = Number(savedVersion);
-        if (
-          !isNaN(parsedVersion) &&
-          parsedVersion > 0 &&
-          Number.isInteger(parsedVersion)
-        ) {
-          setSelectedVersion(parsedVersion);
-        } else {
-          setSelectedVersion(undefined); // Ensure undefined if invalid
-        }
-      }
-    }
-  }, []);
-
-  // Save selectedVersion to localStorage
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (selectedVersion !== undefined) {
-        localStorage.setItem(
-          "selectedTimetableVersion",
-          selectedVersion.toString()
-        );
-      } else {
-        localStorage.removeItem("selectedTimetableVersion");
-      }
-    }
-  }, [selectedVersion]);
-
-  const normalizeData = useCallback((rawData: unknown): TimetableData => {
-    const normalized: TimetableData = {};
-    if (!rawData || typeof rawData !== "object") {
-      console.warn("Invalid raw data:", rawData);
-      return normalized;
-    }
-
-    Object.entries(rawData).forEach(([day, daySchedule]) => {
-      if (day === "version_number") return;
-      if (!Array.isArray(daySchedule)) {
-        console.warn(`Invalid schedule for ${day}:`, daySchedule);
-        return;
-      }
-
-      const validRooms: RoomSchedule[] = [];
-      daySchedule.forEach((roomSchedule) => {
-        if (!roomSchedule || typeof roomSchedule !== "object") {
-          console.warn("Invalid room schedule:", roomSchedule);
-          return;
-        }
-
-        const roomName = Object.keys(roomSchedule)[0];
-        const sessions = roomSchedule[roomName];
-
-        if (!sessions || !Array.isArray(sessions)) {
-          validRooms.push({
-            [roomName]: timeSlots.map((time) => ({ Time: time })),
-          });
-          return;
-        }
-
-        const normalizedSessions = timeSlots.map((time, index) => {
-          const session = sessions[index];
-          if (
-            !session ||
-            Object.keys(session).length === 0 ||
-            !("Faculty Assigned" in session)
-          ) {
-            return { Time: time };
-          }
-          return session;
-        });
-        validRooms.push({ [roomName]: normalizedSessions });
-      });
-
-      if (validRooms.length > 0) {
-        normalized[day] = validRooms;
-      }
-    });
-
-    return normalized;
-  }, []);
-
-  const loadData = useCallback(
-    async (versionOverride?: number | undefined) => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const { data: versionData, error: versionError } = await supabase
-          .from("timetable_data")
-          .select("version_number")
-          .order("version_number", { ascending: true });
-
-        if (versionError) {
-          throw new Error(versionError.message);
-        }
-
-        const versionNumbers = versionData.map((v) => v.version_number);
-        setVersions(versionNumbers);
-
-        const versionToUse =
-          versionOverride !== undefined
-            ? versionOverride
-            : selectedVersion !== undefined
-            ? selectedVersion
-            : versionNumbers[versionNumbers.length - 1];
-
-        if (versionToUse === undefined && versionNumbers.length === 0) {
-          setData({});
-          setSelectedVersion(undefined);
-          return;
-        }
-
-        if (versionToUse === undefined) {
-          throw new Error("No valid version available.");
-        }
-
-        // console.log("Loading version:", versionToUse);
-        const url = `/api/timetable?version=${versionToUse}`;
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || `HTTP error: ${response.status}`);
-        }
-
-        const jsonData = await response.json();
-        const normalized = normalizeData(jsonData);
-        setData(normalized);
-      } catch (error) {
-        if (error instanceof Error) {
-          setError(error.message || "Failed to load timetable");
-          setData({});
-        }
-      } finally {
-        setLoading(false);
-      }
-    },
-    [
-      setLoading,
-      setError,
-      setVersions,
-      setData,
-      setSelectedVersion,
-      normalizeData,
-      selectedVersion,
-    ]
-  );
-
-  // Initial load and reload on selectedVersion change
-  useEffect(() => {
-    if (hasLoadedInitial.current) {
-      loadData(selectedVersion);
-    } else if (selectedVersion !== undefined) {
-      // console.log("Initial load with selectedVersion:", selectedVersion);
-      loadData(selectedVersion);
-      hasLoadedInitial.current = true;
-    }
-  }, [selectedVersion, loadData]);
-
   const saveData = useCallback(
-    async (dataToSave: TimetableData, version?: number) => {
+    async (
+      dataToSave: TimetableData,
+      version?: number
+    ): Promise<number | undefined> => {
       try {
-        console.log("Saving data with version:", version);
         const response = await fetch("/api/timetable", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -283,96 +198,209 @@ const Timetable = () => {
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
+          const errorData: { error?: string } = await response.json();
           throw new Error(errorData.error || `HTTP error: ${response.status}`);
         }
 
-        // Fetch the updated list of versions
-        const { data: versionData, error: versionError } = await supabase
-          .from("timetable_data")
-          .select("version_number")
-          .order("version_number", { ascending: true });
-
-        if (versionError) {
-          throw new Error(versionError.message);
-        }
-
-        const versionNumbers = versionData.map((v) => v.version_number);
-        const latestVersion = versionNumbers[versionNumbers.length - 1];
-        setVersions(versionNumbers);
-
-        // console.log("Latest version after save:", latestVersion);
-        return latestVersion;
+        const result: { version_number: number } = await response.json();
+        const newVersions = await fetchVersions();
+        setVersions(newVersions);
+        return result.version_number;
       } catch (error) {
-        if (error instanceof Error) {
-          setError(error.message || "Failed to save timetable");
-          toast.error("Save Failed", {
-            description: error.message,
-            duration: 3000,
-          });
-        }
-        return undefined; // Changed to return undefined on error
+        console.error("Save error:", error);
+        toast.error("Save Failed", {
+          description: error instanceof Error ? error.message : "Unknown error",
+          duration: 3000,
+        });
+        return undefined;
       }
     },
-    [setError, setVersions]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  const fetchVersions = useCallback(async (): Promise<number[]> => {
+    try {
+      const response = await fetch("/api/timetable?type=versions");
+      if (!response.ok) {
+        throw new Error("Failed to fetch versions");
+      }
+      const versionData: { version_number: number }[] = await response.json();
+      // console.log("Fetched versions:", versionData);
+      return versionData.map((v) => v.version_number);
+    } catch (error) {
+      console.error("Error fetching versions:", error);
+      toast.error("Failed to load versions");
+      return versions;
+    }
+  }, [versions]);
+
+  const fetchTimetableData = useCallback(
+    async (version: number): Promise<void> => {
+      if (isFetching) return;
+      setIsFetching(true);
+      setError(null);
+      try {
+        // console.log(`Fetching timetable for version ${version}`);
+        const response = await fetch(`/api/timetable?version=${version}`);
+        if (!response.ok) {
+          const errorData: { error?: string } = await response.json();
+          throw new Error(errorData.error || `HTTP error: ${response.status}`);
+        }
+        const jsonData: TimetableData = await response.json();
+        // console.log("API response:", jsonData);
+
+        // Validate data structure
+        const isValidData = DAY_ORDER.every(
+          (day) =>
+            jsonData[day] === undefined ||
+            (Array.isArray(jsonData[day]) &&
+              jsonData[day].every(
+                (roomObj: RoomSchedule) =>
+                  roomObj &&
+                  typeof roomObj === "object" &&
+                  Object.keys(roomObj).length > 0 &&
+                  PREDEFINED_ROOMS.includes(Object.keys(roomObj)[0])
+              ))
+        );
+
+        if (!isValidData) {
+          // console.warn("Invalid timetable data:", jsonData);
+          setData(DAY_ORDER.reduce((acc, day) => ({ ...acc, [day]: [] }), {}));
+          throw new Error("Invalid timetable data structure");
+        }
+
+        setData(jsonData);
+        // console.log("Updated data state:", jsonData);
+      } catch (error) {
+        console.error("Error fetching timetable:", error);
+        setError("Failed to load timetable for selected version");
+        toast.error("Failed to load timetable", {
+          description: error instanceof Error ? error.message : "Unknown error",
+        });
+      } finally {
+        setIsFetching(false);
+      }
+    },
+    [isFetching]
+  );
+
+  const deleteVersion = useCallback(
+    async (version: number): Promise<void> => {
+      try {
+        const response = await fetch(
+          `/api/timetable?version_number=${version}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (!response.ok) {
+          const errorData: { error?: string } = await response.json();
+          throw new Error(errorData.error || `HTTP error: ${response.status}`);
+        }
+
+        const res: { version_number: number } = await response.json();
+        toast.success(`Version ${res.version_number} deleted successfully`);
+        const newVersions = await fetchVersions();
+        setVersions(newVersions);
+
+        let newSelectedVersion: number | undefined = undefined;
+        const currentIndex = versions.indexOf(version);
+        if (newVersions.length > 0) {
+          if (currentIndex === 0) {
+            newSelectedVersion = newVersions[0];
+          } else if (currentIndex >= newVersions.length) {
+            newSelectedVersion = newVersions[newVersions.length - 1];
+          } else {
+            newSelectedVersion =
+              newVersions[currentIndex] || newVersions[currentIndex - 1];
+          }
+        }
+
+        setSelectedVersion(newSelectedVersion);
+        if (newSelectedVersion !== undefined) {
+          await fetchTimetableData(newSelectedVersion);
+        } else {
+          setData(DAY_ORDER.reduce((acc, day) => ({ ...acc, [day]: [] }), {}));
+        }
+      } catch (error) {
+        console.error("Failed to delete version:", error);
+        toast.error("Deletion Failed", {
+          description: "Could not delete the version. Please try again.",
+          duration: 3000,
+        });
+      } finally {
+        setIsDeleteDialogOpen(false);
+      }
+    },
+    [versions, fetchVersions, fetchTimetableData]
   );
 
   const handleModalAction = useCallback(
-    async (action: "cancel" | "same" | "new") => {
+    async (action: "cancel" | "same" | "new"): Promise<void> => {
       if (action === "cancel" || !pendingData) {
         setIsModalOpen(false);
         setPendingData(null);
+        setIsDragProcessing(false); // Reset drag processing state
         return;
       }
 
       if (action === "same") {
         const result = await saveData(pendingData, selectedVersion);
         if (result !== undefined) {
-          toast.success("Changes", {
-            description: "Changes successfully saved in same version",
-          });
-          await loadData(selectedVersion);
+          toast.success("Changes saved in same version");
+          await fetchTimetableData(selectedVersion!);
         }
       } else if (action === "new") {
         const latestVersion = await saveData(pendingData);
         if (latestVersion !== undefined) {
           setSelectedVersion(latestVersion);
-          toast.success("Changes", {
-            description: "Changes successfully saved in new version",
-          });
-          await loadData(latestVersion);
+          toast.success("Changes saved in new version");
+          await fetchTimetableData(latestVersion);
         }
       }
 
       setIsModalOpen(false);
       setPendingData(null);
+      setIsDragProcessing(false); // Reset drag processing state
     },
-    [pendingData, saveData, selectedVersion, loadData, setSelectedVersion]
+    [pendingData, saveData, selectedVersion, fetchTimetableData]
   );
 
-  const allRooms = useMemo(() => {
-    return Array.from(
+  const allRooms = useMemo((): string[] => {
+    const rooms = Array.from(
       new Set(
         Object.values(data).flatMap((day) =>
-          day.flatMap((room) =>
-            Object.keys(room).filter((key) => room[key] !== undefined)
-          )
+          Array.isArray(day)
+            ? day.flatMap((room) =>
+                room && typeof room === "object"
+                  ? Object.keys(room).filter((key) => room[key] !== undefined)
+                  : []
+              )
+            : []
         )
       )
     );
+    // console.log("Computed allRooms:", rooms);
+    return rooms;
   }, [data]);
 
-  const parseCellId = useCallback((id: string) => {
-    const [day, ...rest] = id.split("-");
-    const timeIndex = rest.findIndex((p) => p.includes(":"));
-    const room = rest.slice(0, timeIndex).join("-");
-    const time = rest[timeIndex] + "-" + rest[timeIndex + 1];
-    return { day, room, time };
-  }, []);
+  const parseCellId = useCallback(
+    (id: string): { day: string; room: string; time: string } => {
+      const [day, ...rest] = id.split("-");
+      const timeIndex = rest.findIndex((p) => p.includes(":"));
+      const room = rest.slice(0, timeIndex).join("-");
+      const time = rest[timeIndex] + "-" + rest[timeIndex + 1];
+      return { day, room, time };
+    },
+    []
+  );
 
   const handleDragStart = useCallback(
-    (event: DragStartEvent) => {
+    (event: DragStartEvent): void => {
       const sourceId = event.active.id as string;
+      // console.log("Drag started:", sourceId);
       const {
         day: sourceDay,
         room: sourceRoom,
@@ -394,18 +422,27 @@ const Timetable = () => {
         "Faculty Assigned" in sourceSessions[sourceIndex]
       ) {
         setActiveSession(sourceSessions[sourceIndex] as Session);
+        // console.log("Active session set:", sourceSessions[sourceIndex]);
+      } else {
+        console.warn("No valid session found for drag:", {
+          sourceId,
+          sourceSessions,
+          sourceIndex,
+        });
       }
     },
     [data, parseCellId]
   );
 
   const handleDragEnd = useCallback(
-    (event: DragEndEvent) => {
+    (event: DragEndEvent): void => {
       const { active, over } = event;
+      // console.log("Drag ended:", { activeId: active.id, overId: over?.id });
 
       setActiveSession(null);
 
       if (!over) {
+        // console.log("No drop target");
         return;
       }
 
@@ -428,8 +465,12 @@ const Timetable = () => {
         sourceRoom === destRoom &&
         sourceTime === destTime
       ) {
+        // console.log("Same cell, no action needed");
         return;
       }
+
+      // Set drag processing state immediately when drag ends
+      setIsDragProcessing(true);
 
       const updatedData = produce(data, (draft) => {
         const sourceRoomData = draft[sourceDay]?.find(
@@ -469,6 +510,7 @@ const Timetable = () => {
           | EmptySlot;
 
         if (!("Faculty Assigned" in sessionToMove)) {
+          console.warn("Not a draggable session:", sessionToMove);
           return;
         }
 
@@ -497,120 +539,9 @@ const Timetable = () => {
 
       setPendingData(updatedData);
       setIsModalOpen(true);
+      // console.log("Pending data set for save:", updatedData);
     },
     [data, parseCellId]
-  );
-
-  const DroppableCell = React.memo<{
-    id: string;
-    children: React.ReactNode;
-    isEmpty: boolean;
-    isDraggingOver: boolean;
-  }>(({ id, children, isEmpty, isDraggingOver }) => {
-    const { setNodeRef, isOver } = useDroppable({ id });
-    const className = useMemo(
-      () =>
-        `border p-2 transition-all duration-200 ${
-          isOver ? "bg-blue-100 border-2 border-blue-400" : ""
-        } ${isDraggingOver && isEmpty ? "bg-gray-100 opacity-50" : ""}`,
-      [isOver, isDraggingOver, isEmpty]
-    );
-
-    return (
-      <td ref={setNodeRef} className={className}>
-        {children}
-      </td>
-    );
-  });
-  DroppableCell.displayName = "DroppableCell";
-
-  const DraggableSession = React.memo<{
-    id: string;
-    session: Session;
-    isDragging?: boolean;
-  }>(({ id, session, isDragging = false }) => {
-    const { attributes, listeners, setNodeRef } = useDraggable({ id });
-    const className = useMemo(
-      () =>
-        `cursor-move transition-all ease-in-out ${
-          isDragging
-            ? "opacity-70 scale-105 rotate-1 shadow-xl bg-blue-50 z-50"
-            : "hover:bg-gray-50"
-        }`,
-      [isDragging]
-    );
-
-    return (
-      <div
-        ref={setNodeRef}
-        {...listeners}
-        {...attributes}
-        className={className}
-      >
-        <SessionDetails session={session} />
-      </div>
-    );
-  });
-  DraggableSession.displayName = "DraggableSession";
-
-  const deleteVersion = useCallback(
-    async (version: number) => {
-      try {
-        const response = await fetch(
-          `/api/timetable?version_number=${version}`,
-          {
-            method: "DELETE",
-          }
-        );
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(
-            errorData.error || `HTTP error! Status: ${response.status}`
-          );
-        }
-        const res = await response.json();
-
-        toast.success(`Version ${res.version_number} delete successful`);
-        setVersions((prev) => prev.filter((v) => v !== version));
-
-        let newSelectedVersion: number | undefined = undefined;
-        const currentIndex = versions.indexOf(version);
-        if (versions.length > 1) {
-          if (currentIndex === 0) {
-            newSelectedVersion = versions[1];
-          } else if (currentIndex === versions.length - 1) {
-            newSelectedVersion = versions[versions.length - 2];
-          } else {
-            newSelectedVersion =
-              versions[currentIndex + 1] || versions[currentIndex - 1];
-          }
-        }
-
-        setSelectedVersion(newSelectedVersion);
-        if (typeof window !== "undefined") {
-          if (newSelectedVersion === undefined) {
-            localStorage.removeItem("selectedTimetableVersion");
-          } else {
-            localStorage.setItem(
-              "selectedTimetableVersion",
-              newSelectedVersion.toString()
-            );
-          }
-        }
-
-        await loadData(newSelectedVersion);
-      } catch (error) {
-        console.error("Failed to delete version:", error);
-        toast.error("Deletion Failed", {
-          description: "Could not delete the version. Please try again.",
-          duration: 3000,
-        });
-      } finally {
-        setIsDeleteDialogOpen(false);
-      }
-    },
-    [versions, loadData, setVersions, setSelectedVersion]
   );
 
   if (error) {
@@ -633,7 +564,7 @@ const Timetable = () => {
             <div className="flex items-center w-[30%]">
               <label className="mr-2 flex">Select Version:</label>
               <div className="relative w-40 text-sm">
-                <Select
+                <Select<VersionOption>
                   instanceId={versionId}
                   options={versions.map((version) => ({
                     value: version,
@@ -648,11 +579,15 @@ const Timetable = () => {
                       : null
                   }
                   onChange={(selectedOption) => {
-                    setSelectedVersion(
-                      selectedOption ? selectedOption.value : undefined
-                    );
+                    const newVersion = selectedOption?.value;
+                    setSelectedVersion(newVersion);
+                    if (newVersion !== undefined) {
+                      // console.log("Selected version:", newVersion);
+                      fetchTimetableData(newVersion);
+                    }
                   }}
                   placeholder="Select Version"
+                  isDisabled={isFetching || isDragProcessing} // Disable during both fetch and drag processing
                   components={{
                     Option: ({ innerRef, innerProps, data, isSelected }) => (
                       <div
@@ -694,9 +629,15 @@ const Timetable = () => {
               Please check your timetable daily for any possible change!
             </div>
           </div>
-          {loading ? (
+          {isFetching || isDragProcessing ? ( // Show loader for both conditions
             <div className="flex justify-center items-center h-[calc(100vh-8rem)] flex-1">
               <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : Object.keys(data).length === 0 ? (
+            <div className="flex justify-center items-center h-64 flex-1">
+              <div className="text-xl text-gray-500">
+                No timetable data available
+              </div>
             </div>
           ) : (
             <table className="min-w-full border-collapse border">
@@ -723,10 +664,12 @@ const Timetable = () => {
                       </td>
                     </tr>
                     {allRooms.map((roomName) => {
-                      const roomData = rooms.find(
-                        (room: RoomSchedule) =>
-                          Object.keys(room)[0] === roomName
-                      );
+                      const roomData = Array.isArray(rooms)
+                        ? rooms.find(
+                            (room: RoomSchedule) =>
+                              Object.keys(room)[0] === roomName
+                          )
+                        : null;
                       const sessions = roomData
                         ? roomData[roomName] ||
                           timeSlots.map((time) => ({ Time: time }))
@@ -738,7 +681,7 @@ const Timetable = () => {
                           {timeSlots.map((timeSlot) => {
                             const session = sessions.find(
                               (s: Session | EmptySlot) => s.Time === timeSlot
-                            ) as Session | EmptySlot;
+                            ) as Session | EmptySlot | undefined;
                             const isEmpty =
                               !session || !("Faculty Assigned" in session);
                             const cellId = `${day}-${roomName}-${timeSlot}`;
@@ -757,14 +700,19 @@ const Timetable = () => {
                                 isEmpty={isEmpty}
                                 isDraggingOver={!!isDraggingThisSession}
                               >
-                                {!isEmpty && !isDraggingThisSession ? (
+                                {!isEmpty &&
+                                !isDraggingThisSession &&
+                                session &&
+                                "Faculty Assigned" in session ? (
                                   <DraggableSession
                                     id={`${cellId}-${
                                       session["Course Details"] || "session"
                                     }`}
                                     session={session as Session}
                                   />
-                                ) : isDraggingThisSession ? (
+                                ) : isDraggingThisSession &&
+                                  session &&
+                                  "Faculty Assigned" in session ? (
                                   <SessionDetails
                                     session={session as Session}
                                     isPlaceholder
@@ -826,42 +774,42 @@ const Timetable = () => {
             </AlertDialogContent>
           </AlertDialog>
         )}
-        <AlertDialog
-          open={isDeleteDialogOpen}
-          onOpenChange={setIsDeleteDialogOpen}
-        >
-          <AlertDialogContent className="bg-black text-white">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to delete Version {versionToDelete}? This
-                action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel
-                onClick={() => setIsDeleteDialogOpen(false)}
-                className="bg-red-800 hover:bg-red-900 text-white"
-              >
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => {
-                  if (versionToDelete) {
-                    deleteVersion(versionToDelete);
-                  }
-                }}
-                className="bg-blue-900 hover:bg-blue-800 text-white"
-              >
-                Confirm
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        {isDeleteDialogOpen && (
+          <AlertDialog
+            open={isDeleteDialogOpen}
+            onOpenChange={setIsDeleteDialogOpen}
+          >
+            <AlertDialogContent className="bg-black text-white">
+              <AlertDialogHeader>
+                <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete Version {versionToDelete}?
+                  This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel
+                  onClick={() => setIsDeleteDialogOpen(false)}
+                  className="bg-red-800 hover:bg-red-900 text-white"
+                >
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    if (versionToDelete !== null) {
+                      deleteVersion(versionToDelete);
+                    }
+                  }}
+                  className="bg-blue-900 hover:bg-blue-800 text-white"
+                >
+                  Confirm
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </DndContext>
       <Toaster />
     </main>
   );
-};
-
-export default Timetable;
+}
