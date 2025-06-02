@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import { timetableSchema } from "@/lib/validation/formValidationSchema";
 import React, { useState } from "react";
 import FileUploader from "@/components/fileuploader/page";
+import { Days } from "@/helpers/page";
 // import { useDispatch } from "react-redux";
 // import { setData } from "@/state/dataSlice/data_slice";
 // import { useRouter } from "next/navigation";
@@ -14,14 +15,16 @@ export interface FormValues {
 }
 
 export default function GenerateTimeTable() {
-  const [teacherFileName, setTeacherFileName] = useState<string | null>("");
-  const [rulesFileName, setRulesFileName] = useState<string | null>("");
+  const [teacherFileName, setTeacherFileName] = useState<string | null>(null);
+  const [rulesFileName, setRulesFileName] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   // const dispatch = useDispatch();
   // const router = useRouter();
   // const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
   // console.log(apiKey, "api key");
+
+  // Debug Formik state changes
 
   const generateDynamicPrompt = (data: FormValues): string => {
     let prompt = `You are an AI assistant tasked with generating a university-level class timetable in strict JSON format. Follow every rule below carefully. Your response must ONLY be valid JSON.\n\n`;
@@ -49,7 +52,6 @@ export default function GenerateTimeTable() {
       }
     });
 
-    // NEW RULES for credit hour distribution across days
     prompt += `\nCredit Hour Distribution Rules:\n`;
     prompt += `- Each subject's total weekly classes must match its credit hours.\n`;
     prompt += `- For example, a subject with 3 credit hours must be scheduled exactly 3 times across the week (Mon–Fri).\n`;
@@ -57,7 +59,6 @@ export default function GenerateTimeTable() {
     prompt += `- Avoid scheduling all 3 on Monday to Wednesday. Prefer spreading classes evenly from Monday to Friday.\n`;
     prompt += `- If a subject has 3 or more classes per week, do not place all of them on consecutive days.\n`;
 
-    // NEW RULES to distribute free slots evenly
     prompt += `\nFree Slot Distribution Rules:\n`;
     prompt += `- Distribute free/empty time slots evenly throughout the day for each room.\n`;
     prompt += `- Avoid placing all free slots consecutively at the end of the day.\n`;
@@ -123,7 +124,6 @@ export default function GenerateTimeTable() {
       setError("");
       try {
         const prompt = generateDynamicPrompt(values);
-
         const res = await fetch("/api/generate", {
           method: "POST",
           headers: {
@@ -131,7 +131,7 @@ export default function GenerateTimeTable() {
           },
           body: JSON.stringify({ prompt }),
         });
-        resetForm();
+
         if (!res.ok) {
           throw new Error(`HTTP error: ${res.status} ${res.statusText}`);
         }
@@ -158,15 +158,7 @@ export default function GenerateTimeTable() {
           throw new Error(`Failed to parse response as JSON: ${parseError}`);
         }
 
-        // Validate the timetable structure
-        const expectedDays = [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-        ];
-        const missingDays = expectedDays.filter((day) => !parsedTimetable[day]);
+        const missingDays = Days.filter((day) => !parsedTimetable[day]);
         if (missingDays.length > 0) {
           throw new Error(
             `Incomplete timetable: missing days - ${missingDays.join(", ")}`
@@ -175,13 +167,16 @@ export default function GenerateTimeTable() {
 
         console.log("Full Timetable:", parsedTimetable);
         // setTimetable(parsedTimetable);
-        setIsLoading(false);
+
+        // Reset form only after successful submission
+        resetForm();
+        setTeacherFileName(null);
+        setRulesFileName(null);
       } catch (err) {
         console.error("Error:", err);
-        resetForm();
-        setTeacherFileName("");
-        setRulesFileName("");
-        setError("Failed to generate timetable.");
+        setError(
+          "Failed to generate timetable. Please check your files and try again."
+        );
       } finally {
         setIsLoading(false);
       }
@@ -189,8 +184,8 @@ export default function GenerateTimeTable() {
   });
 
   return (
-    <main className=" flex h-[calc(100vh-4rem)] justify-center  overflow-hidden ">
-      <div className="flex justify-center   rounded-2xl  border-[#416697]">
+    <main className="flex h-[calc(100vh-4rem)] justify-center overflow-hidden">
+      <div className="flex justify-center rounded-2xl border-[#416697]">
         <div className="w-[500px]">
           <h1 className="font-bold text-4xl mb-4 text-[#194c87] pt-8">
             Upload Teacher &<br /> Subject Assignment
@@ -203,8 +198,8 @@ export default function GenerateTimeTable() {
 
           <form onSubmit={formik.handleSubmit}>
             <FileUploader
-              label="Upload Teacher CSV"
-              placeholder="Select Teachers CSV File"
+              label="Upload Teacher File"
+              placeholder="Select Teachers CSV/XLSX File"
               onParse={(data) => {
                 formik.setFieldValue("teacherData", data);
               }}
@@ -220,8 +215,8 @@ export default function GenerateTimeTable() {
             )}
 
             <FileUploader
-              label="Upload Rules CSV File"
-              placeholder="Select Rules CSV File"
+              label="Upload Rules File"
+              placeholder="Select Rules CSV/XLSX File"
               onParse={(data) => {
                 formik.setFieldValue("rulesData", data);
               }}
@@ -236,7 +231,7 @@ export default function GenerateTimeTable() {
               </p>
             )}
 
-            <p className="font-medium text-xl mb-2 text-[#416697]">
+            <p className="font-medium text-xl px-3 mb-2 text-[#416697]">
               Or manually enter rules
             </p>
 
@@ -257,8 +252,8 @@ export default function GenerateTimeTable() {
               <button
                 type="submit"
                 className={`bg-[#194c87] text-white p-3 mt-4 ${
-                  isLoading ? "bg-gray-400" : "bg-[#060d16]"
-                }`}
+                  isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-[#060d16]"
+                } rounded-md`}
                 disabled={isLoading}
               >
                 {isLoading ? "Generating..." : "Generate TimeTable"}

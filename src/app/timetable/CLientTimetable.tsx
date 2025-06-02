@@ -66,6 +66,7 @@ interface DraggableSessionProps {
   id: string;
   session: Session;
   isDragging?: boolean;
+  isDisabled?: boolean; // Add prop to disable dragging
 }
 
 const SessionDetails: React.FC<SessionDetailsProps> = React.memo(
@@ -99,12 +100,17 @@ const DroppableCell: React.FC<DroppableCellProps> = React.memo(
 DroppableCell.displayName = "DroppableCell";
 
 const DraggableSession: React.FC<DraggableSessionProps> = React.memo(
-  ({ id, session, isDragging = false }) => {
-    const { attributes, listeners, setNodeRef } = useDraggable({ id });
-    const className = `cursor-move transition-all ease-in-out ${
-      isDragging
-        ? "opacity-70 scale-105 rotate-1 shadow-xl bg-blue-50"
-        : "hover:bg-gray-50"
+  ({ id, session, isDragging = false, isDisabled = false }) => {
+    const { attributes, listeners, setNodeRef } = useDraggable({
+      id,
+      disabled: isDisabled, // Disable dragging if isDisabled is true
+    });
+    const className = `transition-all ease-in-out ${
+      isDisabled
+        ? "cursor-not-allowed opacity-50"
+        : "cursor-move hover:bg-gray-50"
+    } ${
+      isDragging ? "opacity-70 scale-105 rotate-1 shadow-xl bg-blue-50" : ""
     }`;
     const staticAttributes = {
       ...attributes,
@@ -113,7 +119,7 @@ const DraggableSession: React.FC<DraggableSessionProps> = React.memo(
     return (
       <div
         ref={setNodeRef}
-        {...listeners}
+        {...(isDisabled ? {} : listeners)} // Remove listeners if disabled
         {...staticAttributes}
         className={className}
       >
@@ -193,7 +199,6 @@ export default function ClientTimetable({
   }, [isVersionLoading]);
 
   useEffect(() => {
-    // Update URL with selected version
     if (selectedVersion !== undefined) {
       const url = new URL(window.location.href);
       url.searchParams.set("version", selectedVersion.toString());
@@ -368,7 +373,7 @@ export default function ClientTimetable({
       if (e) e.preventDefault();
       if (action === "cancel" || !pendingData) {
         setPendingData(null);
-        setData(lastFetchedData); // Revert to last fetched data
+        setData(lastFetchedData);
         return;
       }
       setIsSaving(action);
@@ -565,9 +570,9 @@ export default function ClientTimetable({
         modifiers={[restrictToWindowEdges]}
       >
         <div className="flex flex-col h-full px-2">
-          <div className="bg-red-400 w-full flex items-center h-16 px-2 sticky top-0 justify-between z-40">
+          <div className="bg-[#042954] w-full flex items-center h-16 px-2 sticky top-0 justify-between z-40">
             <div className="flex items-center w-[30%]">
-              <label className="mr-2 flex">Select Version:</label>
+              <label className="mr-2 flex text-white">Select Version:</label>
               <div className="relative w-40 text-sm">
                 <Select<VersionOption>
                   instanceId={versionId}
@@ -629,7 +634,8 @@ export default function ClientTimetable({
                 />
               </div>
             </div>
-            <div className="flex items-center gap-2">
+
+            <div className="flex items-center gap-2 ">
               {pendingData && (
                 <>
                   <button
@@ -785,6 +791,7 @@ export default function ClientTimetable({
                                           session.Subject || "session"
                                         }`}
                                         session={session as Session}
+                                        isDisabled={isSaving !== "none"} // Disable dragging during save
                                       />
                                     ) : isDraggingThisSession &&
                                       session &&
@@ -816,6 +823,7 @@ export default function ClientTimetable({
               id={`overlay-${activeSession.Subject}`}
               session={activeSession}
               isDragging
+              isDisabled={isSaving !== "none"} // Disable dragging in overlay
             />
           ) : null}
         </DragOverlay>
