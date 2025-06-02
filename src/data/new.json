@@ -1,0 +1,3292 @@
+{
+    "Monday": [
+        {
+            "New Academi c Block Room 16": [
+                {
+                    "Room": "New Academi c Block Room 16",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Syed Najam Ul Hassan",
+                    "Subject": "Introduction to Remote Sensing",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "New Academi c Block Room 16",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Rabia Masood",
+                    "Subject": "Human Geography",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "New Academi c Block Room 16",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Sherbaz Alam",
+                    "Subject": "Linear Algebra",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "New Academi c Block Room 02": [
+                {
+                    "Room": "New Academi c Block Room 02",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Zahid Ullah",
+                    "Subject": "Fundamentals of Programming",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "New Academi c Block Room 02",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Applied Physics",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "New Academi c Block Room 02",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Dr. Manzoor Hussain",
+                    "Subject": "Islamic Studies",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-1": [
+                {
+                    "Room": "NAB-1",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Dr Aftab",
+                    "Subject": "Digital Image Processing",
+                    "Section": "BS (GIS &RS (2023-2027)) 4th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-1",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr Karamat",
+                    "Subject": "Climate Change",
+                    "Section": "BS (GIS &RS (2023-2027)) 4th"
+                },
+                {
+                    "Room": "NAB-1",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Saleem Ullah Baig",
+                    "Subject": "Navigation Systems",
+                    "Section": "BS (GIS &RS (2023-2027)) 4th"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-2": [
+                {
+                    "Room": "NAB-2",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Rabia Masood",
+                    "Subject": "Natural Resources",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-2",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Muhammad Tahir",
+                    "Subject": "Spatial Decision Support Systems",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "NAB-2",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Asif Ali",
+                    "Subject": "Web GIS",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-3": [
+                {
+                    "Room": "NAB-3",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Mr Saleem Ullah Baig",
+                    "Subject": "Spatial Data Infrastructure",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-3",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr Asghar Khan",
+                    "Subject": "Research Methods",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "NAB-3",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Muhammad Tahir",
+                    "Subject": "Spatial Databases",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-4": [
+                {
+                    "Room": "NAB-4",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Ms Kamni",
+                    "Subject": "Technical Writing and Presentation Skills",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-4",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Ms. Ponum Almas",
+                    "Subject": "Professional Ethics",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "NAB-4",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Asif Ali",
+                    "Subject": "Elective III (Land Information System)",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "NAB-4",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Mr Saleem Ullah Baig",
+                    "Subject": "Elective IV (GIS for Disaster Management)",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                }
+            ]
+        },
+        {
+            "NAB-5": [
+                {
+                    "Room": "NAB-5",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Dr Mohd Ismail",
+                    "Subject": "Database Systems",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-5",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "NAB-5",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr. Khalid Saleem",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "NAB-5",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Ms Tazeen Zehra",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Room 211": [
+                {
+                    "Room": "Room 211",
+                    "Time": "9:30-10:30",
+                    "Teacher": "sajid hussain",
+                    "Subject": "Object Oriented Programming",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Room 211",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr Mohd Ismail",
+                    "Subject": "Database Systems",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Room": "Room 211",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "Room 211",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Mr. Khalid Saleem",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Room 247": [
+                {
+                    "Room": "Room 247",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Jahangir Hussain",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr. Muazzam Ali",
+                    "Subject": "Computer Organization & Assembly Language",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Dr. Zar Nawab",
+                    "Subject": "Domain Core 1 (Theory of Automata)",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Iqbal Hussain",
+                    "Subject": "Domain Core 2 (Advance Database Management Systems)",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Nadeem Hussain",
+                    "Subject": "Natural Science (Applied Physics)",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                }
+            ]
+        },
+        {
+            "Room 229": [
+                {
+                    "Room": "Room 229",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Mubashir Ayaz",
+                    "Subject": "Expository Writing",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Mr. Israr Ahmed",
+                    "Subject": "Islamic Studies",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Time": "11:50-12:50"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Dr. Muazzam Ali",
+                    "Subject": "Computer Organization & Assembly Language",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Dr. Zar Nawab",
+                    "Subject": "Domain Core 1 (Theory of Automata)",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Iqbal Hussain",
+                    "Subject": "Domain Core 2 (Advance Database Management Systems)",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                }
+            ]
+        },
+        {
+            "New Academi c Block Room 12": [
+                {
+                    "Room": "New Academi c Block Room 12",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Nadeem Hussain",
+                    "Subject": "Natural Science (Applied Physics)",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Room": "New Academi c Block Room 12",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Mubashir Ayaz",
+                    "Subject": "Expository Writing",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Room": "New Academi c Block Room 12",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mr. Israr Ahmed",
+                    "Subject": "Islamic Studies",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Lab1": [
+                {
+                    "Room": "Lab1",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Mr. Khalid Saleem",
+                    "Subject": "CS-Supporting-3 (Differential Equations)",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Dr Sabit",
+                    "Subject": "Computer Networks",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mubashir Ayaz",
+                    "Subject": "English-II (Technical & Business Writing)",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Dr Aftab",
+                    "Subject": "CS Elective-1 (Digital image processing)",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Dr Sabit",
+                    "Subject": "CS Elective-2(Cloud Computing))",
+                    "Section": "BSCS 2022-2026) 6th"
+                }
+            ]
+        },
+        {
+            "Lab2": [
+                {
+                    "Room": "Lab2",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Ms Chand Safi",
+                    "Subject": "CS Elective-4 (Natural Language Processing)",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Lab2",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Akhtar Ali",
+                    "Subject": "Pakistan Studies",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Room": "Lab2",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Dr Habib Ullah",
+                    "Subject": "Information Security",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Room": "Lab2",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Rubi Alam",
+                    "Subject": "University Elective-4 (Human Resource Management)",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Lab3": [
+                {
+                    "Room": "Lab3",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Dr. Dostdar",
+                    "Subject": "Object Oriented Programming",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Imran Ali",
+                    "Subject": "Database Systems",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Wajahat Hussain",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Razia Sharif",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Lab4": [
+                {
+                    "Room": "Lab4",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Gul Jabeen",
+                    "Subject": "Object Oriented Programming",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Lab4",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Imran Ali",
+                    "Subject": "Database Systems",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Room": "Lab4",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Kamran Abbas",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "Lab4",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Wajahat Hussain",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Room 210(Lab)": [
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Rashid Hussain / Dr Shams",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Dr. Muazzam Ali",
+                    "Subject": "Computer Organization & Assembly Language",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Syed Najam Ul Hassan",
+                    "Subject": "Domain Core 1 (Software Design & Architecture) Domain Core",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "1:30-2:30",
+                    "Teacher": "ponum Almas",
+                    "Subject": "Domain Core 2 (Software Construction & Development)",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Nadeem Abbas",
+                    "Subject": "Natural Science (Applied Physics)",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Shahid Hussain",
+                    "Subject": "Expository Writing",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                }
+            ]
+        }
+    ],
+    "Tuesday": [
+        {
+            "New Academi c Block Room 16": [
+                {
+                    "Room": "New Academi c Block Room 16",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Syed Najam Ul Hassan",
+                    "Subject": "Introduction to Remote Sensing",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "New Academi c Block Room 16",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Rabia Masood",
+                    "Subject": "Human Geography",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "New Academi c Block Room 16",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Sherbaz Alam",
+                    "Subject": "Linear Algebra",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "New Academi c Block Room 02": [
+                {
+                    "Room": "New Academi c Block Room 02",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Zahid Ullah",
+                    "Subject": "Fundamentals of Programming",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "New Academi c Block Room 02",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Applied Physics",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "New Academi c Block Room 02",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Dr. Manzoor Hussain",
+                    "Subject": "Islamic Studies",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-1": [
+                {
+                    "Room": "NAB-1",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Dr Aftab",
+                    "Subject": "Digital Image Processing",
+                    "Section": "BS (GIS &RS (2023-2027)) 4th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-1",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr Karamat",
+                    "Subject": "Climate Change",
+                    "Section": "BS (GIS &RS (2023-2027)) 4th"
+                },
+                {
+                    "Room": "NAB-1",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Saleem Ullah Baig",
+                    "Subject": "Navigation Systems",
+                    "Section": "BS (GIS &RS (2023-2027)) 4th"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-2": [
+                {
+                    "Room": "NAB-2",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Rabia Masood",
+                    "Subject": "Natural Resources",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-2",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Muhammad Tahir",
+                    "Subject": "Spatial Decision Support Systems",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "NAB-2",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Asif Ali",
+                    "Subject": "Web GIS",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-3": [
+                {
+                    "Room": "NAB-3",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Mr Saleem Ullah Baig",
+                    "Subject": "Spatial Data Infrastructure",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-3",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr Asghar Khan",
+                    "Subject": "Research Methods",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "NAB-3",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Muhammad Tahir",
+                    "Subject": "Spatial Databases",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-4": [
+                {
+                    "Room": "NAB-4",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Ms Kamni",
+                    "Subject": "Technical Writing and Presentation Skills",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-4",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Ms. Ponum Almas",
+                    "Subject": "Professional Ethics",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "NAB-4",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Asif Ali",
+                    "Subject": "Elective III (Land Information System)",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "NAB-4",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Mr Saleem Ullah Baig",
+                    "Subject": "Elective IV (GIS for Disaster Management)",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                }
+            ]
+        },
+        {
+            "NAB-5": [
+                {
+                    "Room": "NAB-5",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Dr Mohd Ismail",
+                    "Subject": "Database Systems",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-5",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "NAB-5",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr. Khalid Saleem",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "NAB-5",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Ms Tazeen Zehra",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Room 211": [
+                {
+                    "Room": "Room 211",
+                    "Time": "9:30-10:30",
+                    "Teacher": "sajid hussain",
+                    "Subject": "Object Oriented Programming",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Room 211",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr Mohd Ismail",
+                    "Subject": "Database Systems",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Room": "Room 211",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "Room 211",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Mr. Khalid Saleem",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Room 247": [
+                {
+                    "Room": "Room 247",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Jahangir Hussain",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr. Muazzam Ali",
+                    "Subject": "Computer Organization & Assembly Language",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Dr. Zar Nawab",
+                    "Subject": "Domain Core 1 (Theory of Automata)",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Iqbal Hussain",
+                    "Subject": "Domain Core 2 (Advance Database Management Systems)",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Nadeem Hussain",
+                    "Subject": "Natural Science (Applied Physics)",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                }
+            ]
+        },
+        {
+            "Room 229": [
+                {
+                    "Room": "Room 229",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Mubashir Ayaz",
+                    "Subject": "Expository Writing",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Mr. Israr Ahmed",
+                    "Subject": "Islamic Studies",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Time": "11:50-12:50"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Dr. Muazzam Ali",
+                    "Subject": "Computer Organization & Assembly Language",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Dr. Zar Nawab",
+                    "Subject": "Domain Core 1 (Theory of Automata)",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Iqbal Hussain",
+                    "Subject": "Domain Core 2 (Advance Database Management Systems)",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                }
+            ]
+        },
+        {
+            "New Academi c Block Room 12": [
+                {
+                    "Room": "New Academi c Block Room 12",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Nadeem Hussain",
+                    "Subject": "Natural Science (Applied Physics)",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Room": "New Academi c Block Room 12",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Mubashir Ayaz",
+                    "Subject": "Expository Writing",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Room": "New Academi c Block Room 12",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mr. Israr Ahmed",
+                    "Subject": "Islamic Studies",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Lab1": [
+                {
+                    "Room": "Lab1",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Mr. Khalid Saleem",
+                    "Subject": "CS-Supporting-3 (Differential Equations)",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Dr Sabit",
+                    "Subject": "Computer Networks",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mubashir Ayaz",
+                    "Subject": "English-II (Technical & Business Writing)",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Dr Aftab",
+                    "Subject": "CS Elective-1 (Digital image processing)",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Dr Sabit",
+                    "Subject": "CS Elective-2(Cloud Computing))",
+                    "Section": "BSCS 2022-2026) 6th"
+                }
+            ]
+        },
+        {
+            "Lab2": [
+                {
+                    "Room": "Lab2",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Ms Chand Safi",
+                    "Subject": "CS Elective-4 (Natural Language Processing)",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Lab2",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Akhtar Ali",
+                    "Subject": "Pakistan Studies",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Room": "Lab2",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Dr Habib Ullah",
+                    "Subject": "Information Security",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Room": "Lab2",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Rubi Alam",
+                    "Subject": "University Elective-4 (Human Resource Management)",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Lab3": [
+                {
+                    "Room": "Lab3",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Dr. Dostdar",
+                    "Subject": "Object Oriented Programming",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Imran Ali",
+                    "Subject": "Database Systems",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Wajahat Hussain",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Razia Sharif",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Lab4": [
+                {
+                    "Room": "Lab4",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Gul Jabeen",
+                    "Subject": "Object Oriented Programming",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Lab4",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Imran Ali",
+                    "Subject": "Database Systems",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Room": "Lab4",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Kamran Abbas",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "Lab4",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Wajahat Hussain",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Room 210(Lab)": [
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Rashid Hussain / Dr Shams",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Dr. Muazzam Ali",
+                    "Subject": "Computer Organization & Assembly Language",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Syed Najam Ul Hassan",
+                    "Subject": "Domain Core 1 (Software Design & Architecture) Domain Core",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "1:30-2:30",
+                    "Teacher": "ponum Almas",
+                    "Subject": "Domain Core 2 (Software Construction & Development)",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Nadeem Abbas",
+                    "Subject": "Natural Science (Applied Physics)",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Shahid Hussain",
+                    "Subject": "Expository Writing",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                }
+            ]
+        }
+    ],
+    "Wednesday": [
+        {
+            "New Academi c Block Room 16": [
+                {
+                    "Room": "New Academi c Block Room 16",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Syed Najam Ul Hassan",
+                    "Subject": "Introduction to Remote Sensing",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "New Academi c Block Room 16",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Rabia Masood",
+                    "Subject": "Human Geography",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "New Academi c Block Room 16",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Sherbaz Alam",
+                    "Subject": "Linear Algebra",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "New Academi c Block Room 02": [
+                {
+                    "Room": "New Academi c Block Room 02",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Zahid Ullah",
+                    "Subject": "Fundamentals of Programming",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "New Academi c Block Room 02",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Applied Physics",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "New Academi c Block Room 02",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Dr. Manzoor Hussain",
+                    "Subject": "Islamic Studies",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-1": [
+                {
+                    "Room": "NAB-1",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Dr Aftab",
+                    "Subject": "Digital Image Processing",
+                    "Section": "BS (GIS &RS (2023-2027)) 4th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-1",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr Karamat",
+                    "Subject": "Climate Change",
+                    "Section": "BS (GIS &RS (2023-2027)) 4th"
+                },
+                {
+                    "Room": "NAB-1",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Saleem Ullah Baig",
+                    "Subject": "Navigation Systems",
+                    "Section": "BS (GIS &RS (2023-2027)) 4th"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-2": [
+                {
+                    "Room": "NAB-2",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Rabia Masood",
+                    "Subject": "Natural Resources",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-2",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Muhammad Tahir",
+                    "Subject": "Spatial Decision Support Systems",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "NAB-2",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Asif Ali",
+                    "Subject": "Web GIS",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-3": [
+                {
+                    "Room": "NAB-3",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Mr Saleem Ullah Baig",
+                    "Subject": "Spatial Data Infrastructure",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-3",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr Asghar Khan",
+                    "Subject": "Research Methods",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "NAB-3",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Muhammad Tahir",
+                    "Subject": "Spatial Databases",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-4": [
+                {
+                    "Room": "NAB-4",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Ms Kamni",
+                    "Subject": "Technical Writing and Presentation Skills",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-4",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Ms. Ponum Almas",
+                    "Subject": "Professional Ethics",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "NAB-4",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Asif Ali",
+                    "Subject": "Elective III (Land Information System)",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "NAB-4",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Mr Saleem Ullah Baig",
+                    "Subject": "Elective IV (GIS for Disaster Management)",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                }
+            ]
+        },
+        {
+            "NAB-5": [
+                {
+                    "Room": "NAB-5",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Dr Mohd Ismail",
+                    "Subject": "Database Systems",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-5",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "NAB-5",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr. Khalid Saleem",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "NAB-5",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Ms Tazeen Zehra",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Room 211": [
+                {
+                    "Room": "Room 211",
+                    "Time": "9:30-10:30",
+                    "Teacher": "sajid hussain",
+                    "Subject": "Object Oriented Programming",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Room 211",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr Mohd Ismail",
+                    "Subject": "Database Systems",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Room": "Room 211",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "Room 211",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Mr. Khalid Saleem",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Room 247": [
+                {
+                    "Room": "Room 247",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Jahangir Hussain",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr. Muazzam Ali",
+                    "Subject": "Computer Organization & Assembly Language",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Dr. Zar Nawab",
+                    "Subject": "Domain Core 1 (Theory of Automata)",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Iqbal Hussain",
+                    "Subject": "Domain Core 2 (Advance Database Management Systems)",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Nadeem Hussain",
+                    "Subject": "Natural Science (Applied Physics)",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                }
+            ]
+        },
+        {
+            "Room 229": [
+                {
+                    "Room": "Room 229",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Mubashir Ayaz",
+                    "Subject": "Expository Writing",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Mr. Israr Ahmed",
+                    "Subject": "Islamic Studies",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Time": "11:50-12:50"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Dr. Muazzam Ali",
+                    "Subject": "Computer Organization & Assembly Language",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Dr. Zar Nawab",
+                    "Subject": "Domain Core 1 (Theory of Automata)",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Iqbal Hussain",
+                    "Subject": "Domain Core 2 (Advance Database Management Systems)",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                }
+            ]
+        },
+        {
+            "New Academi c Block Room 12": [
+                {
+                    "Room": "New Academi c Block Room 12",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Nadeem Hussain",
+                    "Subject": "Natural Science (Applied Physics)",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Room": "New Academi c Block Room 12",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Mubashir Ayaz",
+                    "Subject": "Expository Writing",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Room": "New Academi c Block Room 12",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mr. Israr Ahmed",
+                    "Subject": "Islamic Studies",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Lab1": [
+                {
+                    "Room": "Lab1",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Mr. Khalid Saleem",
+                    "Subject": "CS-Supporting-3 (Differential Equations)",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Dr Sabit",
+                    "Subject": "Computer Networks",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mubashir Ayaz",
+                    "Subject": "English-II (Technical & Business Writing)",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Dr Aftab",
+                    "Subject": "CS Elective-1 (Digital image processing)",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Dr Sabit",
+                    "Subject": "CS Elective-2(Cloud Computing))",
+                    "Section": "BSCS 2022-2026) 6th"
+                }
+            ]
+        },
+        {
+            "Lab2": [
+                {
+                    "Room": "Lab2",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Ms Chand Safi",
+                    "Subject": "CS Elective-4 (Natural Language Processing)",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Lab2",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Akhtar Ali",
+                    "Subject": "Pakistan Studies",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Room": "Lab2",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Dr Habib Ullah",
+                    "Subject": "Information Security",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Room": "Lab2",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Rubi Alam",
+                    "Subject": "University Elective-4 (Human Resource Management)",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Lab3": [
+                {
+                    "Room": "Lab3",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Dr. Dostdar",
+                    "Subject": "Object Oriented Programming",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Imran Ali",
+                    "Subject": "Database Systems",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Wajahat Hussain",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Razia Sharif",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Lab4": [
+                {
+                    "Room": "Lab4",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Gul Jabeen",
+                    "Subject": "Object Oriented Programming",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Lab4",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Imran Ali",
+                    "Subject": "Database Systems",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Room": "Lab4",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Kamran Abbas",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "Lab4",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Wajahat Hussain",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Room 210(Lab)": [
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Rashid Hussain / Dr Shams",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Dr. Muazzam Ali",
+                    "Subject": "Computer Organization & Assembly Language",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Syed Najam Ul Hassan",
+                    "Subject": "Domain Core 1 (Software Design & Architecture) Domain Core",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "1:30-2:30",
+                    "Teacher": "ponum Almas",
+                    "Subject": "Domain Core 2 (Software Construction & Development)",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Nadeem Abbas",
+                    "Subject": "Natural Science (Applied Physics)",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Shahid Hussain",
+                    "Subject": "Expository Writing",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                }
+            ]
+        }
+    ],
+    "Thursday": [
+        {
+            "New Academi c Block Room 16": [
+                {
+                    "Room": "New Academi c Block Room 16",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Syed Najam Ul Hassan",
+                    "Subject": "Introduction to Remote Sensing",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "New Academi c Block Room 16",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Rabia Masood",
+                    "Subject": "Human Geography",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "New Academi c Block Room 16",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Sherbaz Alam",
+                    "Subject": "Linear Algebra",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "New Academi c Block Room 02": [
+                {
+                    "Room": "New Academi c Block Room 02",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Zahid Ullah",
+                    "Subject": "Fundamentals of Programming",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "New Academi c Block Room 02",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Applied Physics",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "New Academi c Block Room 02",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Dr. Manzoor Hussain",
+                    "Subject": "Islamic Studies",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-1": [
+                {
+                    "Room": "NAB-1",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Dr Aftab",
+                    "Subject": "Digital Image Processing",
+                    "Section": "BS (GIS &RS (2023-2027)) 4th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-1",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr Karamat",
+                    "Subject": "Climate Change",
+                    "Section": "BS (GIS &RS (2023-2027)) 4th"
+                },
+                {
+                    "Room": "NAB-1",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Saleem Ullah Baig",
+                    "Subject": "Navigation Systems",
+                    "Section": "BS (GIS &RS (2023-2027)) 4th"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-2": [
+                {
+                    "Room": "NAB-2",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Rabia Masood",
+                    "Subject": "Natural Resources",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-2",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Muhammad Tahir",
+                    "Subject": "Spatial Decision Support Systems",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "NAB-2",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Asif Ali",
+                    "Subject": "Web GIS",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-3": [
+                {
+                    "Room": "NAB-3",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Mr Saleem Ullah Baig",
+                    "Subject": "Spatial Data Infrastructure",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-3",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr Asghar Khan",
+                    "Subject": "Research Methods",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "NAB-3",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Muhammad Tahir",
+                    "Subject": "Spatial Databases",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-4": [
+                {
+                    "Room": "NAB-4",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Ms Kamni",
+                    "Subject": "Technical Writing and Presentation Skills",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-4",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Ms. Ponum Almas",
+                    "Subject": "Professional Ethics",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "NAB-4",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Asif Ali",
+                    "Subject": "Elective III (Land Information System)",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "NAB-4",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Mr Saleem Ullah Baig",
+                    "Subject": "Elective IV (GIS for Disaster Management)",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                }
+            ]
+        },
+        {
+            "NAB-5": [
+                {
+                    "Room": "NAB-5",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Dr Mohd Ismail",
+                    "Subject": "Database Systems",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-5",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "NAB-5",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr. Khalid Saleem",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "NAB-5",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Ms Tazeen Zehra",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Room 211": [
+                {
+                    "Room": "Room 211",
+                    "Time": "9:30-10:30",
+                    "Teacher": "sajid hussain",
+                    "Subject": "Object Oriented Programming",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Room 211",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr Mohd Ismail",
+                    "Subject": "Database Systems",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Room": "Room 211",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "Room 211",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Mr. Khalid Saleem",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Room 247": [
+                {
+                    "Room": "Room 247",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Jahangir Hussain",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr. Muazzam Ali",
+                    "Subject": "Computer Organization & Assembly Language",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Dr. Zar Nawab",
+                    "Subject": "Domain Core 1 (Theory of Automata)",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Iqbal Hussain",
+                    "Subject": "Domain Core 2 (Advance Database Management Systems)",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Nadeem Hussain",
+                    "Subject": "Natural Science (Applied Physics)",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                }
+            ]
+        },
+        {
+            "Room 229": [
+                {
+                    "Room": "Room 229",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Mubashir Ayaz",
+                    "Subject": "Expository Writing",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Mr. Israr Ahmed",
+                    "Subject": "Islamic Studies",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Time": "11:50-12:50"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Dr. Muazzam Ali",
+                    "Subject": "Computer Organization & Assembly Language",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Dr. Zar Nawab",
+                    "Subject": "Domain Core 1 (Theory of Automata)",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Iqbal Hussain",
+                    "Subject": "Domain Core 2 (Advance Database Management Systems)",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                }
+            ]
+        },
+        {
+            "New Academi c Block Room 12": [
+                {
+                    "Room": "New Academi c Block Room 12",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Nadeem Hussain",
+                    "Subject": "Natural Science (Applied Physics)",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Room": "New Academi c Block Room 12",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Mubashir Ayaz",
+                    "Subject": "Expository Writing",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Room": "New Academi c Block Room 12",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mr. Israr Ahmed",
+                    "Subject": "Islamic Studies",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Lab1": [
+                {
+                    "Room": "Lab1",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Mr. Khalid Saleem",
+                    "Subject": "CS-Supporting-3 (Differential Equations)",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Dr Sabit",
+                    "Subject": "Computer Networks",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mubashir Ayaz",
+                    "Subject": "English-II (Technical & Business Writing)",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Dr Aftab",
+                    "Subject": "CS Elective-1 (Digital image processing)",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Dr Sabit",
+                    "Subject": "CS Elective-2(Cloud Computing))",
+                    "Section": "BSCS 2022-2026) 6th"
+                }
+            ]
+        },
+        {
+            "Lab2": [
+                {
+                    "Room": "Lab2",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Ms Chand Safi",
+                    "Subject": "CS Elective-4 (Natural Language Processing)",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Lab2",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Akhtar Ali",
+                    "Subject": "Pakistan Studies",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Room": "Lab2",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Dr Habib Ullah",
+                    "Subject": "Information Security",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Room": "Lab2",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Rubi Alam",
+                    "Subject": "University Elective-4 (Human Resource Management)",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Lab3": [
+                {
+                    "Room": "Lab3",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Dr. Dostdar",
+                    "Subject": "Object Oriented Programming",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Imran Ali",
+                    "Subject": "Database Systems",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Wajahat Hussain",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Razia Sharif",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Lab4": [
+                {
+                    "Room": "Lab4",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Gul Jabeen",
+                    "Subject": "Object Oriented Programming",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Lab4",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Imran Ali",
+                    "Subject": "Database Systems",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Room": "Lab4",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Kamran Abbas",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "Lab4",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Wajahat Hussain",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Room 210(Lab)": [
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Rashid Hussain / Dr Shams",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Dr. Muazzam Ali",
+                    "Subject": "Computer Organization & Assembly Language",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Syed Najam Ul Hassan",
+                    "Subject": "Domain Core 1 (Software Design & Architecture) Domain Core",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "1:30-2:30",
+                    "Teacher": "ponum Almas",
+                    "Subject": "Domain Core 2 (Software Construction & Development)",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Nadeem Abbas",
+                    "Subject": "Natural Science (Applied Physics)",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Shahid Hussain",
+                    "Subject": "Expository Writing",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                }
+            ]
+        }
+    ],
+    "Friday": [
+        {
+            "New Academi c Block Room 16": [
+                {
+                    "Room": "New Academi c Block Room 16",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Syed Najam Ul Hassan",
+                    "Subject": "Introduction to Remote Sensing",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "New Academi c Block Room 16",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Rabia Masood",
+                    "Subject": "Human Geography",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "New Academi c Block Room 16",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Sherbaz Alam",
+                    "Subject": "Linear Algebra",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "New Academi c Block Room 02": [
+                {
+                    "Room": "New Academi c Block Room 02",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Zahid Ullah",
+                    "Subject": "Fundamentals of Programming",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "New Academi c Block Room 02",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Applied Physics",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "New Academi c Block Room 02",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Dr. Manzoor Hussain",
+                    "Subject": "Islamic Studies",
+                    "Section": "BS (GIS &RS (2024-2028)) 2nd"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-1": [
+                {
+                    "Room": "NAB-1",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Dr Aftab",
+                    "Subject": "Digital Image Processing",
+                    "Section": "BS (GIS &RS (2023-2027)) 4th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-1",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr Karamat",
+                    "Subject": "Climate Change",
+                    "Section": "BS (GIS &RS (2023-2027)) 4th"
+                },
+                {
+                    "Room": "NAB-1",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Saleem Ullah Baig",
+                    "Subject": "Navigation Systems",
+                    "Section": "BS (GIS &RS (2023-2027)) 4th"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-2": [
+                {
+                    "Room": "NAB-2",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Rabia Masood",
+                    "Subject": "Natural Resources",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-2",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Muhammad Tahir",
+                    "Subject": "Spatial Decision Support Systems",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "NAB-2",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Asif Ali",
+                    "Subject": "Web GIS",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-3": [
+                {
+                    "Room": "NAB-3",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Mr Saleem Ullah Baig",
+                    "Subject": "Spatial Data Infrastructure",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-3",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr Asghar Khan",
+                    "Subject": "Research Methods",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "NAB-3",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Muhammad Tahir",
+                    "Subject": "Spatial Databases",
+                    "Section": "BS (GIS &RS (2022-2026)) fall (45) 6th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "NAB-4": [
+                {
+                    "Room": "NAB-4",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Ms Kamni",
+                    "Subject": "Technical Writing and Presentation Skills",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-4",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Ms. Ponum Almas",
+                    "Subject": "Professional Ethics",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "NAB-4",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Asif Ali",
+                    "Subject": "Elective III (Land Information System)",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "NAB-4",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Mr Saleem Ullah Baig",
+                    "Subject": "Elective IV (GIS for Disaster Management)",
+                    "Section": "BS (GIS &RS (2021-2025)) fall (43) 8th"
+                }
+            ]
+        },
+        {
+            "NAB-5": [
+                {
+                    "Room": "NAB-5",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Dr Mohd Ismail",
+                    "Subject": "Database Systems",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "NAB-5",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "NAB-5",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr. Khalid Saleem",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "NAB-5",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Ms Tazeen Zehra",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSCS 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Room 211": [
+                {
+                    "Room": "Room 211",
+                    "Time": "9:30-10:30",
+                    "Teacher": "sajid hussain",
+                    "Subject": "Object Oriented Programming",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Room 211",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr Mohd Ismail",
+                    "Subject": "Database Systems",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Room": "Room 211",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "Room 211",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Mr. Khalid Saleem",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Room 247": [
+                {
+                    "Room": "Room 247",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Jahangir Hussain",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSCS 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Dr. Muazzam Ali",
+                    "Subject": "Computer Organization & Assembly Language",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Dr. Zar Nawab",
+                    "Subject": "Domain Core 1 (Theory of Automata)",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Iqbal Hussain",
+                    "Subject": "Domain Core 2 (Advance Database Management Systems)",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "Room 247",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Nadeem Hussain",
+                    "Subject": "Natural Science (Applied Physics)",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                }
+            ]
+        },
+        {
+            "Room 229": [
+                {
+                    "Room": "Room 229",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Mubashir Ayaz",
+                    "Subject": "Expository Writing",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Mr. Israr Ahmed",
+                    "Subject": "Islamic Studies",
+                    "Section": "BSCS 2023-2027) 4th Section A"
+                },
+                {
+                    "Time": "11:50-12:50"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Dr. Muazzam Ali",
+                    "Subject": "Computer Organization & Assembly Language",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Dr. Zar Nawab",
+                    "Subject": "Domain Core 1 (Theory of Automata)",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "Room 229",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Iqbal Hussain",
+                    "Subject": "Domain Core 2 (Advance Database Management Systems)",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                }
+            ]
+        },
+        {
+            "New Academi c Block Room 12": [
+                {
+                    "Room": "New Academi c Block Room 12",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Nadeem Hussain",
+                    "Subject": "Natural Science (Applied Physics)",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Room": "New Academi c Block Room 12",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Mubashir Ayaz",
+                    "Subject": "Expository Writing",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Room": "New Academi c Block Room 12",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mr. Israr Ahmed",
+                    "Subject": "Islamic Studies",
+                    "Section": "BSCS 2023-2027) 4th Sectoin B"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Lab1": [
+                {
+                    "Room": "Lab1",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Mr. Khalid Saleem",
+                    "Subject": "CS-Supporting-3 (Differential Equations)",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Dr Sabit",
+                    "Subject": "Computer Networks",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Mubashir Ayaz",
+                    "Subject": "English-II (Technical & Business Writing)",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Time": "1:30-2:30"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Dr Aftab",
+                    "Subject": "CS Elective-1 (Digital image processing)",
+                    "Section": "BSCS 2022-2026) 6th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Room": "Lab1",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Dr Sabit",
+                    "Subject": "CS Elective-2(Cloud Computing))",
+                    "Section": "BSCS 2022-2026) 6th"
+                }
+            ]
+        },
+        {
+            "Lab2": [
+                {
+                    "Room": "Lab2",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Ms Chand Safi",
+                    "Subject": "CS Elective-4 (Natural Language Processing)",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Lab2",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Akhtar Ali",
+                    "Subject": "Pakistan Studies",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Room": "Lab2",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Dr Habib Ullah",
+                    "Subject": "Information Security",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Room": "Lab2",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Rubi Alam",
+                    "Subject": "University Elective-4 (Human Resource Management)",
+                    "Section": "BSCS 2021-2025) 8th"
+                },
+                {
+                    "Time": "3:40-4:30"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Lab3": [
+                {
+                    "Room": "Lab3",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Dr. Dostdar",
+                    "Subject": "Object Oriented Programming",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Imran Ali",
+                    "Subject": "Database Systems",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Iqtidar Hussain",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "2:40-3:40",
+                    "Teacher": "Wajahat Hussain",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Room": "Lab3",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Razia Sharif",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSSE 2024-2028) 2nd Section A"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Lab4": [
+                {
+                    "Room": "Lab4",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Gul Jabeen",
+                    "Subject": "Object Oriented Programming",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "10:40-11:40"
+                },
+                {
+                    "Room": "Lab4",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Imran Ali",
+                    "Subject": "Database Systems",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Room": "Lab4",
+                    "Time": "1:30-2:30",
+                    "Teacher": "Mr Kamran Abbas",
+                    "Subject": "Digital Logic Design",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "Lab4",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Wajahat Hussain",
+                    "Subject": "Multivariable Calculus",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Time": "4:40-5:40"
+                }
+            ]
+        },
+        {
+            "Room 210(Lab)": [
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "9:30-10:30",
+                    "Teacher": "Rashid Hussain / Dr Shams",
+                    "Subject": "Linear Algebra",
+                    "Section": "BSSE 2024-2028) 2nd Section B"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "10:40-11:40",
+                    "Teacher": "Dr. Muazzam Ali",
+                    "Subject": "Computer Organization & Assembly Language",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "11:50-12:50",
+                    "Teacher": "Syed Najam Ul Hassan",
+                    "Subject": "Domain Core 1 (Software Design & Architecture) Domain Core",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "1:30-2:30",
+                    "Teacher": "ponum Almas",
+                    "Subject": "Domain Core 2 (Software Construction & Development)",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Time": "2:40-3:40"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "3:40-4:30",
+                    "Teacher": "Nadeem Abbas",
+                    "Subject": "Natural Science (Applied Physics)",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                },
+                {
+                    "Room": "Room 210(Lab)",
+                    "Time": "4:40-5:40",
+                    "Teacher": "Shahid Hussain",
+                    "Subject": "Expository Writing",
+                    "Section": "BSSE 2023-2027) 4th Section A"
+                }
+            ]
+        }
+    ]
+}

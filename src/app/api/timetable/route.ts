@@ -7,46 +7,8 @@ import {
   RoomSchedule,
 } from "../../timetable/types";
 import { timeSlots } from "@/helpers/page";
-import { PREDEFINED_ROOMS } from "@/helpers/page";
-import { DAYS } from "@/helpers/page";
-
-// const timeSlots: string[] = [
-//   "9:30-10:30",
-//   "10:30-11:30",
-//   "11:30-12:30",
-//   "12:30-1:30",
-//   "1:30-2:30",
-//   "2:30-3:30",
-//   "3:30-4:30",
-// ];
-
-// const PREDEFINED_ROOMS: string[] = [
-//   "NAB-R01",
-//   "NAB-R02",
-//   "NAB-R03",
-//   "NAB-R04",
-//   "NAB-R05",
-//   "NAB-R06",
-//   "NAB-R07",
-//   "NAB-R08",
-//   "NAB-R09",
-//   "NAB-R10",
-//   "NAB-R11",
-//   "NAB-R12",
-//   "Lab1",
-//   "Lab2",
-//   "Lab3",
-//   "Lab4",
-//   "R210-lab",
-// ];
-
-// const DAY_ORDER: string[] = [
-//   "Monday",
-//   "Tuesday",
-//   "Wednesday",
-//   "Thursday",
-//   "Friday",
-// ];
+import { Rooms } from "@/helpers/page";
+import { Days } from "@/helpers/page";
 
 interface SupabaseVersion {
   version_number: number;
@@ -60,8 +22,8 @@ interface PostRequestBody {
 const normalizeData = (rawData: unknown): TimetableData => {
   const normalized: TimetableData = {};
 
-  DAYS.forEach((day) => {
-    const daySchedule: RoomSchedule[] =
+  Days.forEach((day) => {
+    const Dayschedule: RoomSchedule[] =
       typeof rawData === "object" &&
       rawData !== null &&
       day in rawData &&
@@ -69,83 +31,52 @@ const normalizeData = (rawData: unknown): TimetableData => {
         ? ((rawData as Record<string, unknown>)[day] as RoomSchedule[])
         : [];
 
-    const validRooms: RoomSchedule[] = daySchedule
-      .map((roomObj: unknown) => {
-        if (!roomObj || typeof roomObj !== "object") return null;
-        const roomName = Object.keys(roomObj)[0];
-        if (!PREDEFINED_ROOMS.includes(roomName)) return null;
+    const validRooms: RoomSchedule[] = Dayschedule.map((roomObj: unknown) => {
+      if (!roomObj || typeof roomObj !== "object") return null;
+      const roomName = Object.keys(roomObj)[0];
+      if (!Rooms.includes(roomName)) return null;
 
-        const sessions: unknown[] =
-          typeof (roomObj as Record<string, unknown>)[roomName] === "object" &&
-          Array.isArray((roomObj as Record<string, unknown>)[roomName])
-            ? ((roomObj as Record<string, unknown>)[roomName] as unknown[])
-            : [];
+      const sessions: unknown[] =
+        typeof (roomObj as Record<string, unknown>)[roomName] === "object" &&
+        Array.isArray((roomObj as Record<string, unknown>)[roomName])
+          ? ((roomObj as Record<string, unknown>)[roomName] as unknown[])
+          : [];
 
-        // Create the room schedule object with proper typing
-        const roomSchedule: RoomSchedule = {};
-        roomSchedule[roomName] = timeSlots.map((time, index) => {
-          const session = sessions[index];
-          if (
-            session &&
-            typeof session === "object" &&
-            "Faculty Assigned" in session &&
-            "Course Details" in session
-          ) {
-            return {
-              Room: roomName,
-              Time: time,
-              "Faculty Assigned":
-                typeof (session as Record<string, unknown>)[
-                  "Faculty Assigned"
-                ] === "string"
-                  ? ((session as Record<string, unknown>)[
-                      "Faculty Assigned"
-                    ] as string)
-                  : "",
-              "Course Details":
-                typeof (session as Record<string, unknown>)[
-                  "Course Details"
-                ] === "string"
-                  ? ((session as Record<string, unknown>)[
-                      "Course Details"
-                    ] as string)
-                  : "",
-              "Subject Type":
-                typeof (session as Record<string, unknown>)["Subject Type"] ===
-                "string"
-                  ? ((session as Record<string, unknown>)[
-                      "Subject Type"
-                    ] as string)
-                  : undefined,
-              Domain:
-                typeof (session as Record<string, unknown>).Domain === "string"
-                  ? ((session as Record<string, unknown>).Domain as string)
-                  : undefined,
-              "Pre-Req":
-                typeof (session as Record<string, unknown>)["Pre-Req"] ===
-                "string"
-                  ? ((session as Record<string, unknown>)["Pre-Req"] as string)
-                  : undefined,
-              Section:
-                typeof (session as Record<string, unknown>).Section === "string"
-                  ? ((session as Record<string, unknown>).Section as string)
-                  : undefined,
-              "Semester Details":
-                typeof (session as Record<string, unknown>)[
-                  "Semester Details"
-                ] === "string"
-                  ? ((session as Record<string, unknown>)[
-                      "Semester Details"
-                    ] as string)
-                  : undefined,
-            } as Session;
-          }
-          return { Time: time } as EmptySlot;
-        });
+      // Create the room schedule object with proper typing
+      const roomSchedule: RoomSchedule = {};
+      roomSchedule[roomName] = timeSlots.map((time, index) => {
+        const session = sessions[index];
+        if (
+          session &&
+          typeof session === "object" &&
+          "Teacher" in session &&
+          "Subject" in session
+        ) {
+          return {
+            Room: roomName,
+            Time: time,
+            Teacher:
+              typeof (session as Record<string, unknown>)["Teacher"] ===
+              "string"
+                ? ((session as Record<string, unknown>)["Teacher"] as string)
+                : "",
+            Subject:
+              typeof (session as Record<string, unknown>)["Subject"] ===
+              "string"
+                ? ((session as Record<string, unknown>)["Subject"] as string)
+                : "",
 
-        return roomSchedule;
-      })
-      .filter((roomObj): roomObj is RoomSchedule => roomObj !== null);
+            Section:
+              typeof (session as Record<string, unknown>).Section === "string"
+                ? ((session as Record<string, unknown>).Section as string)
+                : undefined,
+          } as Session;
+        }
+        return { Time: time } as EmptySlot;
+      });
+
+      return roomSchedule;
+    }).filter((roomObj): roomObj is RoomSchedule => roomObj !== null);
 
     normalized[day] = validRooms;
   });

@@ -8,27 +8,26 @@ export const timeSlots: string[] = [
   "3:30-4:30",
 ];
 
-export const PREDEFINED_ROOMS: string[] = [
-  "NAB-R01",
-  "NAB-R02",
-  "NAB-R03",
-  "NAB-R04",
-  "NAB-R05",
-  "NAB-R06",
-  "NAB-R07",
-  "NAB-R08",
-  "NAB-R09",
-  "NAB-R10",
-  "NAB-R11",
-  "NAB-R12",
+export const Rooms: string[] = [
+  "New Academi c Block Room 16",
+  "New Academi c Block Room 02",
+  "NAB-1",
+  "NAB-2",
+  "NAB-3",
+  "NAB-4",
+  "NAB-5",
+  "Room 211",
+  "Room 247",
+  "Room 229",
+  "New Academi c Block Room 12",
   "Lab1",
   "Lab2",
   "Lab3",
   "Lab4",
-  "R210-lab",
+  "Room 210(Lab)",
 ];
 
-export const DAYS: string[] = [
+export const Days: string[] = [
   "Monday",
   "Tuesday",
   "Wednesday",

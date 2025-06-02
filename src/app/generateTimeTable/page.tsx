@@ -3,9 +3,9 @@ import { useFormik } from "formik";
 import { timetableSchema } from "@/lib/validation/formValidationSchema";
 import React, { useState } from "react";
 import FileUploader from "@/components/fileuploader/page";
-import { useDispatch } from "react-redux";
-import { setData } from "@/state/dataSlice/data_slice";
-import { useRouter } from "next/navigation";
+// import { useDispatch } from "react-redux";
+// import { setData } from "@/state/dataSlice/data_slice";
+// import { useRouter } from "next/navigation";
 
 export interface FormValues {
   preferMorningClass: boolean;
@@ -18,139 +18,99 @@ export default function GenerateTimeTable() {
   const [rulesFileName, setRulesFileName] = useState<string | null>("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const dispatch = useDispatch();
-  const router = useRouter();
+  // const dispatch = useDispatch();
+  // const router = useRouter();
   // const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
   // console.log(apiKey, "api key");
-  const generateDynamicPrompt = (data: FormValues): string => {
-    let prompt = `You are an AI assistant responsible for generating a university-level timetable using the provided teacher and room data. The timetable must follow these strict rules and return structured JSON data.\n\n`;
 
-    // Constraints
+  const generateDynamicPrompt = (data: FormValues): string => {
+    let prompt = `You are an AI assistant tasked with generating a university-level class timetable in strict JSON format. Follow every rule below carefully. Your response must ONLY be valid JSON.\n\n`;
+
     prompt += `Constraints:\n`;
-    prompt += `- Each class duration: 1 hour.\n`;
-    prompt += `- University working hours: 9:30 AM to 4:30 PM (7 one-hour slots).\n`;
+    prompt += `- Each class is 1 hour long.\n`;
+    prompt += `- University hours: 9:30 AM – 4:30 PM (7 time slots).\n`;
+    prompt += `- No teacher can be scheduled for more than one class at the same time across all rooms.\n`;
+    prompt += `- A subject cannot be scheduled more than once at the same time across rooms.\n`;
     prompt += `- Prefer morning classes: ${
       data.preferMorningClass ? "Yes" : "No"
     }.\n`;
-    prompt += `- Distribute classes evenly across weekdays. Do not overload Monday.\n`;
-    prompt += `- No room or teacher should have overlapping classes.\n`;
-    prompt += `- All rooms listed below must be utilized **every weekday (Monday to Friday)**.\n`;
-    prompt += `- Every room must have classes scheduled in **at least 4 different time slots daily** (out of 7).\n`;
-    prompt += `- Every subject must be scheduled at least once **every day** to ensure regular class flow.\n`;
-    prompt += `- Distribute all classes **evenly across Monday to Friday**. Avoid clustering classes only on Monday.\n`;
+    prompt += `- Even distribution of classes across weekdays. Avoid Monday overload.\n`;
+    prompt += `- Use all rooms every weekday (Mon–Fri).\n`;
+    prompt += `- Weekly class frequency based on credit hours:\n`;
 
-    // Credit Hours Constraint
-    prompt += `- Class frequency based on credit hours:\n`;
     data.teacherData.forEach((teacher) => {
       const faculty = teacher["Faculty Assigned"];
       const subject = teacher["Course Details"];
       const creditHours = parseInt(teacher["Credit Hours"]);
       if (!isNaN(creditHours)) {
-        prompt += `  - ${faculty} (${subject}) must have ${creditHours} class${
-          creditHours > 1 ? "es" : ""
+        prompt += `  - ${faculty} (${subject}) must teach ${creditHours} time${
+          creditHours > 1 ? "s" : ""
         } per week.\n`;
       }
     });
 
-    // Teacher Data
-    prompt += `Teacher List:\n`;
+    // NEW RULES for credit hour distribution across days
+    prompt += `\nCredit Hour Distribution Rules:\n`;
+    prompt += `- Each subject's total weekly classes must match its credit hours.\n`;
+    prompt += `- For example, a subject with 3 credit hours must be scheduled exactly 3 times across the week (Mon–Fri).\n`;
+    prompt += `- These classes must be distributed across different days.\n`;
+    prompt += `- Avoid scheduling all 3 on Monday to Wednesday. Prefer spreading classes evenly from Monday to Friday.\n`;
+    prompt += `- If a subject has 3 or more classes per week, do not place all of them on consecutive days.\n`;
+
+    // NEW RULES to distribute free slots evenly
+    prompt += `\nFree Slot Distribution Rules:\n`;
+    prompt += `- Distribute free/empty time slots evenly throughout the day for each room.\n`;
+    prompt += `- Avoid placing all free slots consecutively at the end of the day.\n`;
+    prompt += `- Free slots should appear as gaps between classes where possible.\n`;
+    prompt += `- Spread free slots evenly across all weekdays.\n`;
+
+    prompt += `\nTeachers:\n`;
     data.teacherData.forEach((teacher, index) => {
       prompt += `${index + 1}. Faculty: ${
         teacher["Faculty Assigned"]
-      }, Subject: ${teacher["Course Details"]}, Subject Code: ${
-        teacher["Subject Code"]
-      }, Subject TYPE: ${teacher["Subject TYPE"]}, Sem: ${
-        teacher["Sem"]
-      }, Section: ${teacher["section"]}, Semester Details: ${
-        teacher["Semester Details"]
-      }, Credit Hours: ${teacher["Credit Hours"]}, Domain: ${
-        teacher["Domain"]
-      }, Pre-Req: ${teacher["Pre-Req"]}\n`;
+      }, Subject: ${teacher["Course Details"]}, Section: ${
+        teacher["section"]
+      }, Credit Hours: ${teacher["Credit Hours"]}\n`;
     });
 
-    // Room Data
     const rooms = Array.from(
       new Set(data.rulesData.map((rule) => rule["Key"]))
     ).filter((room) => room && typeof room === "string");
 
-    if (rooms.length === 0) {
-      prompt += `No rooms available.\n`;
-    } else {
-      prompt += `\nAvailable Rooms:\n`;
-      rooms.forEach((room, index) => {
-        prompt += `${index + 1}. Room: ${room}\n`;
-      });
-    }
+    prompt += `\nAvailable Rooms:\n`;
+    rooms.forEach((room, index) => {
+      prompt += `${index + 1}. ${room}\n`;
+    });
 
-    // Format Instruction
     prompt += `\n---\n`;
-    prompt += `Generate only a valid JSON object in the following format. Do not include markdown, code blocks, or any text outside the object.\n\n`;
-
+    prompt += `Output Format (strict):\n`;
+    prompt += `Return JSON like this. DO NOT include code blocks or markdown. Only valid raw JSON:\n\n`;
     prompt += `{\n`;
-
-    // AI should generate a weekly schedule for all rooms, ensuring each room is used every day.
     prompt += `  "Monday": [\n`;
     rooms.forEach((room, index) => {
       prompt += `    {\n`;
-      prompt += `      "${room}": [ /* class objects */ ]${
-        index < rooms.length - 1 ? "," : ""
-      }\n`;
-      prompt += `    }\n`;
+      prompt += `      "${room}": [\n`;
+      prompt += `        {\n`;
+      prompt += `          "Room": "${room}",\n`;
+      prompt += `          "Time": "9:30-10:30",\n`;
+      prompt += `          "Teacher": "Teacher Name",\n`;
+      prompt += `          "Subject": "Subject Name",\n`;
+      prompt += `          "Section": "Class Section"\n`;
+      prompt += `        }\n`;
+      prompt += `        // ... more class objects, total 7 per room\n`;
+      prompt += `      ]\n`;
+      prompt += `    }${index < rooms.length - 1 ? "," : ""}\n`;
     });
-    prompt += `  ],\n`;
-
-    prompt += `  "Tuesday": [\n`;
-    rooms.forEach((room, index) => {
-      prompt += `    {\n`;
-      prompt += `      "${room}": [ /* class objects */ ]${
-        index < rooms.length - 1 ? "," : ""
-      }\n`;
-      prompt += `    }\n`;
-    });
-    prompt += `  ],\n`;
-
-    prompt += `  "Wednesday": [\n`;
-    rooms.forEach((room, index) => {
-      prompt += `    {\n`;
-      prompt += `      "${room}": [ /* class objects */ ]${
-        index < rooms.length - 1 ? "," : ""
-      }\n`;
-      prompt += `    }\n`;
-    });
-    prompt += `  ],\n`;
-
-    prompt += `  "Thursday": [\n`;
-    rooms.forEach((room, index) => {
-      prompt += `    {\n`;
-      prompt += `      "${room}": [ /* class objects */ ]${
-        index < rooms.length - 1 ? "," : ""
-      }\n`;
-      prompt += `    }\n`;
-    });
-    prompt += `  ],\n`;
-
-    prompt += `  "Friday": [\n`;
-    rooms.forEach((room, index) => {
-      prompt += `    {\n`;
-      prompt += `      "${room}": [ /* class objects */ ]${
-        index < rooms.length - 1 ? "," : ""
-      }\n`;
-      prompt += `    }\n`;
-    });
-    prompt += `  ]\n`;
-    prompt += `}\n\n`;
-
-    // Notes
-    prompt += `Notes:\n`;
-    prompt += `- Each key in the object is a room name, and its value is a list of class objects.\n`;
-    prompt += `- Each class object must include: Room, Time, Faculty Assigned, Course Details, Subject Code, Subject TYPE, Domain, Pre-Req, Sem, Section, Semester Details.\n`;
-    prompt += `- Time slots must be non-overlapping per room.\n`;
-    prompt += `- Use every room every day.\n`;
-    prompt += `- Return only valid raw JSON. No extra text or formatting.\n`;
-    prompt += `- Do not leave any weekday (e.g. Friday) empty. Every weekday must have a full schedule.\n`;
+    prompt += `  ],\n  "Tuesday": [/* same format */],\n  "Wednesday": [/* same format */],\n  "Thursday": [/* same format */],\n  "Friday": [/* same format */]\n}`;
+    prompt += `\n\nImportant Rules:\n`;
+    prompt += `- Do NOT assign the same teacher to multiple classes in the same time slot.\n`;
+    prompt += `- Do NOT repeat the same subject in multiple rooms at the same time.\n`;
+    prompt += `- If no class is scheduled in a slot, return: { "Time": "X"}\n`;
+    prompt += `- Return ONLY the JSON object, with no additional comments, explanations, or markdown.\n`;
 
     return prompt;
   };
+
   const formik = useFormik<FormValues>({
     initialValues: {
       preferMorningClass: false,
@@ -161,7 +121,6 @@ export default function GenerateTimeTable() {
     onSubmit: async (values, { resetForm }) => {
       setIsLoading(true);
       setError("");
-
       try {
         const prompt = generateDynamicPrompt(values);
 
@@ -172,30 +131,56 @@ export default function GenerateTimeTable() {
           },
           body: JSON.stringify({ prompt }),
         });
-
+        resetForm();
         if (!res.ok) {
-          throw new Error(`API Error: ${res.status}`);
+          throw new Error(`HTTP error: ${res.status} ${res.statusText}`);
         }
 
-        const data = await res.json();
-        console.log(data, "data");
-        const generatedContent = data.choices?.[0]?.message?.content || "";
-        console.log(generatedContent, "generated content");
-        // clean & parse JSON
-        const cleaned = generatedContent
-          .replace(/```json|```/g, "")
-          .replace(/(\w+):/g, '"$1":') // quote unquoted keys
-          .replace(/'/g, '"') // single to double quotes
-          .replace(/\/\*[\s\S]*?\*\//g, "") // remove comments
-          .trim();
+        const reader = res.body?.getReader();
+        if (!reader) {
+          throw new Error("Failed to get response reader");
+        }
 
-        dispatch(setData(cleaned));
-        resetForm();
-        setTeacherFileName(null);
-        setRulesFileName(null);
-        router.push("/timetable");
+        const decoder = new TextDecoder();
+        let fullText = "";
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value);
+          fullText += chunk;
+        }
+
+        // Parse the response as JSON
+        let parsedTimetable;
+        try {
+          parsedTimetable = JSON.parse(fullText);
+        } catch (parseError) {
+          throw new Error(`Failed to parse response as JSON: ${parseError}`);
+        }
+
+        // Validate the timetable structure
+        const expectedDays = [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+        ];
+        const missingDays = expectedDays.filter((day) => !parsedTimetable[day]);
+        if (missingDays.length > 0) {
+          throw new Error(
+            `Incomplete timetable: missing days - ${missingDays.join(", ")}`
+          );
+        }
+
+        console.log("Full Timetable:", parsedTimetable);
+        // setTimetable(parsedTimetable);
+        setIsLoading(false);
       } catch (err) {
         console.error("Error:", err);
+        resetForm();
+        setTeacherFileName("");
+        setRulesFileName("");
         setError("Failed to generate timetable.");
       } finally {
         setIsLoading(false);
@@ -204,10 +189,10 @@ export default function GenerateTimeTable() {
   });
 
   return (
-    <main className=" flex h-[calc(100vh-4rem)] justify-center items-center overflow-hidden">
-      <div className="flex justify-center items-center border-2 rounded-2xl p-20 shadow-2xl border-gray-400">
-        <div>
-          <h1 className="font-semibold text-3xl mb-4">
+    <main className=" flex h-[calc(100vh-4rem)] justify-center  overflow-hidden ">
+      <div className="flex justify-center   rounded-2xl  border-[#416697]">
+        <div className="w-[500px]">
+          <h1 className="font-bold text-4xl mb-4 text-[#194c87] pt-8">
             Upload Teacher &<br /> Subject Assignment
           </h1>
           {error && (
@@ -251,24 +236,28 @@ export default function GenerateTimeTable() {
               </p>
             )}
 
-            <p className="font-medium text-xl mb-2">Or manually enter rules</p>
+            <p className="font-medium text-xl mb-2 text-[#416697]">
+              Or manually enter rules
+            </p>
 
             <div className="flex flex-col gap-2">
-              <div className="flex gap-3 items-center">
-                <p className="text-[19px]">Prefer morning classes:</p>
+              <div className="flex gap-9 items-center w-full px-3">
+                <p className="text-[22px] text-[#416697]">
+                  Prefer morning classes:
+                </p>
                 <input
                   type="checkbox"
                   name="preferMorningClass"
                   checked={formik.values.preferMorningClass}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  className="h-5 w-5 accent-black rounded-full"
+                  className="h-5 w-5 accent-[#416697] rounded-full"
                 />
               </div>
               <button
                 type="submit"
-                className={`bg-black text-white rounded-full p-3 mt-4 ${
-                  isLoading ? "bg-gray-400" : "bg-black"
+                className={`bg-[#194c87] text-white p-3 mt-4 ${
+                  isLoading ? "bg-gray-400" : "bg-[#060d16]"
                 }`}
                 disabled={isLoading}
               >

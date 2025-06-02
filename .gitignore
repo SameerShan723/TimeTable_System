@@ -44,3 +44,5 @@ next-env.d.ts
 lib/prompt.ts
 
 .env
+#.data/new.json
+data/new.json

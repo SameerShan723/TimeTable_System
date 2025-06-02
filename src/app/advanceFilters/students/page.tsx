@@ -2,36 +2,22 @@
 
 import { useState, useId, useCallback, useEffect, useMemo, JSX } from "react";
 import Select, { MultiValue, SingleValue } from "react-select";
-import SpinnerLoader from "@/components/loaders/FadeLoader";
+import SpinnerLoader from "@/components/loaders/Spinner";
 import { useTimetableVersions } from "../../hooks/useTimetableVersion";
 import { timeSlots } from "@/helpers/page";
-import { DAYS } from "@/helpers/page";
-// const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] as const;
-// const TIME_SLOTS = [
-//   "9:30-10:30",
-//   "10:30-11:30",
-//   "11:30-12:30",
-//   "12:30-1:30",
-//   "1:30-2:30",
-//   "2:30-3:30",
-//   "3:30-4:30",
-// ] as const;
+import { Days } from "@/helpers/page";
 
-type DayType = (typeof DAYS)[number];
+type DayType = (typeof Days)[number];
 type TimeSlotType = (typeof timeSlots)[number];
 
 interface ClassItem {
-  "Course Details": string;
-  "Faculty Assigned": string;
+  Subject: string;
+  Teacher: string;
   Section: string;
   Time: string;
   Day: string;
-  Domain: string;
-  "Pre-Req": string;
   Room: string;
-  Sem: string;
-  "Subject Code": string;
-  "Subject TYPE": string;
+
   [key: string]: string;
 }
 
@@ -79,13 +65,13 @@ export default function StudentTimetable(): JSX.Element {
   const [error, setError] = useState<string>("");
 
   const sectionSelectedId: string = useId();
-  const daySelectedId: string = useId();
+  const DayselectedId: string = useId();
   const versionSelectedId: string = useId();
 
   const sections: string[] = useMemo(() => {
     const sectionSet = new Set<string>();
 
-    DAYS.forEach((day: DayType) => {
+    Days.forEach((day: DayType) => {
       if (!timetableData[day] || !Array.isArray(timetableData[day])) return;
 
       timetableData[day].forEach((roomObj: Record<string, ClassItem[]>) => {
@@ -107,7 +93,7 @@ export default function StudentTimetable(): JSX.Element {
 
   const dayOptions: SelectOption[] = useMemo(
     () =>
-      DAYS.map((day: DayType) => ({
+      Days.map((day: DayType) => ({
         value: day,
         label: day,
       })),
@@ -130,7 +116,7 @@ export default function StudentTimetable(): JSX.Element {
     );
 
     if (isAllSelected) {
-      setSelectedDay([...DAYS]);
+      setSelectedDay([...Days]);
     } else {
       const filtered: SelectOption[] = selected.filter(
         (opt: SelectOption) => opt.value !== "all"
@@ -174,7 +160,7 @@ export default function StudentTimetable(): JSX.Element {
     });
 
     if (result.length === 0) {
-      setError("No classes found for the selected section on selected days.");
+      setError("No classes found for the selected section on selected Days.");
     } else {
       setError("");
     }
@@ -191,7 +177,6 @@ export default function StudentTimetable(): JSX.Element {
     [results]
   );
 
-  // Clear results and errors when version changes
   useEffect((): void => {
     setResult([]);
     setError("");
@@ -199,12 +184,11 @@ export default function StudentTimetable(): JSX.Element {
     setSelectedDay([]);
   }, [selectedVersion]);
 
-  const isAllSelected: boolean = selectedDay.length === DAYS.length;
+  const isAllSelected: boolean = selectedDay.length === Days.length;
   const filteredOptions: SelectOption[] = isAllSelected
     ? dayOptions
     : [allOption, ...dayOptions];
 
-  // Show error if there's a critical error
   if (
     hookError &&
     (!timetableData.Monday || timetableData.Monday.length === 0)
@@ -217,7 +201,7 @@ export default function StudentTimetable(): JSX.Element {
   }
 
   return (
-    <>
+    <div className="flex flex-col flex-1 h-full w-full overflow-y-auto">
       <div className="flex items-center justify-center flex-col">
         <h1 className="font-bold text-3xl mt-6 mb-6">
           Check Students Timetable
@@ -281,16 +265,15 @@ export default function StudentTimetable(): JSX.Element {
           )}
         </div>
 
-        {/* Day Selection */}
         <div className="mb-4 flex flex-col w-full max-w-md">
           <label className="text-xl mb-2">Days:</label>
           <Select<SelectOption, true>
-            instanceId={daySelectedId}
+            instanceId={DayselectedId}
             isMulti
             options={filteredOptions}
             onChange={handleDayOptions}
             className="text-black"
-            placeholder="Select days"
+            placeholder="Select Days"
             value={dayOptions.filter((opt: SelectOption) =>
               selectedDay.includes(opt.value as DayType)
             )}
@@ -300,7 +283,7 @@ export default function StudentTimetable(): JSX.Element {
 
         <div>
           <button
-            className="bg-blue-900 py-2 px-20 cursor-pointer text-[#ccd8e8]  hover:bg-blue-800 transition-colors"
+            className="bg-blue-900 py-2 px-20 cursor-pointer text-[#ccd8e8] hover:bg-blue-800 transition-colors"
             onClick={handleSearch}
             disabled={loading}
           >
@@ -323,7 +306,7 @@ export default function StudentTimetable(): JSX.Element {
 
       {/* Timetable Display */}
       {results.length > 0 && (
-        <div className="overflow-x-auto mt-6 mb-10 px-10">
+        <div className="mt-6 mb-10 px-10">
           <table className="table-auto w-full border-collapse border border-gray-300">
             <thead>
               <tr className="bg-gray-100">
@@ -336,7 +319,7 @@ export default function StudentTimetable(): JSX.Element {
               </tr>
             </thead>
             <tbody>
-              {DAYS.map((day: DayType) => (
+              {Days.map((day: DayType) => (
                 <tr key={day}>
                   <td className="border border-gray-300 p-2 font-medium bg-gray-50">
                     {day}
@@ -356,11 +339,9 @@ export default function StudentTimetable(): JSX.Element {
                         {course && (
                           <div className="flex flex-col items-center text-sm">
                             <p className="font-bold text-blue-800">
-                              {course["Course Details"]}
+                              {course.Subject}
                             </p>
-                            <p className="text-gray-600">
-                              {course["Faculty Assigned"]}
-                            </p>
+                            <p className="text-gray-600">{course.Teacher}</p>
                             <p className="text-gray-600">{course.Section}</p>
                             <p className="text-gray-500 text-xs">
                               {course.Room}
@@ -376,6 +357,6 @@ export default function StudentTimetable(): JSX.Element {
           </table>
         </div>
       )}
-    </>
+    </div>
   );
 }

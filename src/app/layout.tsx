@@ -6,6 +6,7 @@ import Sidebar from "@/components/sidebar/page";
 import Header from "./header/page";
 import { Inter, Roboto } from "next/font/google";
 import "./globals.css";
+import NextTopLoader from "nextjs-toploader";
 
 // Configure fonts
 const inter = Inter({
@@ -45,16 +46,22 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="h-16 sticky top-0 z-50 shadow-xl ">
+        <NextTopLoader
+          showSpinner={false}
+          color="#3b82f6"
+          height={3}
+          crawlSpeed={300}
+        />
+        <div className="h-16 sticky top-0 z-50 shadow-xl">
           <Header />
         </div>
 
-        <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
-          <div className="w-60 h-full sticky top-16 bg-black">
+        <div className="flex h-[calc(100vh-4rem)]">
+          <div className="w-60 h-full  flex-shrink-0">
             <Sidebar />
           </div>
 
-          <div className="flex-1 overflow-y-auto px-4">
+          <div className="flex-1 h-full overflow-x-auto">
             <ReduxProvider>{children}</ReduxProvider>
           </div>
         </div>

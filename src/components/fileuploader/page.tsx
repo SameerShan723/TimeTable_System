@@ -19,7 +19,8 @@ export default function FileUploader({
   setFileName,
 }: FileUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const apiKey = process.env.OPENAI_API_KEY;
+  console.log(apiKey, "api key");
   const handleClickBox = () => {
     fileInputRef.current?.click();
   };
@@ -42,6 +43,8 @@ export default function FileUploader({
         },
         error: (err) => {
           console.error("CSV parsing error:", err.message);
+          setFileName("");
+
           alert("Failed to parse CSV file.");
         },
       });
@@ -138,13 +141,14 @@ export default function FileUploader({
         "File format not supported. Please upload .csv, .xls, or .xlsx files."
       );
     }
+    e.target.value = "";
   };
 
   return (
     <div className="mb-4">
-      <label className="block mb-1 text-[20px]">{label}</label>
+      <label className="block mb-1 text-[20px] text-[#416697]">{label}</label>
       <div
-        className="cursor-pointer border p-4 rounded-md text-center text-gray-600 hover:bg-gray-50 transition w-[300px] h-[60px] overflow-hidden whitespace-nowrap text-ellipsis"
+        className="cursor-pointer border border-[#416697] p-4 rounded-md text-center text-[#416697] hover:bg-gray-50 transition w-full h-[60px] overflow-hidden whitespace-nowrap text-ellipsis"
         onClick={handleClickBox}
       >
         {labelName || placeholder}

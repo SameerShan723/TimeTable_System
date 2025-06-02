@@ -1,15 +1,9 @@
 export interface Session {
   Room: string;
   Time: string;
-  "Faculty Assigned": string;
-  "Course Details": string;
-  "Subject Type"?: string;
-  Domain?: string;
-  "Pre-Req"?: string;
+  Teacher: string;
+  Subject: string;
   Section?: string;
-  "Semester Details"?: string;
-  "Subject Code"?: string;
-  Sem?: string;
   Day?: string;
 }
 
@@ -34,17 +28,12 @@ export interface VersionOption {
 
 // Teacher/Student-specific types
 export interface ClassItem {
-  "Faculty Assigned": string;
-  Time: string;
-  Section: string;
-  "Course Details": string;
-  Day: string;
-  Domain: string;
-  "Pre-Req": string;
   Room: string;
-  Sem: string;
-  "Subject Code": string;
-  "Subject Type": string;
+  Time: string;
+  Teacher: string;
+  Subject: string;
+  Section?: string;
+  Day: string;
 }
 
 export interface TeacherRoomObject {

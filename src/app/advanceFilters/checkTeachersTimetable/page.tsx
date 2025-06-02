@@ -2,30 +2,19 @@
 
 import { useState, useId, useCallback, useEffect, useMemo, JSX } from "react";
 import Select, { MultiValue, SingleValue } from "react-select";
-import SpinnerLoader from "@/components/loaders/FadeLoader";
+import SpinnerLoader from "@/components/loaders/Spinner";
 import { useTimetableVersions } from "../../hooks/useTimetableVersion";
+import { Days } from "@/helpers/page";
+import { timeSlots } from "@/helpers/page";
 
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] as const;
-const TIME_SLOTS = [
-  "9:30-10:30",
-  "10:30-11:30",
-  "11:30-12:30",
-  "12:30-1:30",
-  "1:30-2:30",
-  "2:30-3:30",
-  "3:30-4:30",
-] as const;
+type DayType = (typeof Days)[number];
+type TimeSlotType = (typeof timeSlots)[number];
 
-type DayType = (typeof DAYS)[number];
-type TimeSlotType = (typeof TIME_SLOTS)[number];
-
-// Define the structure of a class item
 interface ClassItem {
-  "Course Details": string;
-  "Faculty Assigned": string;
+  Subject: string;
+  Teacher: string;
   Section: string;
   Time: string;
-
   [key: string]: string;
 }
 
@@ -35,7 +24,6 @@ interface TimetableData {
   Wednesday: Record<string, ClassItem[]>[];
   Thursday: Record<string, ClassItem[]>[];
   Friday: Record<string, ClassItem[]>[];
-  // Add index signature to satisfy Record<string, unknown>
   [key: string]: Record<string, ClassItem[]>[];
 }
 
@@ -44,14 +32,13 @@ interface EnhancedClassItem extends ClassItem {
   Day: string;
 }
 
-// Option types for react-select
 interface SelectOption {
   value: string;
   label: string;
 }
 
 interface VersionOption {
-  value: number; // Changed to number to match setSelectedVersion expectation
+  value: number;
   label: string;
 }
 
@@ -75,36 +62,31 @@ export default function TeacherTimetable(): JSX.Element {
   const [error, setError] = useState<string>("");
 
   const teacherSelectedId: string = useId();
-  const daySelectedId: string = useId();
+  const DayselectedId: string = useId();
   const versionSelectedId: string = useId();
 
-  // Extract unique teachers from timetable data with memoization
   const teachers: string[] = useMemo(() => {
     const teacherSet = new Set<string>();
-
-    DAYS.forEach((day: DayType) => {
+    Days.forEach((day: DayType) => {
       if (!timetableData[day] || !Array.isArray(timetableData[day])) return;
-
       timetableData[day].forEach((roomObj: Record<string, ClassItem[]>) => {
         const roomName: string = Object.keys(roomObj)[0];
         const classes: ClassItem[] = roomObj[roomName];
-
         if (Array.isArray(classes)) {
           classes.forEach((cls: ClassItem) => {
-            if (cls["Faculty Assigned"] && cls["Faculty Assigned"].trim()) {
-              teacherSet.add(cls["Faculty Assigned"].trim());
+            if (cls.Teacher && cls.Teacher.trim()) {
+              teacherSet.add(cls.Teacher.trim());
             }
           });
         }
       });
     });
-
     return Array.from(teacherSet).sort();
   }, [timetableData]);
 
   const dayOptions: SelectOption[] = useMemo(
     () =>
-      DAYS.map((day: DayType) => ({
+      Days.map((day: DayType) => ({
         value: day,
         label: day,
       })),
@@ -121,13 +103,11 @@ export default function TeacherTimetable(): JSX.Element {
       setSelectedDay([]);
       return;
     }
-
     const isAllSelected: SelectOption | undefined = selected.find(
       (opt: SelectOption) => opt.value === "all"
     );
-
     if (isAllSelected) {
-      setSelectedDay([...DAYS]);
+      setSelectedDay([...Days]);
     } else {
       const filtered: SelectOption[] = selected.filter(
         (opt: SelectOption) => opt.value !== "all"
@@ -138,40 +118,43 @@ export default function TeacherTimetable(): JSX.Element {
 
   const handleSearch = useCallback((): void => {
     setError("");
-
     if (!selectedTeacher) {
       setError("Please select a teacher!");
       setResult([]);
       return;
     }
-
     if (selectedDay.length === 0) {
       setError("Please select a day!");
       setResult([]);
       return;
     }
-
     const result: EnhancedClassItem[] = [];
-
     selectedDay.forEach((day: DayType) => {
       if (!timetableData[day] || !Array.isArray(timetableData[day])) return;
-
       timetableData[day].forEach((roomObj: Record<string, ClassItem[]>) => {
         const roomName: string = Object.keys(roomObj)[0];
         const classes: ClassItem[] = roomObj[roomName];
-
         if (Array.isArray(classes)) {
           classes.forEach((cls: ClassItem) => {
-            if (cls["Faculty Assigned"] === selectedTeacher) {
-              result.push({ ...cls, Room: roomName, Day: day });
+            if (cls.Teacher === selectedTeacher) {
+              const normalizedTime =
+                timeSlots.find((time) =>
+                  cls.Time.includes(time.split("-")[0])
+                ) || cls.Time;
+              result.push({
+                ...cls,
+                Room: roomName,
+                Day: day,
+                Time: normalizedTime,
+              });
             }
           });
         }
       });
     });
-
+    console.log("Results:", result); // Debug
     if (result.length === 0) {
-      setError("No classes found for the selected teacher on selected days.");
+      setError("No classes found for the selected teacher on selected Days.");
     } else {
       setError("");
     }
@@ -180,6 +163,7 @@ export default function TeacherTimetable(): JSX.Element {
 
   const getTimetable = useCallback(
     (day: string, time: string): EnhancedClassItem | undefined => {
+      console.log("Searching for day:", day, "time:", time); // Debug
       return results.find(
         (course: EnhancedClassItem) =>
           course.Time === time && course.Day === day
@@ -188,7 +172,6 @@ export default function TeacherTimetable(): JSX.Element {
     [results]
   );
 
-  // Clear results and errors when version changes
   useEffect((): void => {
     setResult([]);
     setError("");
@@ -196,7 +179,7 @@ export default function TeacherTimetable(): JSX.Element {
     setSelectedDay([]);
   }, [selectedVersion]);
 
-  const isAllSelected: boolean = selectedDay.length === DAYS.length;
+  const isAllSelected: boolean = selectedDay.length === Days.length;
   const filteredOptions: SelectOption[] = isAllSelected
     ? dayOptions
     : [allOption, ...dayOptions];
@@ -213,15 +196,14 @@ export default function TeacherTimetable(): JSX.Element {
   }
 
   return (
-    <>
+    <div className="flex flex-col flex-1 h-full w-full overflow-y-auto">
       <div className="flex items-center justify-center flex-col">
         <h1 className="font-bold text-3xl mt-6 mb-6">
           Check Teachers Timetable
         </h1>
-
         <div className="mb-4 flex flex-col w-full max-w-md">
           <label className="text-xl mb-2">Version:</label>
-          <div className="flex w-full items-center gap-2">
+          <div className="flex w-full items-center ">
             <Select<VersionOption>
               instanceId={versionSelectedId}
               options={versions.map((version: number) => ({
@@ -243,10 +225,9 @@ export default function TeacherTimetable(): JSX.Element {
               placeholder="Select version"
               isClearable
             />
-            {loading && <SpinnerLoader />}
+            <div>{loading && <SpinnerLoader />}</div>
           </div>
         </div>
-
         <div className="mb-4 flex flex-col w-full max-w-md">
           <label className="text-xl mb-2">Teacher:</label>
           <Select<SelectOption>
@@ -274,24 +255,21 @@ export default function TeacherTimetable(): JSX.Element {
             </p>
           )}
         </div>
-
-        {/* Day Selection */}
         <div className="mb-4 flex flex-col w-full max-w-md">
           <label className="text-xl mb-2">Days:</label>
           <Select<SelectOption, true>
-            instanceId={daySelectedId}
+            instanceId={DayselectedId}
             isMulti
             options={filteredOptions}
             onChange={handleDayOptions}
             className="text-black"
-            placeholder="Select days"
+            placeholder="Select Days"
             value={dayOptions.filter((opt: SelectOption) =>
               selectedDay.includes(opt.value as DayType)
             )}
             isDisabled={loading}
           />
         </div>
-
         <div>
           <button
             className="bg-blue-900 py-2 px-20 cursor-pointer text-[#ccd8e8] disabled:opacity-50 hover:bg-blue-800 transition-colors"
@@ -301,14 +279,10 @@ export default function TeacherTimetable(): JSX.Element {
             Show Classes
           </button>
         </div>
-
-        {/* Error Display */}
         <div className="text-2xl mt-4">
           {error && <p className="text-red-500">{error}</p>}
           {hookError && <p className="text-red-500">Hook Error: {hookError}</p>}
         </div>
-
-        {/* Results Summary */}
         {results.length > 0 && (
           <div className="mt-4 text-lg text-green-600">
             Found {results.length} class{results.length !== 1 ? "es" : ""} for{" "}
@@ -316,15 +290,13 @@ export default function TeacherTimetable(): JSX.Element {
           </div>
         )}
       </div>
-
-      {/* Timetable Display */}
       {results.length > 0 && (
-        <div className="overflow-x-auto mt-6 mb-10 px-10">
+        <div className="mt-6 mb-10 px-10">
           <table className="table-auto w-full border-collapse border border-gray-300">
             <thead>
               <tr className="bg-gray-100">
                 <th className="border border-gray-300 p-2">Day</th>
-                {TIME_SLOTS.map((time: TimeSlotType) => (
+                {timeSlots.map((time: TimeSlotType) => (
                   <th key={time} className="border border-gray-300 p-2">
                     {time}
                   </th>
@@ -332,12 +304,12 @@ export default function TeacherTimetable(): JSX.Element {
               </tr>
             </thead>
             <tbody>
-              {DAYS.map((day: DayType) => (
+              {Days.map((day: DayType) => (
                 <tr key={day}>
                   <td className="border border-gray-300 p-2 font-medium bg-gray-50">
                     {day}
                   </td>
-                  {TIME_SLOTS.map((time: TimeSlotType) => {
+                  {timeSlots.map((time: TimeSlotType) => {
                     const course: EnhancedClassItem | undefined = getTimetable(
                       day,
                       time
@@ -352,11 +324,9 @@ export default function TeacherTimetable(): JSX.Element {
                         {course && (
                           <div className="flex flex-col items-center text-sm">
                             <p className="font-bold text-blue-800">
-                              {course["Course Details"]}
+                              {course.Subject}
                             </p>
-                            <p className="text-gray-600">
-                              {course["Faculty Assigned"]}
-                            </p>
+                            <p className="text-gray-600">{course.Teacher}</p>
                             <p className="text-gray-600">{course.Section}</p>
                             <p className="text-gray-500 text-xs">
                               {course.Room}
@@ -372,6 +342,6 @@ export default function TeacherTimetable(): JSX.Element {
           </table>
         </div>
       )}
-    </>
+    </div>
   );
 }
