@@ -231,6 +231,7 @@ export default function ClientTimetable({
         return undefined;
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
