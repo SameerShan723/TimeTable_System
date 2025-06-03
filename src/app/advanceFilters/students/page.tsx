@@ -2,7 +2,6 @@
 
 import { useState, useId, useCallback, useEffect, useMemo, JSX } from "react";
 import Select, { MultiValue, SingleValue } from "react-select";
-import SpinnerLoader from "@/components/loaders/Spinner";
 import { useTimetableVersions } from "../../hooks/useTimetableVersion";
 import { timeSlots } from "@/helpers/page";
 import { Days } from "@/helpers/page";
@@ -207,18 +206,21 @@ export default function StudentTimetable(): JSX.Element {
           Check Students Timetable
         </h1>
 
-        {/* Version Selection */}
         <div className="mb-4 flex flex-col w-full max-w-md">
           <label className="text-xl mb-2">Version:</label>
           <div className="flex w-full items-center gap-2">
             <Select<VersionOption>
               instanceId={versionSelectedId}
-              options={versions.map((version: number) => ({
-                value: version,
-                label: `Version ${version}`,
-              }))}
+              options={
+                loading
+                  ? [{ value: 0, label: "Loading..." }]
+                  : versions.map((version: number) => ({
+                      value: version,
+                      label: `Version ${version}`,
+                    }))
+              }
               value={
-                selectedVersion !== null
+                selectedVersion !== null && !loading
                   ? {
                       value: selectedVersion,
                       label: `Version ${selectedVersion}`,
@@ -232,7 +234,6 @@ export default function StudentTimetable(): JSX.Element {
               placeholder="Select version"
               isClearable
             />
-            {loading && <SpinnerLoader />}
           </div>
         </div>
 
