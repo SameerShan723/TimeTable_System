@@ -163,7 +163,7 @@ export function useTimetableVersions<T extends Record<string, unknown>>(
         // Check for error states
         if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
           // console.error("Subscription status:", status);
-          setError(`Real-time updates failed: ${status}`);
+          // setError(`Real-time updates failed: ${status}`);
         }
       });
 

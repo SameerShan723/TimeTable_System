@@ -5,6 +5,7 @@ import Select, { MultiValue, SingleValue } from "react-select";
 import { useTimetableVersions } from "../../hooks/useTimetableVersion";
 import { Days } from "@/helpers/page";
 import { timeSlots } from "@/helpers/page";
+import ExportTimetable from "@/lib/download_timetable/ExportTimetable";
 
 type DayType = (typeof Days)[number];
 type TimeSlotType = (typeof timeSlots)[number];
@@ -272,7 +273,7 @@ export default function TeacherTimetable(): JSX.Element {
             isDisabled={loading}
           />
         </div>
-        <div>
+        <div className="flex space-x-4">
           <button
             className="bg-blue-900 py-2 px-20 cursor-pointer text-[#ccd8e8] disabled:opacity-50 hover:bg-blue-800 transition-colors"
             onClick={handleSearch}
@@ -280,6 +281,17 @@ export default function TeacherTimetable(): JSX.Element {
           >
             Show Classes
           </button>
+          {results.length > 0 && (
+            <ExportTimetable
+              results={results}
+              selectedSection={selectedTeacher}
+              selectedDays={selectedDay}
+              selectedVersion={selectedVersion}
+              isLoading={loading}
+              setError={(error: string | null) => setError(error || "")}
+              identifier="Teacher"
+            />
+          )}
         </div>
         <div className="text-2xl mt-4">
           {error && <p className="text-red-500">{error}</p>}

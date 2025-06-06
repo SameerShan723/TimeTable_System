@@ -61,10 +61,7 @@ const normalizeData = (rawData: unknown): TimetableData => {
                 typeof (session as Record<string, unknown>).Subject === "string"
                   ? ((session as Record<string, unknown>).Subject as string)
                   : "",
-              Domain:
-                typeof (session as Record<string, unknown>).Domain === "string"
-                  ? ((session as Record<string, unknown>).Domain as string)
-                  : undefined,
+
               Section:
                 typeof (session as Record<string, unknown>).Section === "string"
                   ? ((session as Record<string, unknown>).Section as string)
@@ -185,7 +182,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   }
 
   return (
-    <main className="bg-gray-50">
+    <main className="bg-gray-50 ">
       <ClientTimetable
         initialData={timetableData}
         versions={versions}
