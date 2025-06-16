@@ -34,25 +34,18 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast, Toaster } from "sonner";
 import {
-  TimetableData,
   Session,
   EmptySlot,
   RoomSchedule,
   VersionOption,
+  TimetableData,
 } from "./types";
-import { Rooms } from "@/helpers/page";
-import { timeSlots } from "@/helpers/page";
-import { Days } from "@/helpers/page";
+import { timeSlots, Days } from "@/helpers/page";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import jsPDF from "jspdf";
 import autoTable, { Styles, RowInput, CellInput } from "jspdf-autotable";
 import * as XLSX from "xlsx";
-
-interface ClientTimetableProps {
-  initialData: TimetableData;
-  versions: number[];
-  initialSelectedVersion: number | undefined;
-}
+import { useTimetableVersion } from "@/context/TimetableContext";
 
 interface SessionDetailsProps {
   session: Session;
@@ -202,26 +195,24 @@ const LoaderOverlay = ({ isLoading }: { isLoading: boolean }) =>
     </div>
   ) : null;
 
-export default function ClientTimetable({
-  initialData,
-  versions: initialVersions,
-  initialSelectedVersion,
-}: ClientTimetableProps) {
-  const [data, setData] = useState<TimetableData>(initialData);
+export default function ClientTimetable() {
+  const {
+    versions,
+    selectedVersion,
+    timetableData,
+    loading: isVersionLoading,
+    error: hookError,
+    setSelectedVersion,
+    saveTimetableData,
+    deleteVersion: contextDeleteVersion,
+  } = useTimetableVersion();
+
   const [pendingData, setPendingData] = useState<TimetableData | null>(null);
-  const [lastFetchedData, setLastFetchedData] =
-    useState<TimetableData>(initialData);
   const [activeSession, setActiveSession] = useState<Session | null>(null);
-  const [versions, setVersions] = useState<number[]>(initialVersions);
-  const [selectedVersion, setSelectedVersion] = useState<number | undefined>(
-    initialSelectedVersion
-  );
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
   const [versionToDelete, setVersionToDelete] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState<"none" | "same" | "new">("none");
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const [isVersionLoading, setIsVersionLoading] = useState<boolean>(false);
   const [expandedRooms, setExpandedRooms] = useState<{
     [key: string]: boolean;
   }>({});
@@ -230,6 +221,9 @@ export default function ClientTimetable({
   const timetableRef = useRef<HTMLDivElement>(null);
   const exportDropdownRef = useRef<HTMLDivElement>(null);
   const versionId = useId();
+
+  // Use context-provided data as the main data source
+  const data = pendingData || timetableData;
 
   useEffect(() => {
     const handleResize = () => {
@@ -256,14 +250,6 @@ export default function ClientTimetable({
   }, [isVersionLoading]);
 
   useEffect(() => {
-    if (selectedVersion !== undefined) {
-      const url = new URL(window.location.href);
-      url.searchParams.set("version", selectedVersion.toString());
-      window.history.replaceState({}, "", url);
-    }
-  }, [selectedVersion]);
-
-  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         exportDropdownRef.current &&
@@ -273,216 +259,8 @@ export default function ClientTimetable({
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.addEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const saveData = useCallback(
-    async (
-      dataToSave: TimetableData,
-      version?: number
-    ): Promise<number | undefined> => {
-      try {
-        const response = await fetch("/api/timetable", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...dataToSave, version_number: version }),
-        });
-        if (!response.ok) {
-          const errorData = await response
-            .json()
-            .catch(() => ({ error: "Unknown server error" }));
-          throw new Error(errorData.error || `HTTP error: ${response.status}`);
-        }
-        const result: { version_number: number } = await response.json();
-        const newVersions = await fetchVersions();
-        setVersions(newVersions);
-        return result.version_number;
-      } catch (error) {
-        console.error("Save error details:", error);
-        toast.error("Save Failed", {
-          description: error instanceof Error ? error.message : "Unknown error",
-          duration: 3000,
-        });
-        return undefined;
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
-
-  const fetchVersions = useCallback(async (): Promise<number[]> => {
-    try {
-      const response = await fetch("/api/timetable?type=versions");
-      if (!response.ok) throw new Error("Failed to fetch versions");
-      const versionData: { version_number: number }[] = await response.json();
-      return versionData.map((v) => v.version_number);
-    } catch (error) {
-      console.error("Error fetching versions:", error);
-      toast.error("Failed to load versions");
-      return versions;
-    }
-  }, [versions]);
-
-  const fetchTimetableData = useCallback(
-    async (version: number, isManualSelect: boolean = false): Promise<void> => {
-      if (isManualSelect) setIsVersionLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(`/api/timetable?version=${version}`);
-        if (!response.ok) {
-          const errorData = await response
-            .json()
-            .catch(() => ({ error: "Unknown server error" }));
-          throw new Error(errorData.error || `HTTP error: ${response.status}`);
-        }
-        const jsonData: TimetableData = await response.json();
-        const isValidData = Days.every(
-          (day) =>
-            jsonData[day] === undefined ||
-            (Array.isArray(jsonData[day]) &&
-              jsonData[day].every(
-                (roomObj: RoomSchedule) =>
-                  roomObj &&
-                  typeof roomObj === "object" &&
-                  Object.keys(roomObj).length > 0 &&
-                  Rooms.includes(Object.keys(roomObj)[0])
-              ))
-        );
-        if (!isValidData) {
-          const defaultData = Days.reduce(
-            (acc, day) => ({
-              ...acc,
-              [day]: Rooms.map((room) => ({
-                [room]: timeSlots.map((time) => ({ Time: time } as EmptySlot)),
-              })),
-            }),
-            {}
-          );
-          setData(defaultData);
-          setLastFetchedData(defaultData);
-          throw new Error("Invalid timetable data structure");
-        }
-        setData(jsonData);
-        setLastFetchedData(jsonData);
-        setPendingData(null);
-      } catch (error) {
-        console.error("Fetch timetable error:", error);
-        const errorMessage =
-          error instanceof Error
-            ? `Failed to load timetable for version ${version}: ${error.message}`
-            : `Failed to load timetable for version ${version}`;
-        setError(errorMessage);
-        toast.error("Failed to load timetable", {
-          description: error instanceof Error ? error.message : "Unknown error",
-        });
-      } finally {
-        if (isManualSelect) setIsVersionLoading(false);
-      }
-    },
-    []
-  );
-
-  const deleteVersion = useCallback(
-    async (version: number): Promise<void> => {
-      setIsDeleting(true);
-      try {
-        const response = await fetch(
-          `/api/timetable?version_number=${version}`,
-          { method: "DELETE" }
-        );
-        if (!response.ok) {
-          const errorData: { error?: string } = await response.json();
-          throw new Error(errorData.error || `HTTP error: ${response.status}`);
-        }
-        const newVersions = await fetchVersions();
-        setVersions(newVersions);
-        let newSelectedVersion: number | undefined = undefined;
-        const currentIndex = versions.indexOf(version);
-        if (newVersions.length > 0) {
-          if (currentIndex === 0) {
-            newSelectedVersion = newVersions[0];
-          } else if (currentIndex >= newVersions.length) {
-            newSelectedVersion = newVersions[newVersions.length - 1];
-          } else {
-            newSelectedVersion =
-              newVersions[currentIndex] || newVersions[currentIndex - 1];
-          }
-        }
-        setSelectedVersion(newSelectedVersion);
-        if (newSelectedVersion !== undefined) {
-          await fetchTimetableData(newSelectedVersion);
-        } else {
-          const defaultData = Days.reduce(
-            (acc, day) => ({
-              ...acc,
-              [day]: Rooms.map((room) => ({
-                [room]: timeSlots.map((time) => ({ Time: time } as EmptySlot)),
-              })),
-            }),
-            {}
-          );
-          setData(defaultData);
-          setLastFetchedData(defaultData);
-        }
-        toast.success(`Version ${version} deleted successfully`);
-      } catch (error) {
-        console.error("Failed to delete version:", error);
-        toast.error("Deletion Failed", {
-          description: "Could not delete the version. Please try again.",
-          duration: 3000,
-        });
-      } finally {
-        setIsDeleting(false);
-        setIsDeleteDialogOpen(false);
-      }
-    },
-    [versions, fetchVersions, fetchTimetableData]
-  );
-
-  const handleSaveAction = useCallback(
-    async (
-      action: "cancel" | "same" | "new",
-      e?: React.MouseEvent<HTMLButtonElement>
-    ): Promise<void> => {
-      if (e) e.preventDefault();
-      if (action === "cancel" || !pendingData) {
-        setPendingData(null);
-        setData(lastFetchedData);
-        return;
-      }
-      setIsSaving(action);
-      try {
-        let result: number | undefined;
-        if (action === "same") {
-          result = await saveData(pendingData, selectedVersion);
-        } else if (action === "new") {
-          result = await saveData(pendingData);
-        }
-        if (result !== undefined) {
-          setData(pendingData);
-          setLastFetchedData(pendingData);
-          setPendingData(null);
-          if (action === "same" && selectedVersion !== undefined) {
-            await fetchTimetableData(selectedVersion);
-            toast.success("Changes saved in same version");
-          } else if (action === "new") {
-            setSelectedVersion(result);
-            await fetchTimetableData(result);
-            toast.success("Changes saved in new version");
-          }
-        }
-      } finally {
-        setIsSaving("none");
-      }
-    },
-    [
-      pendingData,
-      saveData,
-      selectedVersion,
-      fetchTimetableData,
-      lastFetchedData,
-    ]
-  );
 
   const allRooms = useMemo((): string[] => {
     const rooms = Array.from(
@@ -498,7 +276,6 @@ export default function ClientTimetable({
         )
       )
     );
-    console.log("All Rooms:", rooms); // Debug: Check all rooms
     return rooms;
   }, [data]);
 
@@ -540,12 +317,6 @@ export default function ClientTimetable({
         "Teacher" in sourceSessions[sourceIndex]
       ) {
         setActiveSession(sourceSessions[sourceIndex] as Session);
-      } else {
-        console.warn("No valid session found for drag:", {
-          sourceId,
-          sourceSessions,
-          sourceIndex,
-        });
       }
     },
     [data, parseCellId, isMobile]
@@ -584,40 +355,32 @@ export default function ClientTimetable({
         sourceTime === destTime
       )
         return;
-      const updatedData = produce(pendingData || data, (draft) => {
+      const updatedData = produce(data, (draft) => {
         const sourceRoomData = draft[sourceDay]?.find(
           (room: RoomSchedule) => Object.keys(room)[0] === sourceRoom
         );
         const destRoomData = draft[destDay]?.find(
           (room: RoomSchedule) => Object.keys(room)[0] === destRoom
         );
-        if (!sourceRoomData || !destRoomData) {
-          console.warn("Missing room data:", { sourceRoomData, destRoomData });
-          return;
-        }
+        if (!sourceRoomData || !destRoomData) return;
+
         const sourceSessions = sourceRoomData[sourceRoom];
         const destSessions = destRoomData[destRoom];
-        if (!sourceSessions || !destSessions) {
-          console.warn("Missing sessions:", { sourceSessions, destSessions });
-          return;
-        }
+        if (!sourceSessions || !destSessions) return;
+
         const sourceIndex = sourceSessions.findIndex(
           (session: Session | EmptySlot) => session.Time === sourceTime
         );
         const destIndex = destSessions.findIndex(
           (session: Session | EmptySlot) => session.Time === destTime
         );
-        if (sourceIndex === -1 || destIndex === -1) {
-          console.warn("Invalid indices:", { sourceIndex, destIndex });
-          return;
-        }
+        if (sourceIndex === -1 || destIndex === -1) return;
+
         const sessionToMove = sourceSessions[sourceIndex] as
           | Session
           | EmptySlot;
-        if (!("Teacher" in sessionToMove)) {
-          console.warn("Not a draggable session:", sessionToMove);
-          return;
-        }
+        if (!("Teacher" in sessionToMove)) return;
+
         const destSession = destSessions[destIndex] as Session | EmptySlot;
         if ("Teacher" in destSession) {
           sourceSessions[sourceIndex] = {
@@ -639,9 +402,13 @@ export default function ClientTimetable({
           };
         }
       });
+      console.log(
+        "Drag end updated data:",
+        JSON.stringify(updatedData, null, 2)
+      ); // Debug log
       setPendingData(updatedData);
     },
-    [data, pendingData, parseCellId, isMobile]
+    [data, parseCellId, isMobile]
   );
 
   const exportToPDF = useCallback(() => {
@@ -652,7 +419,8 @@ export default function ClientTimetable({
         format: "a4",
       });
 
-      const days = Object.keys(data) as (keyof TimetableData)[];
+      // Use Days array to ensure correct order
+      const days = Days;
 
       // Create a title page
       doc.setFontSize(20);
@@ -666,9 +434,9 @@ export default function ClientTimetable({
       });
       doc.addPage();
 
-      // Process each day
+      // Process each day in correct order
       for (const day of days) {
-        const dayData = data[day];
+        const dayData = data[day] || [];
         if (!Array.isArray(dayData)) continue;
 
         // Prepare table data
@@ -782,22 +550,14 @@ export default function ClientTimetable({
 
   const exportToXLSX = useCallback(() => {
     try {
-      console.log("Starting Excel export process...");
-      const timetableData = pendingData || data;
       const sheetData: (string | undefined)[][] = [
         ["Day", "Room", ...timeSlots],
       ];
 
-      console.log("Timetable Data for Excel Export:", timetableData);
-      console.log("Days being processed:", Days);
-
       Days.forEach((day) => {
-        console.log(`Processing day: ${day}`);
-        const dayData = timetableData[day] || [];
-        console.log(`Day Data for ${day}:`, dayData);
+        const dayData = data[day] || [];
 
         allRooms.forEach((roomName) => {
-          console.log(`Processing room for ${day}: ${roomName}`);
           const roomData = dayData.find(
             (room: RoomSchedule) => Object.keys(room)[0] === roomName
           );
@@ -822,8 +582,6 @@ export default function ClientTimetable({
         });
       });
 
-      console.log("Sheet Data for Excel:", sheetData);
-
       const workbook = XLSX.utils.book_new();
       const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
       XLSX.utils.book_append_sheet(workbook, worksheet, "Timetable");
@@ -831,9 +589,6 @@ export default function ClientTimetable({
       const fileName = `timetable${
         selectedVersion ? `-v${selectedVersion}` : ""
       }.xlsx`;
-      console.log(`Attempting to save Excel as ${fileName}...`);
-
-      // Fallback: If XLSX.writeFile fails, use a manual Blob download
       const binary = XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
       const buffer = new ArrayBuffer(binary.length);
       const view = new Uint8Array(buffer);
@@ -857,7 +612,7 @@ export default function ClientTimetable({
         description: error instanceof Error ? error.message : "Unknown error",
       });
     }
-  }, [data, pendingData, selectedVersion, allRooms]);
+  }, [data, selectedVersion, allRooms]);
 
   const toggleRoom = (day: string, room: string) => {
     setExpandedRooms((prev) => ({
@@ -866,22 +621,74 @@ export default function ClientTimetable({
     }));
   };
 
-  if (error) {
+  const handleSaveAction = useCallback(
+    async (
+      action: "cancel" | "same" | "new",
+      e?: React.MouseEvent<HTMLButtonElement>
+    ): Promise<void> => {
+      if (e) e.preventDefault();
+      if (action === "cancel" || !pendingData) {
+        console.log("Save cancelled or no pending data"); // Debug log
+        setPendingData(null);
+        return;
+      }
+
+      try {
+        console.log(
+          "Saving pendingData:",
+          JSON.stringify(pendingData, null, 2)
+        ); // Debug log
+        setIsSaving(action);
+
+        let newVersion: number;
+        if (action === "same" && selectedVersion !== null) {
+          newVersion = await saveTimetableData(pendingData, selectedVersion);
+        } else if (action === "new") {
+          newVersion = await saveTimetableData(pendingData);
+        } else {
+          throw new Error("Invalid save action");
+        }
+
+        console.log("Save successful, new version:", newVersion); // Debug log
+        setPendingData(null);
+        toast.success(`Changes saved successfully as Version ${newVersion}`);
+      } catch (error) {
+        console.error("Save error:", error); // Debug log
+        toast.error("Save failed", {
+          description: error instanceof Error ? error.message : "Unknown error",
+        });
+      } finally {
+        setIsSaving("none");
+      }
+    },
+    [pendingData, saveTimetableData, selectedVersion]
+  );
+
+  const handleDeleteVersion = useCallback(
+    async (version: number): Promise<void> => {
+      setIsDeleting(true);
+      try {
+        console.log("Deleting version:", version); // Debug log
+        await contextDeleteVersion(version);
+        console.log("Version deleted successfully:", version); // Debug log
+        toast.success(`Version ${version} deleted successfully`);
+      } catch (error) {
+        console.error("Delete error:", error); // Debug log
+        toast.error("Deletion failed", {
+          description: error instanceof Error ? error.message : "Unknown error",
+        });
+      } finally {
+        setIsDeleting(false);
+        setIsDeleteDialogOpen(false);
+      }
+    },
+    [contextDeleteVersion]
+  );
+
+  if (hookError) {
     return (
-      <div className="flex justify-center items-center h-[calc(100vh-4rem)] flex-1">
-        <div className="text-xl text-red-500 flex flex-col items-center gap-2">
-          <span>{error}</span>
-          <button
-            onClick={() =>
-              selectedVersion !== undefined &&
-              fetchTimetableData(selectedVersion, true)
-            }
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            disabled={isVersionLoading}
-          >
-            Retry
-          </button>
-        </div>
+      <div className="flex justify-center items-center h-64">
+        <div className="text-xl text-red-500">Error: {hookError}</div>
       </div>
     );
   }
@@ -907,7 +714,7 @@ export default function ClientTimetable({
                     label: `Version ${version}`,
                   }))}
                   value={
-                    selectedVersion !== undefined
+                    selectedVersion !== null
                       ? {
                           value: selectedVersion,
                           label: `Version ${selectedVersion}`,
@@ -916,10 +723,8 @@ export default function ClientTimetable({
                   }
                   onChange={(selectedOption) => {
                     const newVersion = selectedOption?.value;
-                    setSelectedVersion(newVersion);
-                    if (newVersion !== undefined) {
-                      fetchTimetableData(newVersion, true);
-                    }
+                    console.log("Version changed to:", newVersion); // Debug log
+                    setSelectedVersion(newVersion ?? null);
                   }}
                   placeholder="Select Version"
                   isDisabled={isSaving !== "none" || isDeleting}
@@ -960,7 +765,7 @@ export default function ClientTimetable({
                 />
               </div>
             </div>
-            {/*  */}
+
             <div className="flex items-center gap-2">
               {pendingData && (
                 <>
@@ -974,7 +779,7 @@ export default function ClientTimetable({
                   <button
                     onClick={(e) => handleSaveAction("same", e)}
                     className="bg-blue-900 hover:bg-blue-800 text-[#9EA8F5] px-2 md:px-3 py-1 rounded flex items-center gap-1 md:gap-2 disabled:opacity-50 text-xs md:text-sm"
-                    disabled={isSaving !== "none"}
+                    disabled={isSaving !== "none" || selectedVersion === null}
                   >
                     Save in Same Version
                     {isSaving === "same" && (
@@ -1035,8 +840,8 @@ export default function ClientTimetable({
               {/* Export dropdown */}
               <div className="relative" ref={exportDropdownRef}>
                 <button
-                  onClick={() => setShowExportDropdown(!showExportDropdown)}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-2 md:px-3 py-1 rounded flex items-center gap-1 md:gap-2 text-xs md:text-sm"
+                  onClick={() => setShowExportDropdown(true)}
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-2 md:px-3 py-1 rounded flex items-center gap-1 md:gap-2 text-sm"
                   disabled={isVersionLoading}
                 >
                   <FaDownload className="text-base md:text-lg" />
@@ -1049,17 +854,17 @@ export default function ClientTimetable({
                         setShowExportDropdown(false);
                         exportToPDF();
                       }}
-                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       disabled={isVersionLoading}
                     >
-                      Download in pdf
+                      Download in PDF
                     </button>
                     <button
                       onClick={() => {
                         setShowExportDropdown(false);
                         exportToXLSX();
                       }}
-                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50 border-t"
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-t"
                       disabled={isVersionLoading}
                     >
                       Download in Excel
@@ -1090,114 +895,122 @@ export default function ClientTimetable({
                 <LoaderOverlay isLoading={isVersionLoading} />
 
                 <div className="block md:hidden space-y-4 p-4">
-                  {Object.entries(pendingData || data).map(([day, rooms]) => (
-                    <div key={day} className="mb-6">
-                      <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                        {day}
-                      </h2>
-                      {allRooms.map((roomName) => {
-                        const roomData = Array.isArray(rooms)
-                          ? rooms.find(
-                              (room: RoomSchedule) =>
-                                Object.keys(room)[0] === roomName
-                            )
-                          : null;
-                        const sessions = roomData
-                          ? roomData[roomName] ||
-                            timeSlots.map((time) => ({ Time: time }))
-                          : timeSlots.map((time) => ({ Time: time }));
-                        const isExpanded =
-                          expandedRooms[`${day}-${roomName}`] || false;
+                  {Days.map((day) => {
+                    const rooms = data[day] || [];
+                    return (
+                      <div key={day} className="mb-6">
+                        <h2 className="text-lg font-semibold text-gray-700 mb-2">
+                          {day}
+                        </h2>
+                        {allRooms.map((roomName) => {
+                          const roomData = Array.isArray(rooms)
+                            ? rooms.find(
+                                (room: RoomSchedule) =>
+                                  Object.keys(room)[0] === roomName
+                              )
+                            : null;
+                          const sessions = roomData
+                            ? roomData[roomName] ||
+                              timeSlots.map((time) => ({ Time: time }))
+                            : timeSlots.map((time) => ({ Time: time }));
+                          const isExpanded =
+                            expandedRooms[`${day}-${roomName}`] || false;
 
-                        return (
-                          <div
-                            key={`${day}-${roomName}`}
-                            className="border rounded-lg shadow-sm bg-white mb-2"
-                          >
+                          return (
                             <div
-                              className="flex justify-between items-center p-3 cursor-pointer bg-gray-100"
-                              onClick={() => toggleRoom(day, roomName)}
+                              key={`${day}-${roomName}`}
+                              className="border rounded-lg shadow-sm bg-white mb-2"
                             >
-                              <h3 className="text-sm font-medium">
-                                {roomName}
-                              </h3>
-                              {isExpanded ? (
-                                <IoIosArrowUp size={16} />
-                              ) : (
-                                <IoIosArrowDown size={16} />
-                              )}
-                            </div>
-                            {isExpanded && (
-                              <div className="p-3 space-y-2">
-                                {timeSlots.map((timeSlot) => {
-                                  const session = sessions.find(
-                                    (s: Session | EmptySlot) =>
-                                      s.Time === timeSlot
-                                  ) as Session | EmptySlot | undefined;
-                                  const isEmpty =
-                                    !session || !("Teacher" in session);
-                                  const cellId = `${day}-${roomName}-${timeSlot}`;
-                                  const isDraggingThisSession =
-                                    activeSession &&
-                                    session &&
-                                    "Teacher" in session &&
-                                    session.Subject === activeSession.Subject &&
-                                    session.Time === activeSession.Time;
+                              <div
+                                className="flex justify-between items-center p-3 cursor-pointer bg-gray-100"
+                                onClick={() => toggleRoom(day, roomName)}
+                              >
+                                <h3 className="text-sm font-medium">
+                                  {roomName}
+                                </h3>
+                                {isExpanded ? (
+                                  <IoIosArrowUp size={16} />
+                                ) : (
+                                  <IoIosArrowDown size={16} />
+                                )}
+                              </div>
+                              {isExpanded && (
+                                <div className="p-3 space-y-2">
+                                  {timeSlots.map((timeSlot) => {
+                                    const session = sessions.find(
+                                      (s: Session | EmptySlot) =>
+                                        s.Time === timeSlot
+                                    ) as Session | EmptySlot | undefined;
+                                    const isEmpty =
+                                      !session || !("Teacher" in session);
+                                    const cellId = `${day}-${roomName}-${timeSlot}`;
+                                    const isDraggingThisSession =
+                                      activeSession &&
+                                      session &&
+                                      "Teacher" in session &&
+                                      session.Subject ===
+                                        activeSession.Subject &&
+                                      session.Time === activeSession.Time;
 
-                                  return (
-                                    <div
-                                      key={cellId}
-                                      className="flex items-center border-b py-2"
-                                    >
-                                      <div className="w-1/3 text-sm font-medium">
-                                        {timeSlot}
-                                      </div>
-                                      <div className="w-2/3">
-                                        <DroppableDiv
-                                          id={cellId}
-                                          isEmpty={isEmpty}
-                                          isDraggingOver={
-                                            !!isDraggingThisSession
-                                          }
-                                          isMobile={isMobile}
-                                        >
-                                          {!isEmpty &&
-                                          !isDraggingThisSession &&
-                                          session &&
-                                          "Teacher" in session ? (
-                                            <DraggableSession
-                                              id={`${cellId}-${(
-                                                session.Subject || "session"
-                                              ).replace(/[^a-zA-Z0-9]/g, "_")}`}
-                                              session={session as Session}
-                                              isDisabled={
-                                                isSaving !== "none" || isMobile
-                                              }
-                                            />
-                                          ) : isDraggingThisSession &&
+                                    return (
+                                      <div
+                                        key={cellId}
+                                        className="flex items-center border-b py-2"
+                                      >
+                                        <div className="w-1/3 text-sm font-medium">
+                                          {timeSlot}
+                                        </div>
+                                        <div className="w-2/3">
+                                          <DroppableDiv
+                                            id={cellId}
+                                            isEmpty={isEmpty}
+                                            isDraggingOver={
+                                              !!isDraggingThisSession
+                                            }
+                                            isMobile={isMobile}
+                                          >
+                                            {!isEmpty &&
+                                            !isDraggingThisSession &&
                                             session &&
                                             "Teacher" in session ? (
-                                            <SessionDetails
-                                              session={session as Session}
-                                              isPlaceholder
-                                            />
-                                          ) : (
-                                            <div className="text-center text-gray-600 text-sm">
-                                              Free
-                                            </div>
-                                          )}
-                                        </DroppableDiv>
+                                              <DraggableSession
+                                                id={`${cellId}-${(
+                                                  session.Subject || "session"
+                                                ).replace(
+                                                  /[^a-zA-Z0-9]/g,
+                                                  "_"
+                                                )}`}
+                                                session={session as Session}
+                                                isDisabled={
+                                                  isSaving !== "none" ||
+                                                  isMobile
+                                                }
+                                              />
+                                            ) : isDraggingThisSession &&
+                                              session &&
+                                              "Teacher" in session ? (
+                                              <SessionDetails
+                                                session={session as Session}
+                                                isPlaceholder
+                                              />
+                                            ) : (
+                                              <div className="text-center text-gray-600 text-sm">
+                                                Free
+                                              </div>
+                                            )}
+                                          </DroppableDiv>
+                                        </div>
                                       </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ))}
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className="hidden md:block overflow-x-auto">
@@ -1232,8 +1045,9 @@ export default function ClientTimetable({
                       </tr>
                     </thead>
                     <tbody>
-                      {Object.entries(pendingData || data).map(
-                        ([day, rooms]) => (
+                      {Days.map((day) => {
+                        const rooms = data[day] || [];
+                        return (
                           <React.Fragment key={day}>
                             <tr>
                               <td
@@ -1319,8 +1133,8 @@ export default function ClientTimetable({
                               );
                             })}
                           </React.Fragment>
-                        )
-                      )}
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -1369,7 +1183,7 @@ export default function ClientTimetable({
                   onClick={(e) => {
                     e.preventDefault();
                     if (versionToDelete !== null) {
-                      deleteVersion(versionToDelete);
+                      handleDeleteVersion(versionToDelete);
                     }
                   }}
                   className="bg-blue-900 hover:bg-blue-800 text-white flex items-center gap-2 text-sm"

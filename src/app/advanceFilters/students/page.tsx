@@ -2,15 +2,10 @@
 
 import { useState, useId, useCallback, useMemo, useEffect, JSX } from "react";
 import Select, { MultiValue, SingleValue } from "react-select";
-import { useTimetableVersions } from "../../hooks/useTimetableVersion";
+import { useTimetableVersion } from "@/context/TimetableContext";
 import { timeSlots, Days } from "@/helpers/page";
 import ExportTimetable from "@/lib/download_timetable/ExportTimetable";
-import {
-  TimetableData,
-  RoomSchedule,
-  Session,
-  EmptySlot,
-} from "@/app/timetable/types";
+import { RoomSchedule, Session, EmptySlot } from "@/app/timetable/types";
 import { EnhancedClassItem } from "@/lib/download_timetable/ExportTimetable";
 
 type DayType = (typeof Days)[number];
@@ -21,24 +16,13 @@ interface SelectOption {
   label: string;
 }
 
-interface VersionOption {
-  value: number;
-  label: string;
-}
-
 export default function StudentTimetable(): JSX.Element {
   const {
-    versions,
     selectedVersion,
     timetableData,
     loading,
     error: hookError,
-    setSelectedVersion,
-  } = useTimetableVersions<TimetableData>(
-    { Monday: [], Tuesday: [], Wednesday: [], Thursday: [], Friday: [] },
-    [],
-    null
-  );
+  } = useTimetableVersion();
 
   const [selectedSection, setSelectedSection] = useState<string>("");
   const [selectedDay, setSelectedDay] = useState<DayType[]>([]);
@@ -47,7 +31,11 @@ export default function StudentTimetable(): JSX.Element {
 
   const sectionSelectedId = useId();
   const daySelectedId = useId();
-  const versionSelectedId = useId();
+
+  // Debug log for selectedVersion
+  useEffect(() => {
+    console.log("StudentTimetable selectedVersion:", selectedVersion);
+  }, [selectedVersion]);
 
   const sections: string[] = useMemo(() => {
     const sectionSet = new Set<string>();
@@ -133,7 +121,7 @@ export default function StudentTimetable(): JSX.Element {
             result.push({
               Subject: session.Subject || "",
               Teacher: session.Teacher || "",
-              Section: session.Section || "", // Default to "" if undefined
+              Section: session.Section || "",
               Time: session.Time || "",
               Day: day,
               Room: roomName,
@@ -173,12 +161,25 @@ export default function StudentTimetable(): JSX.Element {
     : [allOption, ...dayOptions];
 
   if (
-    hookError &&
-    (!timetableData.Monday || timetableData.Monday.length === 0)
+    hookError ||
+    (!loading && Object.values(timetableData).every((arr) => arr.length === 0))
   ) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-xl text-red-500">Error: {hookError}</div>
+        <div className="text-xl text-red-500">
+          {hookError ||
+            "No timetable data available. Please select a version in the main timetable."}
+        </div>
+      </div>
+    );
+  }
+
+  if (selectedVersion === null && !loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-xl text-gray-500">
+          Please select a version in the main timetable.
+        </div>
       </div>
     );
   }
@@ -189,41 +190,6 @@ export default function StudentTimetable(): JSX.Element {
         <h1 className="font-bold text-xl mt-3 mb-4 md:text-2xl lg:text-3xl lg:mt-6 lg:mb-6">
           Check Students Timetable
         </h1>
-
-        <div className="mb-4 flex flex-col w-full max-w-md">
-          <label className="text-[13px] mb-2 md:text-[17px] lg:text-xl">
-            Version:
-          </label>
-          <div className="flex w-full items-center">
-            <Select<VersionOption, false>
-              instanceId={versionSelectedId}
-              options={
-                loading
-                  ? [{ value: -1, label: "Loading..." }]
-                  : versions.map((version: number) => ({
-                      value: version,
-                      label: `Version ${version}`,
-                    }))
-              }
-              value={
-                selectedVersion !== null
-                  ? {
-                      value: selectedVersion,
-                      label: loading
-                        ? "Loading..."
-                        : `Version ${selectedVersion}`,
-                    }
-                  : null
-              }
-              onChange={(selectedOption: SingleValue<VersionOption>) =>
-                setSelectedVersion(selectedOption ? selectedOption.value : null)
-              }
-              className="text-black w-full"
-              placeholder="Select version"
-              isClearable
-            />
-          </div>
-        </div>
 
         <div className="mb-2 flex flex-col w-full max-w-md">
           <label className="text-[13px] mb-2 md:text-[17px] lg:text-xl">
@@ -250,7 +216,7 @@ export default function StudentTimetable(): JSX.Element {
           />
           {sections.length === 0 && !loading && (
             <p className="text-sm text-gray-500 mt-1">
-              No sections available. Please select a version first.
+              No sections available for the selected version.
             </p>
           )}
         </div>

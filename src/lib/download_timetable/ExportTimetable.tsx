@@ -16,7 +16,6 @@ export interface EnhancedClassItem {
   Time: string;
   Day: string;
   Room: string;
-  [key: string]: string;
 }
 
 interface ExportTimetableProps {
@@ -26,7 +25,7 @@ interface ExportTimetableProps {
   selectedVersion?: number | null;
   isLoading?: boolean;
   setError?: (error: string | null) => void;
-  identifier: string; // e.g., "Section" for students, "Teacher" for teachers
+  identifier: "Teacher" | "string" | "Section";
 }
 
 const LoaderOverlay = ({ isVisible }: { isVisible: boolean }) =>
@@ -104,14 +103,29 @@ export default function ExportTimetable({
       doc.text(`Version: ${selectedVersion ?? "Current"}`, 148, 22, {
         align: "center",
       });
-      doc.text(`Generated: 11:23 PM PKT, June 05, 2025`, 148, 27, {
-        align: "center",
-      });
+      doc.text(
+        `Generated: ${new Date().toLocaleString("en-US", {
+          timeZone: "Asia/Karachi",
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        })} PKT, ${new Date().toLocaleDateString("en-US", {
+          timeZone: "Asia/Karachi",
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        })}`,
+        148,
+        27,
+        {
+          align: "center",
+        }
+      );
 
       // Prepare table data: One row per day, one column per time slot
       const tableHeaders: CellInput[] = ["Day", ...timeSlots];
       const tableData: RowInput[] = Days.map((day) => {
-        const row: CellInput[] = [day]; // Use CellInput[] for individual row elements
+        const row: CellInput[] = [day];
         timeSlots.forEach((time) => {
           const course = results.find(
             (item) => item.Day === day && item.Time === time
@@ -126,7 +140,7 @@ export default function ExportTimetable({
             row.push("");
           }
         });
-        return row as RowInput; // Cast to RowInput since CellInput[] is compatible
+        return row as RowInput;
       });
 
       // Render the table
