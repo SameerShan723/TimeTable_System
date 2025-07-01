@@ -25,14 +25,13 @@ export default function StudentTimetable(): JSX.Element {
   } = useTimetableVersion();
 
   const [selectedSection, setSelectedSection] = useState<string>("");
-  const [selectedDay, setSelectedDay] = useState<DayType[]>([]);
+  const [selectedDay, setSelectedDay] = useState<DayType[]>([...Days]);
   const [results, setResult] = useState<EnhancedClassItem[]>([]);
   const [error, setError] = useState<string>("");
 
   const sectionSelectedId = useId();
   const daySelectedId = useId();
 
-  // Debug log for selectedVersion
   useEffect(() => {
     console.log("StudentTimetable selectedVersion:", selectedVersion);
   }, [selectedVersion]);
@@ -152,7 +151,8 @@ export default function StudentTimetable(): JSX.Element {
     setResult([]);
     setError("");
     setSelectedSection("");
-    setSelectedDay([]);
+    // Reset to all days when version changes
+    setSelectedDay([...Days]);
   }, [selectedVersion]);
 
   const isAllSelected = selectedDay.length === Days.length;
@@ -239,9 +239,9 @@ export default function StudentTimetable(): JSX.Element {
           />
         </div>
 
-        <div className="flex space-x-4">
+        <div className="flex gap-3 flex-col lg:flex-row md:flex-row ">
           <button
-            className="bg-blue-900 py-2 px-20 cursor-pointer text-[#ccd8e8] hover:bg-blue-800 transition-colors"
+            className="bg-blue-900 py-2  lg:px-20 px-12 md:px-16 rounded-md cursor-pointer text-[#ccd8e8] hover:bg-blue-800 transition-colors"
             onClick={handleSearch}
             disabled={loading}
           >

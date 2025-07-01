@@ -185,9 +185,8 @@ export default function TeacherTimetable(): JSX.Element {
       </div>
     );
   }
-  console.log(results, "results");
   return (
-    <div className="flex flex-col flex-1 h-full w-full overflow-y-auto">
+    <div className="flex flex-col flex-1 h-full w-full ">
       <div className="flex items-center justify-center flex-col">
         <h1 className="font-bold text-3xl mt-6 mb-6">
           Check Teachers Timetable
@@ -253,9 +252,9 @@ export default function TeacherTimetable(): JSX.Element {
             isDisabled={loading}
           />
         </div>
-        <div className="flex space-x-4">
+        <div className="flex gap-3 flex-col lg:flex-row md:flex-row">
           <button
-            className="bg-blue-900 py-2 px-20 cursor-pointer text-[#ccd8e8] disabled:opacity-50 hover:bg-blue-800 transition-colors"
+            className="bg-blue-900 py-2 lg:px-20 px-12 md:px-16 rounded-md cursor-pointer text-[#ccd8e8] disabled:opacity-50 hover:bg-blue-800 transition-colors"
             onClick={handleSearch}
             disabled={loading}
           >
@@ -285,7 +284,7 @@ export default function TeacherTimetable(): JSX.Element {
         )}
       </div>
       {results.length > 0 && (
-        <div className="mt-6 mb-10 px-10">
+        <div className="mt-6 mb-10 px-10 overflow-auto">
           <table className="table-auto w-full border-collapse border border-gray-300">
             <thead>
               <tr className="bg-gray-100">

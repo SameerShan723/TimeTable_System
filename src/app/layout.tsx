@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/sidebar/page";
-import Header from "./header/page";
+import SidebarWrapper from "@/components/sidebar/SidebarWrapper";
+import Header from "../components/header/page";
 import { Inter, Roboto } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import { TimetableVersionProvider } from "@/context/TimetableContext";
 import { getServerData } from "@/lib/serverData/serverData";
+import { Toaster } from "sonner";
+import CourseDataFetcher from "@/lib/serverData/CourseDataFetcher";
 
 // Configure fonts
 const inter = Inter({
@@ -39,13 +41,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Fetch initial timetable data using server helper
   const serverData = await getServerData();
 
   return (
     <html lang="en" className={`${inter.variable} ${roboto.variable}`}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
       >
         <NextTopLoader
           showSpinner={false}
@@ -56,17 +57,15 @@ export default async function RootLayout({
         <div className="h-16 sticky top-0 z-50 shadow-xl">
           <Header />
         </div>
-
-        <div className="flex flex-col md:flex-row h-[calc(100vh-4rem)]">
-          <div className="w-full md:w-60 md:h-full flex-shrink-0">
-            <Sidebar />
-          </div>
-
-          <div className="flex-1 h-full overflow-x-auto">
-            {/* Pass server-fetched data to context provider */}
-            <TimetableVersionProvider initialData={serverData}>
-              {children}
-            </TimetableVersionProvider>
+        <div className="flex flex-col md:flex-row h-[calc(100vh-4rem)] overflow-hidden">
+          <SidebarWrapper />
+          <div className="flex-1 overflow-x-auto">
+            <CourseDataFetcher>
+              <TimetableVersionProvider initialData={serverData}>
+                {children}
+                <Toaster />
+              </TimetableVersionProvider>
+            </CourseDataFetcher>
           </div>
         </div>
       </body>

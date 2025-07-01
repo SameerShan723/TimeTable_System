@@ -12,7 +12,7 @@ export interface EmptySlot {
 }
 
 export interface RoomSchedule {
-  [roomName: string]: (Session | EmptySlot)[] | undefined;
+  [roomName: string]: (Session | EmptySlot)[];
 }
 
 export type DaySchedule = RoomSchedule[];

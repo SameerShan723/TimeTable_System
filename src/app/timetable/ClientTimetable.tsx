@@ -10,8 +10,6 @@ import React, {
 } from "react";
 import {
   DndContext,
-  useDraggable,
-  useDroppable,
   DragEndEvent,
   DragStartEvent,
   DragOverlay,
@@ -32,50 +30,24 @@ import {
   AlertDialogOverlay,
   AlertDialogPortal,
 } from "@/components/ui/alert-dialog";
-import { toast, Toaster } from "sonner";
-import {
-  Session,
-  EmptySlot,
-  RoomSchedule,
-  VersionOption,
-  TimetableData,
-} from "./types";
+import { toast } from "sonner";
+import { Session, EmptySlot, RoomSchedule, TimetableData } from "./types";
 import { timeSlots, Days } from "@/helpers/page";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import jsPDF from "jspdf";
 import autoTable, { Styles, RowInput, CellInput } from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { useTimetableVersion } from "@/context/TimetableContext";
+import debounce from "just-debounce-it";
+import { DraggableSession, DroppableCell, DroppableDiv } from "./DragAndDrop";
+import AddClassDialog from "./AddClassDialog";
 
 interface SessionDetailsProps {
   session: Session;
   isPlaceholder?: boolean;
 }
 
-interface DroppableCellProps {
-  id: string;
-  children: React.ReactNode;
-  isEmpty: boolean;
-  isDraggingOver: boolean;
-  isMobile: boolean;
-}
-
-interface DraggableSessionProps {
-  id: string;
-  session: Session;
-  isDragging?: boolean;
-  isDisabled?: boolean;
-}
-
-interface DroppableDivProps {
-  id: string;
-  children: React.ReactNode;
-  isEmpty: boolean;
-  isDraggingOver: boolean;
-  isMobile: boolean;
-}
-
-const SessionDetails: React.FC<SessionDetailsProps> = React.memo(
+export const SessionDetails: React.FC<SessionDetailsProps> = React.memo(
   ({ session, isPlaceholder = false }) => (
     <div
       className={`text-center p-1 rounded-md text-sm ${
@@ -94,117 +66,96 @@ const SessionDetails: React.FC<SessionDetailsProps> = React.memo(
 );
 SessionDetails.displayName = "SessionDetails";
 
-const DroppableCell: React.FC<DroppableCellProps> = React.memo(
-  ({ id, children, isEmpty, isDraggingOver, isMobile }) => {
-    const { setNodeRef, isOver } = useDroppable({
-      id,
-      disabled: isMobile,
-    });
-    const className = `border p-3 transition-all duration-200 min-w-0 ${
-      !isMobile && isOver ? "bg-blue-100 border-2 border-blue-400" : ""
-    } ${
-      !isMobile && isDraggingOver && isEmpty ? "bg-gray-100 opacity-50" : ""
-    }`;
-    return (
-      <td ref={setNodeRef} className={className}>
-        {children}
-      </td>
-    );
-  }
-);
-DroppableCell.displayName = "DroppableCell";
+const TeacherFilter: React.FC<{
+  onFilterChange: (teacher: string | null) => void;
+}> = React.memo(({ onFilterChange }) => {
+  const { timetableData } = useTimetableVersion();
+  const teacherId = useId();
+  const [selectedTeacher, setSelectedTeacher] = useState<string | null>(null);
 
-const DraggableSession: React.FC<DraggableSessionProps> = React.memo(
-  ({ id, session, isDragging = false, isDisabled = false }) => {
-    const { attributes, listeners, setNodeRef } = useDraggable({
-      id,
-      disabled: isDisabled,
+  const teacherOptions = useMemo(() => {
+    const teachers = new Set<string>();
+    Days.forEach((day) => {
+      const dayData = timetableData[day] || [];
+      dayData.forEach((roomSchedule: RoomSchedule) => {
+        const roomName = Object.keys(roomSchedule)[0];
+        const sessions = roomSchedule[roomName] || [];
+        sessions.forEach((session: Session | EmptySlot) => {
+          if ("Teacher" in session && session.Teacher) {
+            teachers.add(session.Teacher);
+          }
+        });
+      });
     });
-    const className = `transition-all ease-in-out ${
-      isDisabled
-        ? "cursor-not-allowed opacity-50"
-        : "cursor-move hover:bg-gray-50"
-    } ${
-      isDragging ? "opacity-70 scale-105 rotate-1 shadow-xl bg-blue-50" : ""
-    }`;
-    const staticAttributes = {
-      ...attributes,
-      "aria-describedby": `DndDescribedBy-${id.replace(/[^a-zA-Z0-9]/g, "")}`,
-    };
-    return (
-      <div
-        ref={setNodeRef}
-        {...(isDisabled ? {} : listeners)}
-        {...staticAttributes}
-        className={className}
-      >
-        <SessionDetails session={session} />
-      </div>
-    );
-  }
-);
-DraggableSession.displayName = "DraggableSession";
+    return Array.from(teachers).map((teacher) => ({
+      value: teacher,
+      label: teacher,
+    }));
+  }, [timetableData]);
 
-const DroppableDiv: React.FC<DroppableDivProps> = React.memo(
-  ({ id, children, isEmpty, isDraggingOver, isMobile }) => {
-    const { setNodeRef, isOver } = useDroppable({
-      id,
-      disabled: isMobile,
-    });
-    const className = `border p-1 md:p-2 transition-all duration-200 ${
-      !isMobile && isOver ? "bg-blue-100 border-2 border-blue-400" : ""
-    } ${
-      !isMobile && isDraggingOver && isEmpty ? "bg-gray-100 opacity-50" : ""
-    }`;
-    return (
-      <div ref={setNodeRef} className={className}>
-        {children}
-      </div>
-    );
-  }
-);
-DroppableDiv.displayName = "DroppableDiv";
-
-const LoaderOverlay = ({ isLoading }: { isLoading: boolean }) =>
-  isLoading ? (
-    <div
-      className="absolute inset-0 bg-white/50 flex items-center justify-center z-10 min-h-full"
-      style={{ backdropFilter: "blur(2px)" }}
-    >
-      <svg
-        className="animate-spin h-12 w-12 text-blue-500"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          className="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          strokeWidth="4"
+  return (
+    <div className="flex items-center w-full sm:w-3/4 md:w-40 lg:w-80 min-w-[120px]">
+      <label className="text-white text-xs sm:text-sm">
+        Filter by Teacher:
+      </label>
+      <div className="relative w-full text-xs sm:text-sm">
+        <Select
+          instanceId={teacherId}
+          options={teacherOptions}
+          value={
+            selectedTeacher
+              ? teacherOptions.find(
+                  (option) => option.value === selectedTeacher
+                )
+              : null
+          }
+          onChange={(selectedOption) => {
+            const value = selectedOption ? selectedOption.value : null;
+            setSelectedTeacher(value);
+            onFilterChange(value);
+          }}
+          placeholder="Select Teacher"
+          isClearable={true}
+          className="text-black"
+          styles={{
+            control: (provided, state) => ({
+              ...provided,
+              border: state.isFocused ? "0px" : provided.border,
+              outline: state.isFocused ? "none" : provided.outline,
+              boxShadow: state.isFocused ? "none" : provided.boxShadow,
+              fontSize: "0.875rem",
+              minHeight: "32px",
+              width: "100%",
+              maxWidth: "100%",
+            }),
+            menu: (provided) => ({
+              ...provided,
+              maxWidth: "100%",
+            }),
+            option: (provided) => ({
+              ...provided,
+              padding: "8px",
+            }),
+          }}
         />
-        <path
-          className="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        />
-      </svg>
-      <span className="ml-4 text-lg text-gray-700">Loading Version...</span>
+      </div>
     </div>
-  ) : null;
+  );
+});
+TeacherFilter.displayName = "TeacherFilter";
 
 export default function ClientTimetable() {
   const {
     versions,
     selectedVersion,
     timetableData,
+    conflicts,
     loading: isVersionLoading,
     error: hookError,
     setSelectedVersion,
     saveTimetableData,
     deleteVersion: contextDeleteVersion,
+    checkConflicts,
   } = useTimetableVersion();
 
   const [pendingData, setPendingData] = useState<TimetableData | null>(null);
@@ -218,12 +169,67 @@ export default function ClientTimetable() {
   }>({});
   const [isMobile, setIsMobile] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState<string | null>(null);
+  const [isAddClassDialogOpen, setIsAddClassDialogOpen] = useState(false);
+  const [addClassCell, setAddClassCell] = useState<{
+    day: string;
+    room: string;
+    time: string;
+  } | null>(null);
+  const [isDeleteClassDialogOpen, setIsDeleteClassDialogOpen] = useState(false);
+  const [deleteClassCell, setDeleteClassCell] = useState<{
+    day: string;
+    room: string;
+    time: string;
+  } | null>(null);
+  const [isDeleteClassLoading, setIsDeleteClassLoading] = useState(false);
+  const [isAddClassLoading, setIsAddClassLoading] = useState(false);
   const timetableRef = useRef<HTMLDivElement>(null);
   const exportDropdownRef = useRef<HTMLDivElement>(null);
   const versionId = useId();
 
-  // Use context-provided data as the main data source
+  const [isOperationLoading, setIsOperationLoading] = useState(false);
+  const debouncedCheckConflicts = useMemo(
+    () => debounce(checkConflicts, 300),
+    [checkConflicts]
+  );
+
   const data = pendingData || timetableData;
+
+  const filteredData = useMemo(() => {
+    if (!selectedTeacher) return data;
+    const filtered: TimetableData = {
+      Monday: [],
+      Tuesday: [],
+      Wednesday: [],
+      Thursday: [],
+      Friday: [],
+    };
+    Days.forEach((day) => {
+      const dayData = data[day] || [];
+      const filteredRooms: RoomSchedule[] = dayData
+        .map((roomSchedule: RoomSchedule) => {
+          const roomName = Object.keys(roomSchedule)[0];
+          if (!roomName) {
+            return null;
+          }
+          const sessions = roomSchedule[roomName] || [];
+          const filteredSessions = sessions.filter(
+            (session: Session | EmptySlot): session is Session =>
+              "Teacher" in session && session.Teacher === selectedTeacher
+          );
+          return { [roomName]: filteredSessions } as RoomSchedule;
+        })
+        .filter(
+          (roomSchedule): roomSchedule is RoomSchedule =>
+            !!roomSchedule && Object.values(roomSchedule)[0].length > 0
+        );
+      if (filteredRooms.length > 0) {
+        filtered[day] = filteredRooms;
+      }
+    });
+    return filtered;
+  }, [data, selectedTeacher]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -236,6 +242,9 @@ export default function ClientTimetable() {
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, []);
 
   useEffect(() => {
@@ -250,7 +259,7 @@ export default function ClientTimetable() {
   }, [isVersionLoading]);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (
         exportDropdownRef.current &&
         !exportDropdownRef.current.contains(event.target as Node)
@@ -259,8 +268,17 @@ export default function ClientTimetable() {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
   }, []);
+
+  useEffect(() => {
+    debouncedCheckConflicts(data);
+    return () => debouncedCheckConflicts.cancel();
+  }, [data, debouncedCheckConflicts]);
 
   const allRooms = useMemo((): string[] => {
     const rooms = Array.from(
@@ -284,13 +302,37 @@ export default function ClientTimetable() {
       const regex = /^([^-]+)-(.+)-(\d{1,2}:\d{2}-\d{1,2}:\d{2})(?:-(.+))?$/;
       const match = id.match(regex);
       if (!match) {
-        console.warn(`Invalid cell ID format: ${id}`);
         return { day: "", room: "", time: "" };
       }
       const [, day, room, time] = match;
       return { day, room, time };
     },
     []
+  );
+
+  const getCellConflicts = useCallback(
+    (day: string, room: string, time: string): string[] => {
+      const roomData = (selectedTeacher ? filteredData : data)[day]?.find(
+        (r: RoomSchedule) => Object.keys(r)[0] === room
+      );
+      if (!roomData) return [];
+      const sessions = roomData[room] || [];
+      const sessionIndex = sessions.findIndex(
+        (s: Session | EmptySlot) => s.Time === time
+      );
+      if (sessionIndex === -1 || !("Teacher" in sessions[sessionIndex]))
+        return [];
+      return conflicts
+        .filter(
+          (c) =>
+            c.day === day &&
+            c.time === time &&
+            c.room === room &&
+            c.classIndex === sessionIndex
+        )
+        .map((c) => c.message);
+    },
+    [data, filteredData, conflicts, selectedTeacher]
   );
 
   const handleDragStart = useCallback(
@@ -402,13 +444,113 @@ export default function ClientTimetable() {
           };
         }
       });
-      console.log(
-        "Drag end updated data:",
-        JSON.stringify(updatedData, null, 2)
-      ); // Debug log
       setPendingData(updatedData);
+      debouncedCheckConflicts(updatedData);
     },
-    [data, parseCellId, isMobile]
+    [data, parseCellId, isMobile, debouncedCheckConflicts]
+  );
+
+  const handleAddClass = useCallback(
+    async (
+      day: string,
+      room: string,
+      time: string,
+      classData: { subject: string; teacher: string; section: string }
+    ) => {
+      setIsAddClassLoading(true);
+      setIsOperationLoading(true);
+      const updatedData = produce(timetableData, (draft) => {
+        const roomData = draft[day]?.find(
+          (r: RoomSchedule) => Object.keys(r)[0] === room
+        );
+        if (!roomData) return;
+        const sessions = roomData[room] || [];
+        const sessionIndex = sessions.findIndex(
+          (s: Session | EmptySlot) => s.Time === time
+        );
+        if (sessionIndex === -1) return;
+        sessions[sessionIndex] = {
+          Time: time,
+          Room: room,
+          Subject: classData.subject,
+          Teacher: classData.teacher,
+          Section: classData.section,
+        };
+      });
+      try {
+        const newVersion = await saveTimetableData(
+          updatedData,
+          selectedVersion ?? undefined
+        );
+        await setSelectedVersion(newVersion); // Refetch data
+        toast.success(
+          `Class added and saved successfully as Version ${newVersion}`
+        );
+        setIsAddClassDialogOpen(false); // Auto-close
+        setAddClassCell(null);
+      } catch (error) {
+        toast.error("Failed to save class", {
+          description: error instanceof Error ? error.message : "Unknown error",
+        });
+        throw error; // Keep dialog open
+      } finally {
+        setIsAddClassLoading(false);
+        setIsOperationLoading(false);
+      }
+      debouncedCheckConflicts(updatedData);
+    },
+    [
+      timetableData,
+      saveTimetableData,
+      selectedVersion,
+      debouncedCheckConflicts,
+      setSelectedVersion,
+    ]
+  );
+
+  const handleDeleteClass = useCallback(
+    async (day: string, room: string, time: string) => {
+      setIsDeleteClassLoading(true);
+      setIsOperationLoading(true);
+      const updatedData = produce(timetableData, (draft) => {
+        const roomData = draft[day]?.find(
+          (r: RoomSchedule) => Object.keys(r)[0] === room
+        );
+        if (!roomData) return;
+        const sessions = roomData[room] || [];
+        const sessionIndex = sessions.findIndex(
+          (s: Session | EmptySlot) => s.Time === time
+        );
+        if (sessionIndex === -1) return;
+        sessions[sessionIndex] = { Time: time };
+      });
+      try {
+        const newVersion = await saveTimetableData(
+          updatedData,
+          selectedVersion ?? undefined
+        );
+        await setSelectedVersion(newVersion); // Refetch data
+        toast.success("Class deleted successfully");
+        setIsDeleteClassDialogOpen(false);
+        setDeleteClassCell(null);
+      } catch (error) {
+        toast.error("Failed to delete class", {
+          description: error instanceof Error ? error.message : "Unknown error",
+        });
+        throw error;
+      } finally {
+        setIsDeleteClassLoading(false);
+        setIsOperationLoading(false);
+      }
+      debouncedCheckConflicts(updatedData);
+    },
+    [
+      timetableData,
+      saveTimetableData,
+      selectedVersion,
+      debouncedCheckConflicts,
+      setSelectedVersion,
+    ]
   );
 
   const exportToPDF = useCallback(() => {
@@ -419,10 +561,8 @@ export default function ClientTimetable() {
         format: "a4",
       });
 
-      // Use Days array to ensure correct order
       const days = Days;
 
-      // Create a title page
       doc.setFontSize(20);
       doc.text("University Timetable", 105, 20, { align: "center" });
       doc.setFontSize(12);
@@ -434,16 +574,13 @@ export default function ClientTimetable() {
       });
       doc.addPage();
 
-      // Process each day in correct order
       for (const day of days) {
-        const dayData = data[day] || [];
+        const dayData = (selectedTeacher ? filteredData : data)[day] || [];
         if (!Array.isArray(dayData)) continue;
 
-        // Prepare table data
         const tableData: RowInput[] = [];
         const tableHeaders: CellInput[] = ["Room", ...timeSlots];
 
-        // Get all rooms for this day
         const roomsForDay: string[] = Array.from(
           new Set(
             dayData.flatMap((roomSchedule: RoomSchedule) =>
@@ -452,7 +589,6 @@ export default function ClientTimetable() {
           )
         );
 
-        // Build table rows
         for (const roomName of roomsForDay) {
           const roomData = dayData.find(
             (roomSchedule: RoomSchedule) =>
@@ -495,12 +631,10 @@ export default function ClientTimetable() {
           tableData.push(row);
         }
 
-        // Add day title
         doc.setFontSize(16);
         doc.text(`${day} Timetable`, 105, 15, { align: "center" });
         doc.setFontSize(10);
 
-        // Generate the table
         autoTable(doc, {
           head: [tableHeaders],
           body: tableData,
@@ -528,7 +662,6 @@ export default function ClientTimetable() {
           } as Styles,
         });
 
-        // Add new page except for last day
         if (day !== days[days.length - 1]) {
           doc.addPage();
         }
@@ -536,7 +669,7 @@ export default function ClientTimetable() {
 
       const fileName = `timetable${
         selectedVersion ? `-v${selectedVersion}` : ""
-      }.pdf`;
+      }${selectedTeacher ? `-teacher-${selectedTeacher}` : ""}.pdf`;
       doc.save(fileName);
 
       toast.success("PDF Exported Successfully");
@@ -546,7 +679,7 @@ export default function ClientTimetable() {
         description: error instanceof Error ? error.message : "Unknown error",
       });
     }
-  }, [selectedVersion, data]);
+  }, [selectedVersion, data, filteredData, selectedTeacher]);
 
   const exportToXLSX = useCallback(() => {
     try {
@@ -555,7 +688,7 @@ export default function ClientTimetable() {
       ];
 
       Days.forEach((day) => {
-        const dayData = data[day] || [];
+        const dayData = (selectedTeacher ? filteredData : data)[day] || [];
 
         allRooms.forEach((roomName) => {
           const roomData = dayData.find(
@@ -588,7 +721,7 @@ export default function ClientTimetable() {
 
       const fileName = `timetable${
         selectedVersion ? `-v${selectedVersion}` : ""
-      }.xlsx`;
+      }${selectedTeacher ? `-teacher-${selectedTeacher}` : ""}.xlsx`;
       const binary = XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
       const buffer = new ArrayBuffer(binary.length);
       const view = new Uint8Array(buffer);
@@ -612,7 +745,7 @@ export default function ClientTimetable() {
         description: error instanceof Error ? error.message : "Unknown error",
       });
     }
-  }, [data, selectedVersion, allRooms]);
+  }, [data, selectedVersion, allRooms, filteredData, selectedTeacher]);
 
   const toggleRoom = (day: string, room: string) => {
     setExpandedRooms((prev) => ({
@@ -628,16 +761,11 @@ export default function ClientTimetable() {
     ): Promise<void> => {
       if (e) e.preventDefault();
       if (action === "cancel" || !pendingData) {
-        console.log("Save cancelled or no pending data"); // Debug log
         setPendingData(null);
         return;
       }
 
       try {
-        console.log(
-          "Saving pendingData:",
-          JSON.stringify(pendingData, null, 2)
-        ); // Debug log
         setIsSaving(action);
 
         let newVersion: number;
@@ -649,11 +777,9 @@ export default function ClientTimetable() {
           throw new Error("Invalid save action");
         }
 
-        console.log("Save successful, new version:", newVersion); // Debug log
         setPendingData(null);
         toast.success(`Changes saved successfully as Version ${newVersion}`);
       } catch (error) {
-        console.error("Save error:", error); // Debug log
         toast.error("Save failed", {
           description: error instanceof Error ? error.message : "Unknown error",
         });
@@ -668,12 +794,9 @@ export default function ClientTimetable() {
     async (version: number): Promise<void> => {
       setIsDeleting(true);
       try {
-        console.log("Deleting version:", version); // Debug log
         await contextDeleteVersion(version);
-        console.log("Version deleted successfully:", version); // Debug log
         toast.success(`Version ${version} deleted successfully`);
       } catch (error) {
-        console.error("Delete error:", error); // Debug log
         toast.error("Deletion failed", {
           description: error instanceof Error ? error.message : "Unknown error",
         });
@@ -693,21 +816,31 @@ export default function ClientTimetable() {
     );
   }
 
+  if (versions.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <div className="text-xl text-gray-500">
+          No timetable versions available. Create a new version to start.
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <main className="w-full h-full bg-gray-50 relative flex flex-col lg:px-2">
+    <main className="w-full h-full bg-gray-50 relative flex flex-col lg:px-2 min-w-0">
       <DndContext
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         modifiers={[restrictToWindowEdges]}
       >
         <div className="flex flex-col h-full">
-          <div className="bg-[#042954] w-full flex flex-col md:flex-row items-center h-auto md:h-16 px-2 sticky top-0 justify-between z-40 py-2 md:py-0">
-            <div className="flex items-center w-full md:w-[30%] mb-2 md:mb-0">
-              <label className="mr-2 flex text-white text-sm md:text-base">
-                Select Version:
-              </label>
-              <div className="relative w-32 md:w-40 text-xs md:text-sm">
-                <Select<VersionOption>
+          <div className="bg-[#042954] w-full flex flex-col sm:flex-row sm:flex-wrap md:flex-row md:flex-nowrap items-center px-4 py-3 sm:py-4 sticky top-0 justify-between z-40 min-h-[60px]">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap md:flex-row md:flex-nowrap items-center w-full md:w-2/3 gap-3 sm:gap-4">
+              <div className="w-full sm:w-3/4 md:w-40 lg:w-1/4 flex items-center text-sm shrink-0 min-w-[120px]">
+                <label className="text-white mr-2 text-xs sm:text-sm">
+                  Select Version:
+                </label>
+                <Select
                   instanceId={versionId}
                   options={versions.map((version) => ({
                     value: version,
@@ -721,10 +854,11 @@ export default function ClientTimetable() {
                         }
                       : null
                   }
-                  onChange={(selectedOption) => {
+                  onChange={async (selectedOption) => {
                     const newVersion = selectedOption?.value;
-                    console.log("Version changed to:", newVersion); // Debug log
-                    setSelectedVersion(newVersion ?? null);
+                    if (newVersion !== undefined) {
+                      await setSelectedVersion(newVersion);
+                    }
                   }}
                   placeholder="Select Version"
                   isDisabled={isSaving !== "none" || isDeleting}
@@ -733,10 +867,8 @@ export default function ClientTimetable() {
                       <div
                         ref={innerRef}
                         {...innerProps}
-                        className={`flex justify-between items-center p-2 text-sm hover:bg-blue-300 hover:text-white ${
-                          isSelected
-                            ? "bg-blue-900 text-white hover:bg-blue-900"
-                            : ""
+                        className={`flex justify-between items-center p-2 text-xs sm:text-sm hover:bg-blue-300 hover:text-white ${
+                          isSelected ? "bg-blue-900 text-white" : ""
                         }`}
                       >
                         <span className="cursor-pointer">{data.label}</span>
@@ -748,43 +880,57 @@ export default function ClientTimetable() {
                           }}
                           className="text-red-500 hover:text-red-700"
                         >
-                          <FaRegTrashAlt />
+                          <FaRegTrashAlt className="text-sm sm:text-base" />
                         </button>
                       </div>
                     ),
                   }}
-                  className="text-black"
+                  className="text-black w-full"
                   styles={{
                     control: (provided, state) => ({
                       ...provided,
                       border: state.isFocused ? "0px" : provided.border,
                       outline: state.isFocused ? "none" : provided.outline,
                       boxShadow: state.isFocused ? "none" : provided.boxShadow,
+                      fontSize: "0.875rem",
+                      minHeight: "32px",
+                      width: "100%",
+                      maxWidth: "100%",
+                    }),
+                    menu: (provided) => ({
+                      ...provided,
+                      zIndex: 50,
+                      maxWidth: "100%",
+                    }),
+                    option: (provided) => ({
+                      ...provided,
+                      padding: "8px",
                     }),
                   }}
                 />
               </div>
+              <TeacherFilter onFilterChange={setSelectedTeacher} />
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mt-3 sm:mt-0">
               {pendingData && (
-                <>
+                <div className="hidden lg:flex items-center gap-2">
                   <button
                     onClick={() => handleSaveAction("cancel")}
-                    className="bg-red-800 hover:bg-red-900 text-white px-2 md:px-3 py-1 rounded disabled:opacity-50 text-xs md:text-sm"
+                    className="bg-red-800 hover:bg-red-900 text-white px-3 py-1.5 rounded disabled:opacity-50 text-xs sm:text-sm"
                     disabled={isSaving !== "none"}
                   >
                     Cancel
                   </button>
                   <button
                     onClick={(e) => handleSaveAction("same", e)}
-                    className="bg-blue-900 hover:bg-blue-800 text-[#9EA8F5] px-2 md:px-3 py-1 rounded flex items-center gap-1 md:gap-2 disabled:opacity-50 text-xs md:text-sm"
+                    className="bg-blue-900 hover:bg-blue-800 text-[#9EA8F5] px-3 py-1.5 rounded flex items-center gap-2 disabled:opacity-50 text-xs sm:text-sm"
                     disabled={isSaving !== "none" || selectedVersion === null}
                   >
                     Save in Same Version
                     {isSaving === "same" && (
                       <svg
-                        className="animate-spin h-4 w-4 md:h-5 md:w-5 text-white"
+                        className="animate-spin h-5 w-5 text-white"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -807,13 +953,13 @@ export default function ClientTimetable() {
                   </button>
                   <button
                     onClick={(e) => handleSaveAction("new", e)}
-                    className="bg-blue-900 hover:bg-blue-800 text-[#9EA8F5] px-2 md:px-3 py-1 rounded flex items-center gap-1 md:gap-2 disabled:opacity-50 text-xs md:text-sm"
+                    className="bg-blue-900 hover:bg-blue-800 text-[#9EA8F5] px-3 py-1.5 rounded flex items-center gap-2 disabled:opacity-50 text-xs sm:text-sm"
                     disabled={isSaving !== "none"}
                   >
                     Save in New Version
                     {isSaving === "new" && (
                       <svg
-                        className="animate-spin h-4 w-4 md:h-5 md:w-5 text-white"
+                        className="animate-spin h-5 w-5 text-white"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -834,40 +980,38 @@ export default function ClientTimetable() {
                       </svg>
                     )}
                   </button>
-                </>
+                </div>
               )}
-
-              {/* Export dropdown */}
               <div className="relative" ref={exportDropdownRef}>
                 <button
                   onClick={() => setShowExportDropdown(true)}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-2 md:px-3 py-1 rounded flex items-center gap-1 md:gap-2 text-sm"
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded flex items-center gap-2 text-xs sm:text-sm"
                   disabled={isVersionLoading}
                 >
-                  <FaDownload className="text-base md:text-lg" />
+                  <FaDownload className="text-base sm:text-lg" />
+                  Download
                 </button>
-
                 {showExportDropdown && (
-                  <div className="absolute right-0 mt-1 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                  <div className="absolute right-0 mt-2 w-40 sm:w-36 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                     <button
                       onClick={() => {
                         setShowExportDropdown(false);
                         exportToPDF();
                       }}
-                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="w-full text-left px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"
                       disabled={isVersionLoading}
                     >
-                      Download in PDF
+                      Download as PDF
                     </button>
                     <button
                       onClick={() => {
                         setShowExportDropdown(false);
                         exportToXLSX();
                       }}
-                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-t"
+                      className="w-full text-left px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100 border-t"
                       disabled={isVersionLoading}
                     >
-                      Download in Excel
+                      Download as Excel
                     </button>
                   </div>
                 )}
@@ -876,7 +1020,7 @@ export default function ClientTimetable() {
           </div>
 
           <div className="flex-1 w-full">
-            {Object.keys(data).length === 0 ? (
+            {Object.keys(selectedTeacher ? filteredData : data).length === 0 ? (
               <div className="flex justify-center items-center h-full flex-1">
                 <div className="text-xl text-gray-500">
                   No timetable data available
@@ -887,16 +1031,11 @@ export default function ClientTimetable() {
                 ref={timetableRef}
                 id="timetable-container"
                 className="relative w-full"
-                style={{
-                  height: "calc(100vh - 8.5rem)",
-                  overflowY: isVersionLoading ? "hidden" : "auto",
-                }}
               >
-                <LoaderOverlay isLoading={isVersionLoading} />
-
                 <div className="block md:hidden space-y-4 p-4">
                   {Days.map((day) => {
-                    const rooms = data[day] || [];
+                    const rooms =
+                      (selectedTeacher ? filteredData : data)[day] || [];
                     return (
                       <div key={day} className="mb-6">
                         <h2 className="text-lg font-semibold text-gray-700 mb-2">
@@ -951,6 +1090,11 @@ export default function ClientTimetable() {
                                       session.Subject ===
                                         activeSession.Subject &&
                                       session.Time === activeSession.Time;
+                                    const cellConflicts = getCellConflicts(
+                                      day,
+                                      roomName,
+                                      timeSlot
+                                    );
 
                                     return (
                                       <div
@@ -968,32 +1112,57 @@ export default function ClientTimetable() {
                                               !!isDraggingThisSession
                                             }
                                             isMobile={isMobile}
+                                            conflicts={cellConflicts}
+                                            isLoading={
+                                              isOperationLoading ||
+                                              isVersionLoading
+                                            }
+                                            onAddClass={() => {
+                                              setAddClassCell({
+                                                day,
+                                                room: roomName,
+                                                time: timeSlot,
+                                              });
+                                              setIsAddClassDialogOpen(true);
+                                            }}
+                                            onDeleteClass={() => {
+                                              setDeleteClassCell({
+                                                day,
+                                                room: roomName,
+                                                time: timeSlot,
+                                              });
+                                              setIsDeleteClassDialogOpen(true);
+                                            }}
                                           >
-                                            {!isEmpty &&
-                                            !isDraggingThisSession &&
-                                            session &&
-                                            "Teacher" in session ? (
-                                              <DraggableSession
-                                                id={`${cellId}-${(
-                                                  session.Subject || "session"
-                                                ).replace(
-                                                  /[^a-zA-Z0-9]/g,
-                                                  "_"
-                                                )}`}
-                                                session={session as Session}
-                                                isDisabled={
-                                                  isSaving !== "none" ||
-                                                  isMobile
-                                                }
-                                              />
-                                            ) : isDraggingThisSession &&
+                                            {!isVersionLoading &&
+                                              !isEmpty &&
+                                              !isDraggingThisSession &&
                                               session &&
-                                              "Teacher" in session ? (
-                                              <SessionDetails
-                                                session={session as Session}
-                                                isPlaceholder
-                                              />
-                                            ) : (
+                                              "Teacher" in session && (
+                                                <DraggableSession
+                                                  id={`${cellId}-${(
+                                                    session.Subject || "session"
+                                                  ).replace(
+                                                    /[^a-zA-Z0-9]/g,
+                                                    "_"
+                                                  )}`}
+                                                  session={session as Session}
+                                                  isDisabled={
+                                                    isSaving !== "none" ||
+                                                    isMobile
+                                                  }
+                                                />
+                                              )}
+                                            {!isVersionLoading &&
+                                              isDraggingThisSession &&
+                                              session &&
+                                              "Teacher" in session && (
+                                                <SessionDetails
+                                                  session={session as Session}
+                                                  isPlaceholder
+                                                />
+                                              )}
+                                            {!isVersionLoading && isEmpty && (
                                               <div className="text-center text-gray-600 text-sm">
                                                 Free
                                               </div>
@@ -1013,40 +1182,33 @@ export default function ClientTimetable() {
                   })}
                 </div>
 
-                <div className="hidden md:block overflow-x-auto">
+                <div className="hidden md:block">
                   <table
                     id="timetable-table"
                     className="border-collapse border bg-gray-50 w-full"
                   >
                     <thead>
                       <tr className="bg-gray-100">
-                        {[
+                        <th className="border p-3 text-sm md:text-base max-w-[60px]">
+                          Day
+                        </th>
+                        <th className="border p-3 text-sm md:text-base max-w-[80px]">
+                          Room
+                        </th>
+                        {timeSlots.map((time) => (
                           <th
-                            key="day"
-                            className="border p-3 text-sm md:text-base max-w-[60px]"
+                            key={time}
+                            className="border p-3 text-center text-xs md:text-sm whitespace-normal"
                           >
-                            Day
-                          </th>,
-                          <th
-                            key="room"
-                            className="border p-3 text-sm md:text-base max-w-[80px]"
-                          >
-                            Room
-                          </th>,
-                          ...timeSlots.map((time) => (
-                            <th
-                              key={time}
-                              className="border p-3 text-center text-xs md:text-sm whitespace-normal"
-                            >
-                              {time}
-                            </th>
-                          )),
-                        ]}
+                            {time}
+                          </th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody>
                       {Days.map((day) => {
-                        const rooms = data[day] || [];
+                        const rooms =
+                          (selectedTeacher ? filteredData : data)[day] || [];
                         return (
                           <React.Fragment key={day}>
                             <tr>
@@ -1095,6 +1257,11 @@ export default function ClientTimetable() {
                                       session.Subject ===
                                         activeSession.Subject &&
                                       session.Time === activeSession.Time;
+                                    const cellConflicts = getCellConflicts(
+                                      day,
+                                      roomName,
+                                      timeSlot
+                                    );
                                     return (
                                       <DroppableCell
                                         key={cellId}
@@ -1102,30 +1269,51 @@ export default function ClientTimetable() {
                                         isEmpty={isEmpty}
                                         isDraggingOver={!!isDraggingThisSession}
                                         isMobile={isMobile}
+                                        conflicts={cellConflicts}
+                                        isLoading={
+                                          isOperationLoading || isVersionLoading
+                                        }
+                                        onAddClass={() => {
+                                          setAddClassCell({
+                                            day,
+                                            room: roomName,
+                                            time: timeSlot,
+                                          });
+                                          setIsAddClassDialogOpen(true);
+                                        }}
+                                        onDeleteClass={() => {
+                                          setDeleteClassCell({
+                                            day,
+                                            room: roomName,
+                                            time: timeSlot,
+                                          });
+                                          setIsDeleteClassDialogOpen(true);
+                                        }}
                                       >
-                                        {!isEmpty &&
-                                        !isDraggingThisSession &&
-                                        session &&
-                                        "Teacher" in session ? (
-                                          <DraggableSession
-                                            id={`${cellId}-${(
-                                              session.Subject || "session"
-                                            ).replace(/[^a-zA-Z0-9]/g, "_")}`}
-                                            session={session as Session}
-                                            isDisabled={
-                                              isSaving !== "none" || isMobile
-                                            }
-                                          />
-                                        ) : isDraggingThisSession &&
+                                        {!isVersionLoading &&
+                                          !isEmpty &&
+                                          !isDraggingThisSession &&
                                           session &&
-                                          "Teacher" in session ? (
-                                          <SessionDetails
-                                            session={session as Session}
-                                            isPlaceholder
-                                          />
-                                        ) : (
-                                          <div className="text-center text-gray-300 text-sm"></div>
-                                        )}
+                                          "Teacher" in session && (
+                                            <DraggableSession
+                                              id={`${cellId}-${(
+                                                session.Subject || "session"
+                                              ).replace(/[^a-zA-Z0-9]/g, "_")}`}
+                                              session={session as Session}
+                                              isDisabled={
+                                                isSaving !== "none" || isMobile
+                                              }
+                                            />
+                                          )}
+                                        {!isVersionLoading &&
+                                          isDraggingThisSession &&
+                                          session &&
+                                          "Teacher" in session && (
+                                            <SessionDetails
+                                              session={session as Session}
+                                              isPlaceholder
+                                            />
+                                          )}
                                       </DroppableCell>
                                     );
                                   })}
@@ -1217,8 +1405,94 @@ export default function ClientTimetable() {
             </AlertDialogContent>
           </AlertDialogPortal>
         </AlertDialog>
+        <AddClassDialog
+          isOpen={isAddClassDialogOpen}
+          onClose={() => {
+            setAddClassCell(null);
+            setIsAddClassDialogOpen(false);
+          }}
+          onSubmit={(classData) => {
+            if (addClassCell) {
+              handleAddClass(
+                addClassCell.day,
+                addClassCell.room,
+                addClassCell.time,
+                classData
+              );
+            }
+          }}
+          isAddClassLoading={isAddClassLoading}
+        />
+        <AlertDialog open={isDeleteClassDialogOpen}>
+          <AlertDialogPortal>
+            <AlertDialogOverlay
+              className="bg-[#042957]"
+              style={{ backdropFilter: "blur(2px)" }}
+            />
+            <AlertDialogContent className="bg-[#042957] text-[#9ea8b5]">
+              <AlertDialogHeader>
+                <AlertDialogTitle className="text-[#9EA8F5]">
+                  Delete Class
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-[#9ea8b5] text-sm">
+                  Are you sure you want to delete this class? This action cannot
+                  be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel
+                  onClick={() => {
+                    if (!isDeleteClassLoading) {
+                      setIsDeleteClassDialogOpen(false);
+                    }
+                  }}
+                  className="bg-red-800 hover:bg-red-900 text-white text-sm"
+                  disabled={isDeleteClassLoading}
+                >
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    if (deleteClassCell) {
+                      handleDeleteClass(
+                        deleteClassCell.day,
+                        deleteClassCell.room,
+                        deleteClassCell.time
+                      );
+                    }
+                  }}
+                  className="bg-blue-900 hover:bg-blue-800 text-white text-sm flex items-center gap-2"
+                  disabled={isDeleteClassLoading}
+                >
+                  Delete
+                  {isDeleteClassLoading && (
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                  )}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogPortal>
+        </AlertDialog>
       </DndContext>
-      <Toaster />
     </main>
   );
 }
