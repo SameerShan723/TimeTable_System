@@ -17,10 +17,12 @@ interface DroppableCellProps {
   onAddClass: () => void;
   onDeleteClass: () => void;
 }
+
 interface SessionDetailsProps {
   session: Session;
   isPlaceholder?: boolean;
 }
+
 interface DraggableSessionProps {
   id: string;
   session: Session;
@@ -39,7 +41,6 @@ interface DroppableDivProps {
   onAddClass: () => void;
   onDeleteClass: () => void;
 }
-
 function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -62,13 +63,11 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
     onAddClass,
     onDeleteClass,
   }) => {
-    const { setNodeRef, isOver } = useDroppable({
-      id,
-      disabled: isMobile,
-    });
+    const { setNodeRef, isOver } = useDroppable({ id, disabled: isMobile });
     const [isHovered, setIsHovered] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const [showConflict, setShowConflict] = useState(false);
 
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent | TouchEvent) => {
@@ -123,7 +122,7 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
                   <FaEllipsisV className="w-4 h-4" />
                 </button>
                 {showMenu && (
-                  <div className="absolute right-0  w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                  <div className="absolute right-0 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                     {isEmpty ? (
                       <button
                         onClick={() => {
@@ -149,14 +148,21 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
                 )}
               </div>
             )}
+
             {!isLoading && conflicts && conflicts.length > 0 && (
-              <div className="absolute top-1 right-6 group">
+              <div
+                className="absolute top-1 right-6"
+                onMouseEnter={() => setShowConflict(true)}
+                onMouseLeave={() => setShowConflict(false)}
+              >
                 <FaInfoCircle className="w-4 h-4 text-red-500 cursor-pointer" />
-                <div className="hidden group-hover:block absolute z-20 bg-gray-800 text-white text-xs p-2 rounded shadow-lg right-0 top-5 w-64">
-                  {conflicts.map((message, i) => (
-                    <p key={i}>{message}</p>
-                  ))}
-                </div>
+                {showConflict && (
+                  <div className="absolute z-20 bg-gray-800 text-white text-xs p-2 rounded shadow-lg right-0 top-5 w-64">
+                    {conflicts.map((message, i) => (
+                      <p key={i}>{message}</p>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </>
@@ -166,6 +172,7 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
   }
 );
 DroppableCell.displayName = "DroppableCell";
+
 export const SessionDetails: React.FC<SessionDetailsProps> = React.memo(
   ({ session, isPlaceholder = false }) => (
     <div

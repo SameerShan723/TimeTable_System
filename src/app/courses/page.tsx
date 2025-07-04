@@ -246,7 +246,7 @@ export default function FacultyData() {
                       <td className="p-3 text-sm text-gray-600 border-2 border-gray-300">
                         {course.section || "N/A"}
                       </td>
-                      <td className="p-3 text-sm text-gray-600 border-2 border-gray-300 flex space-x-2">
+                      <td className="p-6 text-sm text-gray-600 border-1 border-gray-300 flex space-x-2">
                         <button
                           onClick={() => handleEdit(course)}
                           className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition-colors text-sm font-medium"
