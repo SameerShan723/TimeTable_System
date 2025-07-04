@@ -32,10 +32,6 @@ export default function StudentTimetable(): JSX.Element {
   const sectionSelectedId = useId();
   const daySelectedId = useId();
 
-  useEffect(() => {
-    console.log("StudentTimetable selectedVersion:", selectedVersion);
-  }, [selectedVersion]);
-
   const sections: string[] = useMemo(() => {
     const sectionSet = new Set<string>();
 

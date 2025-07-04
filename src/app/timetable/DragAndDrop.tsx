@@ -3,7 +3,6 @@
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { FaEllipsisV, FaInfoCircle } from "react-icons/fa";
 import { cn } from "@/lib/utils";
-import { SessionDetails } from "./ClientTimetable";
 import React, { useState, useRef, useEffect } from "react";
 import { Session } from "./types";
 
@@ -18,7 +17,10 @@ interface DroppableCellProps {
   onAddClass: () => void;
   onDeleteClass: () => void;
 }
-
+interface SessionDetailsProps {
+  session: Session;
+  isPlaceholder?: boolean;
+}
 interface DraggableSessionProps {
   id: string;
   session: Session;
@@ -121,7 +123,7 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
                   <FaEllipsisV className="w-4 h-4" />
                 </button>
                 {showMenu && (
-                  <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                  <div className="absolute right-0  w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                     {isEmpty ? (
                       <button
                         onClick={() => {
@@ -164,6 +166,24 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
   }
 );
 DroppableCell.displayName = "DroppableCell";
+export const SessionDetails: React.FC<SessionDetailsProps> = React.memo(
+  ({ session, isPlaceholder = false }) => (
+    <div
+      className={`text-center p-1 rounded-md text-sm ${
+        isPlaceholder ? "text-gray-300 bg-gray-100 opacity-50" : ""
+      }`}
+    >
+      <div className="font-medium leading-tight">
+        {session.Subject || "Unknown Course"}
+      </div>
+      <div className="text-sm leading-tight">
+        {session.Teacher || "No Faculty"}
+      </div>
+      <div className="text-sm leading-tight">{session.Section || ""}</div>
+    </div>
+  )
+);
+SessionDetails.displayName = "SessionDetails";
 
 export const DraggableSession: React.FC<DraggableSessionProps> = React.memo(
   ({ id, session, isDragging = false, isDisabled = false }) => {

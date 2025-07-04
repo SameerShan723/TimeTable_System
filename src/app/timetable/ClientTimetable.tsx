@@ -15,9 +15,16 @@ import {
   DragOverlay,
 } from "@dnd-kit/core";
 import { produce } from "immer";
-import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import { FaRegTrashAlt, FaDownload } from "react-icons/fa";
-import Select from "react-select";
+import { toast } from "sonner";
+import { Session, EmptySlot, RoomSchedule, TimetableData } from "./types";
+import { timeSlots, Days } from "@/helpers/page";
+import { useTimetableVersion } from "@/context/TimetableContext";
+import debounce from "just-debounce-it";
+import { DraggableSession } from "./DragAndDrop";
+import AddClassDialog from "./AddClassDialog";
+import Navbar from "./Navbar";
+import TimetableDisplay from "./TimetableDisplay";
+import DeleteClassDialog from "./DeleteClassDialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,123 +37,13 @@ import {
   AlertDialogOverlay,
   AlertDialogPortal,
 } from "@/components/ui/alert-dialog";
-import { toast } from "sonner";
-import { Session, EmptySlot, RoomSchedule, TimetableData } from "./types";
-import { timeSlots, Days } from "@/helpers/page";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import jsPDF from "jspdf";
-import autoTable, { Styles, RowInput, CellInput } from "jspdf-autotable";
+import autoTable, { RowInput, CellInput, Styles } from "jspdf-autotable";
 import * as XLSX from "xlsx";
-import { useTimetableVersion } from "@/context/TimetableContext";
-import debounce from "just-debounce-it";
-import { DraggableSession, DroppableCell, DroppableDiv } from "./DragAndDrop";
-import AddClassDialog from "./AddClassDialog";
-
-interface SessionDetailsProps {
-  session: Session;
-  isPlaceholder?: boolean;
-}
-
-export const SessionDetails: React.FC<SessionDetailsProps> = React.memo(
-  ({ session, isPlaceholder = false }) => (
-    <div
-      className={`text-center p-1 rounded-md text-sm ${
-        isPlaceholder ? "text-gray-300 bg-gray-100 opacity-50" : ""
-      }`}
-    >
-      <div className="font-medium leading-tight">
-        {session.Subject || "Unknown Course"}
-      </div>
-      <div className="text-sm leading-tight">
-        {session.Teacher || "No Faculty"}
-      </div>
-      <div className="text-sm leading-tight">{session.Section || ""}</div>
-    </div>
-  )
-);
-SessionDetails.displayName = "SessionDetails";
-
-const TeacherFilter: React.FC<{
-  onFilterChange: (teacher: string | null) => void;
-}> = React.memo(({ onFilterChange }) => {
-  const { timetableData } = useTimetableVersion();
-  const teacherId = useId();
-  const [selectedTeacher, setSelectedTeacher] = useState<string | null>(null);
-
-  const teacherOptions = useMemo(() => {
-    const teachers = new Set<string>();
-    Days.forEach((day) => {
-      const dayData = timetableData[day] || [];
-      dayData.forEach((roomSchedule: RoomSchedule) => {
-        const roomName = Object.keys(roomSchedule)[0];
-        const sessions = roomSchedule[roomName] || [];
-        sessions.forEach((session: Session | EmptySlot) => {
-          if ("Teacher" in session && session.Teacher) {
-            teachers.add(session.Teacher);
-          }
-        });
-      });
-    });
-    return Array.from(teachers).map((teacher) => ({
-      value: teacher,
-      label: teacher,
-    }));
-  }, [timetableData]);
-
-  return (
-    <div className="flex items-center w-full sm:w-3/4 md:w-40 lg:w-80 min-w-[120px]">
-      <label className="text-white text-xs sm:text-sm">
-        Filter by Teacher:
-      </label>
-      <div className="relative w-full text-xs sm:text-sm">
-        <Select
-          instanceId={teacherId}
-          options={teacherOptions}
-          value={
-            selectedTeacher
-              ? teacherOptions.find(
-                  (option) => option.value === selectedTeacher
-                )
-              : null
-          }
-          onChange={(selectedOption) => {
-            const value = selectedOption ? selectedOption.value : null;
-            setSelectedTeacher(value);
-            onFilterChange(value);
-          }}
-          placeholder="Select Teacher"
-          isClearable={true}
-          className="text-black"
-          styles={{
-            control: (provided, state) => ({
-              ...provided,
-              border: state.isFocused ? "0px" : provided.border,
-              outline: state.isFocused ? "none" : provided.outline,
-              boxShadow: state.isFocused ? "none" : provided.boxShadow,
-              fontSize: "0.875rem",
-              minHeight: "32px",
-              width: "100%",
-              maxWidth: "100%",
-            }),
-            menu: (provided) => ({
-              ...provided,
-              maxWidth: "100%",
-            }),
-            option: (provided) => ({
-              ...provided,
-              padding: "8px",
-            }),
-          }}
-        />
-      </div>
-    </div>
-  );
-});
-TeacherFilter.displayName = "TeacherFilter";
-
+import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 export default function ClientTimetable() {
   const {
-    versions,
+    versions = [], // Default to empty array to prevent undefined
     selectedVersion,
     timetableData,
     conflicts,
@@ -158,7 +55,9 @@ export default function ClientTimetable() {
     checkConflicts,
   } = useTimetableVersion();
 
-  const [pendingData, setPendingData] = useState<TimetableData | null>(null);
+  const [versionPendingData, setVersionPendingData] = useState<{
+    [version: number]: TimetableData | null;
+  }>({});
   const [activeSession, setActiveSession] = useState<Session | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
   const [versionToDelete, setVersionToDelete] = useState<number | null>(null);
@@ -169,7 +68,9 @@ export default function ClientTimetable() {
   }>({});
   const [isMobile, setIsMobile] = useState(false);
   const [showExportDropdown, setShowExportDropdown] = useState(false);
-  const [selectedTeacher, setSelectedTeacher] = useState<string | null>(null);
+  const [selectedTeachers, setSelectedTeachers] = useState<string[] | null>(
+    null
+  );
   const [isAddClassDialogOpen, setIsAddClassDialogOpen] = useState(false);
   const [addClassCell, setAddClassCell] = useState<{
     day: string;
@@ -184,20 +85,35 @@ export default function ClientTimetable() {
   } | null>(null);
   const [isDeleteClassLoading, setIsDeleteClassLoading] = useState(false);
   const [isAddClassLoading, setIsAddClassLoading] = useState(false);
-  const timetableRef = useRef<HTMLDivElement>(null);
-  const exportDropdownRef = useRef<HTMLDivElement>(null);
+  const timetableRef = useRef<HTMLDivElement | null>(null);
+  const exportDropdownRef = useRef<HTMLDivElement | null>(null);
   const versionId = useId();
-
   const [isOperationLoading, setIsOperationLoading] = useState(false);
+
   const debouncedCheckConflicts = useMemo(
     () => debounce(checkConflicts, 300),
     [checkConflicts]
   );
 
-  const data = pendingData || timetableData;
+  const data =
+    selectedVersion !== null && versionPendingData[selectedVersion]
+      ? versionPendingData[selectedVersion]!
+      : timetableData;
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (selectedVersion !== null && versionPendingData[selectedVersion]) {
+        event.preventDefault();
+        event.returnValue =
+          "You have unsaved changes. Are you sure you want to leave?";
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [selectedVersion, versionPendingData]);
 
   const filteredData = useMemo(() => {
-    if (!selectedTeacher) return data;
+    if (!selectedTeachers || selectedTeachers.length === 0) return data;
     const filtered: TimetableData = {
       Monday: [],
       Tuesday: [],
@@ -210,13 +126,13 @@ export default function ClientTimetable() {
       const filteredRooms: RoomSchedule[] = dayData
         .map((roomSchedule: RoomSchedule) => {
           const roomName = Object.keys(roomSchedule)[0];
-          if (!roomName) {
-            return null;
-          }
+          if (!roomName) return null;
           const sessions = roomSchedule[roomName] || [];
           const filteredSessions = sessions.filter(
             (session: Session | EmptySlot): session is Session =>
-              "Teacher" in session && session.Teacher === selectedTeacher
+              "Teacher" in session &&
+              typeof session.Teacher === "string" &&
+              selectedTeachers.includes(session.Teacher)
           );
           return { [roomName]: filteredSessions } as RoomSchedule;
         })
@@ -224,17 +140,13 @@ export default function ClientTimetable() {
           (roomSchedule): roomSchedule is RoomSchedule =>
             !!roomSchedule && Object.values(roomSchedule)[0].length > 0
         );
-      if (filteredRooms.length > 0) {
-        filtered[day] = filteredRooms;
-      }
+      if (filteredRooms.length > 0) filtered[day] = filteredRooms;
     });
     return filtered;
-  }, [data, selectedTeacher]);
+  }, [data, selectedTeachers]);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -252,9 +164,7 @@ export default function ClientTimetable() {
       timetableRef.current.style.overflowY = isVersionLoading
         ? "hidden"
         : "auto";
-      if (isVersionLoading) {
-        timetableRef.current.scrollTop = 0;
-      }
+      if (isVersionLoading) timetableRef.current.scrollTop = 0;
     }
   }, [isVersionLoading]);
 
@@ -281,7 +191,7 @@ export default function ClientTimetable() {
   }, [data, debouncedCheckConflicts]);
 
   const allRooms = useMemo((): string[] => {
-    const rooms = Array.from(
+    return Array.from(
       new Set(
         Object.values(data).flatMap((day) =>
           Array.isArray(day)
@@ -294,16 +204,13 @@ export default function ClientTimetable() {
         )
       )
     );
-    return rooms;
   }, [data]);
 
   const parseCellId = useCallback(
     (id: string): { day: string; room: string; time: string } => {
       const regex = /^([^-]+)-(.+)-(\d{1,2}:\d{2}-\d{1,2}:\d{2})(?:-(.+))?$/;
       const match = id.match(regex);
-      if (!match) {
-        return { day: "", room: "", time: "" };
-      }
+      if (!match) return { day: "", room: "", time: "" };
       const [, day, room, time] = match;
       return { day, room, time };
     },
@@ -312,9 +219,9 @@ export default function ClientTimetable() {
 
   const getCellConflicts = useCallback(
     (day: string, room: string, time: string): string[] => {
-      const roomData = (selectedTeacher ? filteredData : data)[day]?.find(
-        (r: RoomSchedule) => Object.keys(r)[0] === room
-      );
+      const roomData = (
+        selectedTeachers && selectedTeachers.length > 0 ? filteredData : data
+      )[day]?.find((r: RoomSchedule) => Object.keys(r)[0] === room);
       if (!roomData) return [];
       const sessions = roomData[room] || [];
       const sessionIndex = sessions.findIndex(
@@ -332,7 +239,7 @@ export default function ClientTimetable() {
         )
         .map((c) => c.message);
     },
-    [data, filteredData, conflicts, selectedTeacher]
+    [data, filteredData, conflicts, selectedTeachers]
   );
 
   const handleDragStart = useCallback(
@@ -366,7 +273,7 @@ export default function ClientTimetable() {
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent): void => {
-      if (isMobile) return;
+      if (isMobile || selectedVersion === null) return;
       const { active, over } = event;
       setActiveSession(null);
       if (!over) return;
@@ -444,10 +351,13 @@ export default function ClientTimetable() {
           };
         }
       });
-      setPendingData(updatedData);
+      setVersionPendingData((prev) => ({
+        ...prev,
+        [selectedVersion]: updatedData,
+      }));
       debouncedCheckConflicts(updatedData);
     },
-    [data, parseCellId, isMobile, debouncedCheckConflicts]
+    [data, parseCellId, isMobile, debouncedCheckConflicts, selectedVersion]
   );
 
   const handleAddClass = useCallback(
@@ -457,6 +367,7 @@ export default function ClientTimetable() {
       time: string,
       classData: { subject: string; teacher: string; section: string }
     ) => {
+      if (selectedVersion === null) return;
       setIsAddClassLoading(true);
       setIsOperationLoading(true);
       const updatedData = produce(timetableData, (draft) => {
@@ -480,19 +391,23 @@ export default function ClientTimetable() {
       try {
         const newVersion = await saveTimetableData(
           updatedData,
-          selectedVersion ?? undefined
+          selectedVersion
         );
-        await setSelectedVersion(newVersion); // Refetch data
+        await setSelectedVersion(newVersion);
+        setVersionPendingData((prev) => ({
+          ...prev,
+          [selectedVersion]: null,
+        }));
         toast.success(
           `Class added and saved successfully as Version ${newVersion}`
         );
-        setIsAddClassDialogOpen(false); // Auto-close
+        setIsAddClassDialogOpen(false);
         setAddClassCell(null);
       } catch (error) {
         toast.error("Failed to save class", {
           description: error instanceof Error ? error.message : "Unknown error",
         });
-        throw error; // Keep dialog open
+        throw error;
       } finally {
         setIsAddClassLoading(false);
         setIsOperationLoading(false);
@@ -510,6 +425,7 @@ export default function ClientTimetable() {
 
   const handleDeleteClass = useCallback(
     async (day: string, room: string, time: string) => {
+      if (selectedVersion === null) return;
       setIsDeleteClassLoading(true);
       setIsOperationLoading(true);
       const updatedData = produce(timetableData, (draft) => {
@@ -527,9 +443,13 @@ export default function ClientTimetable() {
       try {
         const newVersion = await saveTimetableData(
           updatedData,
-          selectedVersion ?? undefined
+          selectedVersion
         );
-        await setSelectedVersion(newVersion); // Refetch data
+        await setSelectedVersion(newVersion);
+        setVersionPendingData((prev) => ({
+          ...prev,
+          [selectedVersion]: null,
+        }));
         toast.success("Class deleted successfully");
         setIsDeleteClassDialogOpen(false);
         setDeleteClassCell(null);
@@ -572,10 +492,18 @@ export default function ClientTimetable() {
       doc.text(`Generated: ${new Date().toLocaleDateString()}`, 105, 35, {
         align: "center",
       });
+      if (selectedTeachers && selectedTeachers.length > 0) {
+        doc.text(`Teachers: ${selectedTeachers.join(", ")}`, 105, 40, {
+          align: "center",
+        });
+      }
       doc.addPage();
 
       for (const day of days) {
-        const dayData = (selectedTeacher ? filteredData : data)[day] || [];
+        const dayData =
+          (selectedTeachers && selectedTeachers.length > 0
+            ? filteredData
+            : data)[day] || [];
         if (!Array.isArray(dayData)) continue;
 
         const tableData: RowInput[] = [];
@@ -669,7 +597,11 @@ export default function ClientTimetable() {
 
       const fileName = `timetable${
         selectedVersion ? `-v${selectedVersion}` : ""
-      }${selectedTeacher ? `-teacher-${selectedTeacher}` : ""}.pdf`;
+      }${
+        selectedTeachers && selectedTeachers.length > 0
+          ? `-teachers-${selectedTeachers.join("_")}`
+          : ""
+      }.pdf`;
       doc.save(fileName);
 
       toast.success("PDF Exported Successfully");
@@ -679,7 +611,7 @@ export default function ClientTimetable() {
         description: error instanceof Error ? error.message : "Unknown error",
       });
     }
-  }, [selectedVersion, data, filteredData, selectedTeacher]);
+  }, [selectedVersion, data, filteredData, selectedTeachers]);
 
   const exportToXLSX = useCallback(() => {
     try {
@@ -688,7 +620,10 @@ export default function ClientTimetable() {
       ];
 
       Days.forEach((day) => {
-        const dayData = (selectedTeacher ? filteredData : data)[day] || [];
+        const dayData =
+          (selectedTeachers && selectedTeachers.length > 0
+            ? filteredData
+            : data)[day] || [];
 
         allRooms.forEach((roomName) => {
           const roomData = dayData.find(
@@ -721,7 +656,11 @@ export default function ClientTimetable() {
 
       const fileName = `timetable${
         selectedVersion ? `-v${selectedVersion}` : ""
-      }${selectedTeacher ? `-teacher-${selectedTeacher}` : ""}.xlsx`;
+      }${
+        selectedTeachers && selectedTeachers.length > 0
+          ? `-teachers-${selectedTeachers.join("_")}`
+          : ""
+      }.xlsx`;
       const binary = XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
       const buffer = new ArrayBuffer(binary.length);
       const view = new Uint8Array(buffer);
@@ -745,14 +684,7 @@ export default function ClientTimetable() {
         description: error instanceof Error ? error.message : "Unknown error",
       });
     }
-  }, [data, selectedVersion, allRooms, filteredData, selectedTeacher]);
-
-  const toggleRoom = (day: string, room: string) => {
-    setExpandedRooms((prev) => ({
-      ...prev,
-      [`${day}-${room}`]: !prev[`${day}-${room}`],
-    }));
-  };
+  }, [data, selectedVersion, allRooms, filteredData, selectedTeachers]);
 
   const handleSaveAction = useCallback(
     async (
@@ -760,16 +692,25 @@ export default function ClientTimetable() {
       e?: React.MouseEvent<HTMLButtonElement>
     ): Promise<void> => {
       if (e) e.preventDefault();
-      if (action === "cancel" || !pendingData) {
-        setPendingData(null);
+      if (selectedVersion === null) return;
+
+      if (action === "cancel") {
+        setVersionPendingData((prev) => ({
+          ...prev,
+          [selectedVersion]: null,
+        }));
+        toast.success("Changes discarded");
         return;
       }
+
+      const pendingData = versionPendingData[selectedVersion];
+      if (!pendingData) return;
 
       try {
         setIsSaving(action);
 
         let newVersion: number;
-        if (action === "same" && selectedVersion !== null) {
+        if (action === "same") {
           newVersion = await saveTimetableData(pendingData, selectedVersion);
         } else if (action === "new") {
           newVersion = await saveTimetableData(pendingData);
@@ -777,7 +718,11 @@ export default function ClientTimetable() {
           throw new Error("Invalid save action");
         }
 
-        setPendingData(null);
+        setVersionPendingData((prev) => ({
+          ...prev,
+          [selectedVersion]: null,
+          [newVersion]: null,
+        }));
         toast.success(`Changes saved successfully as Version ${newVersion}`);
       } catch (error) {
         toast.error("Save failed", {
@@ -787,7 +732,7 @@ export default function ClientTimetable() {
         setIsSaving("none");
       }
     },
-    [pendingData, saveTimetableData, selectedVersion]
+    [versionPendingData, saveTimetableData, selectedVersion]
   );
 
   const handleDeleteVersion = useCallback(
@@ -795,6 +740,11 @@ export default function ClientTimetable() {
       setIsDeleting(true);
       try {
         await contextDeleteVersion(version);
+        setVersionPendingData((prev) => {
+          const newPendingData = { ...prev };
+          delete newPendingData[version];
+          return newPendingData;
+        });
         toast.success(`Version ${version} deleted successfully`);
       } catch (error) {
         toast.error("Deletion failed", {
@@ -807,6 +757,13 @@ export default function ClientTimetable() {
     },
     [contextDeleteVersion]
   );
+
+  const toggleRoom = (day: string, room: string) => {
+    setExpandedRooms((prev) => ({
+      ...prev,
+      [`${day}-${room}`]: !prev[`${day}-${room}`],
+    }));
+  };
 
   if (hookError) {
     return (
@@ -834,101 +791,96 @@ export default function ClientTimetable() {
         modifiers={[restrictToWindowEdges]}
       >
         <div className="flex flex-col h-full">
-          <div className="bg-[#042954] w-full flex flex-col sm:flex-row sm:flex-wrap md:flex-row md:flex-nowrap items-center px-4 py-3 sm:py-4 sticky top-0 justify-between z-40 min-h-[60px]">
-            <div className="flex flex-col sm:flex-row sm:flex-wrap md:flex-row md:flex-nowrap items-center w-full md:w-2/3 gap-3 sm:gap-4">
-              <div className="w-full sm:w-3/4 md:w-40 lg:w-1/4 flex items-center text-sm shrink-0 min-w-[120px]">
-                <label className="text-white mr-2 text-xs sm:text-sm">
-                  Select Version:
-                </label>
-                <Select
-                  instanceId={versionId}
-                  options={versions.map((version) => ({
-                    value: version,
-                    label: `Version ${version}`,
-                  }))}
-                  value={
-                    selectedVersion !== null
-                      ? {
-                          value: selectedVersion,
-                          label: `Version ${selectedVersion}`,
-                        }
-                      : null
-                  }
-                  onChange={async (selectedOption) => {
-                    const newVersion = selectedOption?.value;
-                    if (newVersion !== undefined) {
-                      await setSelectedVersion(newVersion);
-                    }
-                  }}
-                  placeholder="Select Version"
-                  isDisabled={isSaving !== "none" || isDeleting}
-                  components={{
-                    Option: ({ innerRef, innerProps, data, isSelected }) => (
-                      <div
-                        ref={innerRef}
-                        {...innerProps}
-                        className={`flex justify-between items-center p-2 text-xs sm:text-sm hover:bg-blue-300 hover:text-white ${
-                          isSelected ? "bg-blue-900 text-white" : ""
-                        }`}
-                      >
-                        <span className="cursor-pointer">{data.label}</span>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setVersionToDelete(data.value);
-                            setIsDeleteDialogOpen(true);
-                          }}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <FaRegTrashAlt className="text-sm sm:text-base" />
-                        </button>
-                      </div>
-                    ),
-                  }}
-                  className="text-black w-full"
-                  styles={{
-                    control: (provided, state) => ({
-                      ...provided,
-                      border: state.isFocused ? "0px" : provided.border,
-                      outline: state.isFocused ? "none" : provided.outline,
-                      boxShadow: state.isFocused ? "none" : provided.boxShadow,
-                      fontSize: "0.875rem",
-                      minHeight: "32px",
-                      width: "100%",
-                      maxWidth: "100%",
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      zIndex: 50,
-                      maxWidth: "100%",
-                    }),
-                    option: (provided) => ({
-                      ...provided,
-                      padding: "8px",
-                    }),
-                  }}
-                />
-              </div>
-              <TeacherFilter onFilterChange={setSelectedTeacher} />
-            </div>
+          <Navbar
+            versionId={versionId}
+            versions={versions}
+            selectedVersion={selectedVersion}
+            setSelectedVersion={setSelectedVersion}
+            isSaving={isSaving}
+            isDeleting={isDeleting}
+            setVersionToDelete={setVersionToDelete}
+            setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+            isVersionLoading={isVersionLoading}
+            setShowExportDropdown={setShowExportDropdown}
+            showExportDropdown={showExportDropdown}
+            exportDropdownRef={exportDropdownRef}
+            exportToPDF={exportToPDF}
+            exportToXLSX={exportToXLSX}
+            setSelectedTeacher={setSelectedTeachers}
+            versionPendingData={versionPendingData}
+            handleSaveAction={handleSaveAction}
+          />
 
-            <div className="flex items-center gap-2 mt-3 sm:mt-0">
-              {pendingData && (
-                <div className="hidden lg:flex items-center gap-2">
-                  <button
-                    onClick={() => handleSaveAction("cancel")}
-                    className="bg-red-800 hover:bg-red-900 text-white px-3 py-1.5 rounded disabled:opacity-50 text-xs sm:text-sm"
-                    disabled={isSaving !== "none"}
+          <TimetableDisplay
+            data={data}
+            filteredData={filteredData}
+            selectedTeachers={selectedTeachers}
+            isVersionLoading={isVersionLoading}
+            isOperationLoading={isOperationLoading}
+            isMobile={isMobile}
+            allRooms={allRooms}
+            expandedRooms={expandedRooms}
+            toggleRoom={toggleRoom}
+            activeSession={activeSession}
+            getCellConflicts={getCellConflicts}
+            setAddClassCell={setAddClassCell}
+            setIsAddClassDialogOpen={setIsAddClassDialogOpen}
+            setDeleteClassCell={setDeleteClassCell}
+            setIsDeleteClassDialogOpen={setIsDeleteClassDialogOpen}
+            timetableRef={timetableRef}
+            isSaving={isSaving}
+          />
+
+          <DragOverlay style={{ zIndex: 60, pointerEvents: "none" }}>
+            {!isMobile && activeSession ? (
+              <DraggableSession
+                id={`overlay-${activeSession.Subject}`}
+                session={activeSession}
+                isDragging
+                isDisabled={isSaving !== "none"}
+              />
+            ) : null}
+          </DragOverlay>
+
+          <AlertDialog
+            open={isDeleteDialogOpen}
+            onOpenChange={setIsDeleteDialogOpen}
+          >
+            <AlertDialogPortal>
+              <AlertDialogOverlay
+                className="bg-[#042957]"
+                style={{ backdropFilter: "blur(2px)" }}
+              />
+              <AlertDialogContent className="bg-[#042957] text-[#9ea8b5]">
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-[#9EA8F5]">
+                    Confirm Deletion
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="text-[#9ea8b5] text-sm">
+                    Are you sure you want to delete Version {versionToDelete}?
+                    This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel
+                    onClick={() => setIsDeleteDialogOpen(false)}
+                    className="bg-red-800 hover:bg-red-900 text-white text-sm"
+                    disabled={isDeleting}
                   >
                     Cancel
-                  </button>
-                  <button
-                    onClick={(e) => handleSaveAction("same", e)}
-                    className="bg-blue-900 hover:bg-blue-800 text-[#9EA8F5] px-3 py-1.5 rounded flex items-center gap-2 disabled:opacity-50 text-xs sm:text-sm"
-                    disabled={isSaving !== "none" || selectedVersion === null}
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (versionToDelete !== null) {
+                        handleDeleteVersion(versionToDelete);
+                      }
+                    }}
+                    className="bg-blue-900 hover:bg-blue-800 text-white flex items-center gap-2 text-sm"
+                    disabled={isDeleting}
                   >
-                    Save in Same Version
-                    {isSaving === "same" && (
+                    Confirm
+                    {isDeleting && (
                       <svg
                         className="animate-spin h-5 w-5 text-white"
                         xmlns="http://www.w3.org/2000/svg"
@@ -950,548 +902,46 @@ export default function ClientTimetable() {
                         />
                       </svg>
                     )}
-                  </button>
-                  <button
-                    onClick={(e) => handleSaveAction("new", e)}
-                    className="bg-blue-900 hover:bg-blue-800 text-[#9EA8F5] px-3 py-1.5 rounded flex items-center gap-2 disabled:opacity-50 text-xs sm:text-sm"
-                    disabled={isSaving !== "none"}
-                  >
-                    Save in New Version
-                    {isSaving === "new" && (
-                      <svg
-                        className="animate-spin h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        />
-                      </svg>
-                    )}
-                  </button>
-                </div>
-              )}
-              <div className="relative" ref={exportDropdownRef}>
-                <button
-                  onClick={() => setShowExportDropdown(true)}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded flex items-center gap-2 text-xs sm:text-sm"
-                  disabled={isVersionLoading}
-                >
-                  <FaDownload className="text-base sm:text-lg" />
-                  Download
-                </button>
-                {showExportDropdown && (
-                  <div className="absolute right-0 mt-2 w-40 sm:w-36 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                    <button
-                      onClick={() => {
-                        setShowExportDropdown(false);
-                        exportToPDF();
-                      }}
-                      className="w-full text-left px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"
-                      disabled={isVersionLoading}
-                    >
-                      Download as PDF
-                    </button>
-                    <button
-                      onClick={() => {
-                        setShowExportDropdown(false);
-                        exportToXLSX();
-                      }}
-                      className="w-full text-left px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100 border-t"
-                      disabled={isVersionLoading}
-                    >
-                      Download as Excel
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogPortal>
+          </AlertDialog>
 
-          <div className="flex-1 w-full">
-            {Object.keys(selectedTeacher ? filteredData : data).length === 0 ? (
-              <div className="flex justify-center items-center h-full flex-1">
-                <div className="text-xl text-gray-500">
-                  No timetable data available
-                </div>
-              </div>
-            ) : (
-              <div
-                ref={timetableRef}
-                id="timetable-container"
-                className="relative w-full"
-              >
-                <div className="block md:hidden space-y-4 p-4">
-                  {Days.map((day) => {
-                    const rooms =
-                      (selectedTeacher ? filteredData : data)[day] || [];
-                    return (
-                      <div key={day} className="mb-6">
-                        <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                          {day}
-                        </h2>
-                        {allRooms.map((roomName) => {
-                          const roomData = Array.isArray(rooms)
-                            ? rooms.find(
-                                (room: RoomSchedule) =>
-                                  Object.keys(room)[0] === roomName
-                              )
-                            : null;
-                          const sessions = roomData
-                            ? roomData[roomName] ||
-                              timeSlots.map((time) => ({ Time: time }))
-                            : timeSlots.map((time) => ({ Time: time }));
-                          const isExpanded =
-                            expandedRooms[`${day}-${roomName}`] || false;
+          <DeleteClassDialog
+            isOpen={isDeleteClassDialogOpen}
+            isLoading={isDeleteClassLoading}
+            onClose={() => setIsDeleteClassDialogOpen(false)}
+            onConfirm={() => {
+              if (deleteClassCell) {
+                handleDeleteClass(
+                  deleteClassCell.day,
+                  deleteClassCell.room,
+                  deleteClassCell.time
+                );
+              }
+            }}
+          />
 
-                          return (
-                            <div
-                              key={`${day}-${roomName}`}
-                              className="border rounded-lg shadow-sm bg-white mb-2"
-                            >
-                              <div
-                                className="flex justify-between items-center p-3 cursor-pointer bg-gray-100"
-                                onClick={() => toggleRoom(day, roomName)}
-                              >
-                                <h3 className="text-sm font-medium">
-                                  {roomName}
-                                </h3>
-                                {isExpanded ? (
-                                  <IoIosArrowUp size={16} />
-                                ) : (
-                                  <IoIosArrowDown size={16} />
-                                )}
-                              </div>
-                              {isExpanded && (
-                                <div className="p-3 space-y-2">
-                                  {timeSlots.map((timeSlot) => {
-                                    const session = sessions.find(
-                                      (s: Session | EmptySlot) =>
-                                        s.Time === timeSlot
-                                    ) as Session | EmptySlot | undefined;
-                                    const isEmpty =
-                                      !session || !("Teacher" in session);
-                                    const cellId = `${day}-${roomName}-${timeSlot}`;
-                                    const isDraggingThisSession =
-                                      activeSession &&
-                                      session &&
-                                      "Teacher" in session &&
-                                      session.Subject ===
-                                        activeSession.Subject &&
-                                      session.Time === activeSession.Time;
-                                    const cellConflicts = getCellConflicts(
-                                      day,
-                                      roomName,
-                                      timeSlot
-                                    );
-
-                                    return (
-                                      <div
-                                        key={cellId}
-                                        className="flex items-center border-b py-2"
-                                      >
-                                        <div className="w-1/3 text-sm font-medium">
-                                          {timeSlot}
-                                        </div>
-                                        <div className="w-2/3">
-                                          <DroppableDiv
-                                            id={cellId}
-                                            isEmpty={isEmpty}
-                                            isDraggingOver={
-                                              !!isDraggingThisSession
-                                            }
-                                            isMobile={isMobile}
-                                            conflicts={cellConflicts}
-                                            isLoading={
-                                              isOperationLoading ||
-                                              isVersionLoading
-                                            }
-                                            onAddClass={() => {
-                                              setAddClassCell({
-                                                day,
-                                                room: roomName,
-                                                time: timeSlot,
-                                              });
-                                              setIsAddClassDialogOpen(true);
-                                            }}
-                                            onDeleteClass={() => {
-                                              setDeleteClassCell({
-                                                day,
-                                                room: roomName,
-                                                time: timeSlot,
-                                              });
-                                              setIsDeleteClassDialogOpen(true);
-                                            }}
-                                          >
-                                            {!isVersionLoading &&
-                                              !isEmpty &&
-                                              !isDraggingThisSession &&
-                                              session &&
-                                              "Teacher" in session && (
-                                                <DraggableSession
-                                                  id={`${cellId}-${(
-                                                    session.Subject || "session"
-                                                  ).replace(
-                                                    /[^a-zA-Z0-9]/g,
-                                                    "_"
-                                                  )}`}
-                                                  session={session as Session}
-                                                  isDisabled={
-                                                    isSaving !== "none" ||
-                                                    isMobile
-                                                  }
-                                                />
-                                              )}
-                                            {!isVersionLoading &&
-                                              isDraggingThisSession &&
-                                              session &&
-                                              "Teacher" in session && (
-                                                <SessionDetails
-                                                  session={session as Session}
-                                                  isPlaceholder
-                                                />
-                                              )}
-                                            {!isVersionLoading && isEmpty && (
-                                              <div className="text-center text-gray-600 text-sm">
-                                                Free
-                                              </div>
-                                            )}
-                                          </DroppableDiv>
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <div className="hidden md:block">
-                  <table
-                    id="timetable-table"
-                    className="border-collapse border bg-gray-50 w-full"
-                  >
-                    <thead>
-                      <tr className="bg-gray-100">
-                        <th className="border p-3 text-sm md:text-base max-w-[60px]">
-                          Day
-                        </th>
-                        <th className="border p-3 text-sm md:text-base max-w-[80px]">
-                          Room
-                        </th>
-                        {timeSlots.map((time) => (
-                          <th
-                            key={time}
-                            className="border p-3 text-center text-xs md:text-sm whitespace-normal"
-                          >
-                            {time}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Days.map((day) => {
-                        const rooms =
-                          (selectedTeacher ? filteredData : data)[day] || [];
-                        return (
-                          <React.Fragment key={day}>
-                            <tr>
-                              <td
-                                rowSpan={allRooms.length + 1}
-                                className="border align-middle bg-gray-50 p-2 max-w-[60px] text-sm md:text-base"
-                              >
-                                <div className="-rotate-90 font-medium">
-                                  {day}
-                                </div>
-                              </td>
-                            </tr>
-                            {allRooms.map((roomName, roomIndex, roomArray) => {
-                              const roomData = Array.isArray(rooms)
-                                ? rooms.find(
-                                    (room: RoomSchedule) =>
-                                      Object.keys(room)[0] === roomName
-                                  )
-                                : null;
-                              const sessions = roomData
-                                ? roomData[roomName] ||
-                                  timeSlots.map((time) => ({ Time: time }))
-                                : timeSlots.map((time) => ({ Time: time }));
-                              const isLastRow =
-                                roomIndex === roomArray.length - 1;
-                              return (
-                                <tr
-                                  key={`${day}-${roomName}`}
-                                  className={isLastRow ? "border-b-2" : ""}
-                                >
-                                  <td className="border p-1 text-sm md:text-base max-w-[80px]">
-                                    {roomName}
-                                  </td>
-                                  {timeSlots.map((timeSlot) => {
-                                    const session = sessions.find(
-                                      (s: Session | EmptySlot) =>
-                                        s.Time === timeSlot
-                                    ) as Session | EmptySlot | undefined;
-                                    const isEmpty =
-                                      !session || !("Teacher" in session);
-                                    const cellId = `${day}-${roomName}-${timeSlot}`;
-                                    const isDraggingThisSession =
-                                      activeSession &&
-                                      session &&
-                                      "Teacher" in session &&
-                                      session.Subject ===
-                                        activeSession.Subject &&
-                                      session.Time === activeSession.Time;
-                                    const cellConflicts = getCellConflicts(
-                                      day,
-                                      roomName,
-                                      timeSlot
-                                    );
-                                    return (
-                                      <DroppableCell
-                                        key={cellId}
-                                        id={cellId}
-                                        isEmpty={isEmpty}
-                                        isDraggingOver={!!isDraggingThisSession}
-                                        isMobile={isMobile}
-                                        conflicts={cellConflicts}
-                                        isLoading={
-                                          isOperationLoading || isVersionLoading
-                                        }
-                                        onAddClass={() => {
-                                          setAddClassCell({
-                                            day,
-                                            room: roomName,
-                                            time: timeSlot,
-                                          });
-                                          setIsAddClassDialogOpen(true);
-                                        }}
-                                        onDeleteClass={() => {
-                                          setDeleteClassCell({
-                                            day,
-                                            room: roomName,
-                                            time: timeSlot,
-                                          });
-                                          setIsDeleteClassDialogOpen(true);
-                                        }}
-                                      >
-                                        {!isVersionLoading &&
-                                          !isEmpty &&
-                                          !isDraggingThisSession &&
-                                          session &&
-                                          "Teacher" in session && (
-                                            <DraggableSession
-                                              id={`${cellId}-${(
-                                                session.Subject || "session"
-                                              ).replace(/[^a-zA-Z0-9]/g, "_")}`}
-                                              session={session as Session}
-                                              isDisabled={
-                                                isSaving !== "none" || isMobile
-                                              }
-                                            />
-                                          )}
-                                        {!isVersionLoading &&
-                                          isDraggingThisSession &&
-                                          session &&
-                                          "Teacher" in session && (
-                                            <SessionDetails
-                                              session={session as Session}
-                                              isPlaceholder
-                                            />
-                                          )}
-                                      </DroppableCell>
-                                    );
-                                  })}
-                                </tr>
-                              );
-                            })}
-                          </React.Fragment>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-          </div>
+          <AddClassDialog
+            isOpen={isAddClassDialogOpen}
+            onClose={() => {
+              setAddClassCell(null);
+              setIsAddClassDialogOpen(false);
+            }}
+            onSubmit={(classData) => {
+              if (addClassCell) {
+                handleAddClass(
+                  addClassCell.day,
+                  addClassCell.room,
+                  addClassCell.time,
+                  classData
+                );
+              }
+            }}
+            isAddClassLoading={isAddClassLoading}
+          />
         </div>
-        <DragOverlay style={{ zIndex: 60, pointerEvents: "none" }}>
-          {!isMobile && activeSession ? (
-            <DraggableSession
-              id={`overlay-${activeSession.Subject}`}
-              session={activeSession}
-              isDragging
-              isDisabled={isSaving !== "none"}
-            />
-          ) : null}
-        </DragOverlay>
-        <AlertDialog
-          open={isDeleteDialogOpen}
-          onOpenChange={setIsDeleteDialogOpen}
-        >
-          <AlertDialogPortal>
-            <AlertDialogOverlay
-              className="bg-[#042957]"
-              style={{ backdropFilter: "blur(2px)" }}
-            />
-            <AlertDialogContent className="bg-[#042957] text-[#9ea8b5]">
-              <AlertDialogHeader>
-                <AlertDialogTitle className="text-[#9EA8F5]">
-                  Confirm Deletion
-                </AlertDialogTitle>
-                <AlertDialogDescription className="text-[#9ea8b5] text-sm">
-                  Are you sure you want to delete Version {versionToDelete}?
-                  This action cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel
-                  onClick={() => setIsDeleteDialogOpen(false)}
-                  className="bg-red-800 hover:bg-red-900 text-white text-sm"
-                  disabled={isDeleting}
-                >
-                  Cancel
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (versionToDelete !== null) {
-                      handleDeleteVersion(versionToDelete);
-                    }
-                  }}
-                  className="bg-blue-900 hover:bg-blue-800 text-white flex items-center gap-2 text-sm"
-                  disabled={isDeleting}
-                >
-                  Confirm
-                  {isDeleting && (
-                    <svg
-                      className="animate-spin h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
-                  )}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialogPortal>
-        </AlertDialog>
-        <AddClassDialog
-          isOpen={isAddClassDialogOpen}
-          onClose={() => {
-            setAddClassCell(null);
-            setIsAddClassDialogOpen(false);
-          }}
-          onSubmit={(classData) => {
-            if (addClassCell) {
-              handleAddClass(
-                addClassCell.day,
-                addClassCell.room,
-                addClassCell.time,
-                classData
-              );
-            }
-          }}
-          isAddClassLoading={isAddClassLoading}
-        />
-        <AlertDialog open={isDeleteClassDialogOpen}>
-          <AlertDialogPortal>
-            <AlertDialogOverlay
-              className="bg-[#042957]"
-              style={{ backdropFilter: "blur(2px)" }}
-            />
-            <AlertDialogContent className="bg-[#042957] text-[#9ea8b5]">
-              <AlertDialogHeader>
-                <AlertDialogTitle className="text-[#9EA8F5]">
-                  Delete Class
-                </AlertDialogTitle>
-                <AlertDialogDescription className="text-[#9ea8b5] text-sm">
-                  Are you sure you want to delete this class? This action cannot
-                  be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel
-                  onClick={() => {
-                    if (!isDeleteClassLoading) {
-                      setIsDeleteClassDialogOpen(false);
-                    }
-                  }}
-                  className="bg-red-800 hover:bg-red-900 text-white text-sm"
-                  disabled={isDeleteClassLoading}
-                >
-                  Cancel
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => {
-                    if (deleteClassCell) {
-                      handleDeleteClass(
-                        deleteClassCell.day,
-                        deleteClassCell.room,
-                        deleteClassCell.time
-                      );
-                    }
-                  }}
-                  className="bg-blue-900 hover:bg-blue-800 text-white text-sm flex items-center gap-2"
-                  disabled={isDeleteClassLoading}
-                >
-                  Delete
-                  {isDeleteClassLoading && (
-                    <svg
-                      className="animate-spin h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
-                  )}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialogPortal>
-        </AlertDialog>
       </DndContext>
     </main>
   );

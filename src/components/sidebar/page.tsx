@@ -172,7 +172,7 @@ export default function Sidebar({
         </Link>
         {/* Faculty Data */}
         <Link
-          href="/FacultyData
+          href="/courses
         "
           className="w-full"
           onClick={handleNavigation}
@@ -193,7 +193,7 @@ export default function Sidebar({
                 isSidebarOpen || isMobileSidebarOpen ? "block" : "hidden"
               }`}
             >
-              Faculty Data
+              Courses
             </span>
           </button>
         </Link>
