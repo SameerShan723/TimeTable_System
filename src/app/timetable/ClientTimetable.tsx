@@ -43,7 +43,7 @@ import * as XLSX from "xlsx";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 export default function ClientTimetable() {
   const {
-    versions = [], // Default to empty array to prevent undefined
+    versions = [],
     selectedVersion,
     timetableData,
     conflicts,

@@ -41,6 +41,7 @@ interface DroppableDivProps {
   onAddClass: () => void;
   onDeleteClass: () => void;
 }
+
 function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -101,7 +102,10 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
         ref={setNodeRef}
         className={className}
         onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          setShowMenu(false); // Close menu on mouse leave
+        }}
       >
         {isLoading ? (
           <div className="flex flex-col p-1 space-y-1">
@@ -127,6 +131,7 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
                       <button
                         onClick={() => {
                           setShowMenu(false);
+                          setIsHovered(false); // Prevent menu from reappearing
                           onAddClass();
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -137,6 +142,7 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
                       <button
                         onClick={() => {
                           setShowMenu(false);
+                          setIsHovered(false); // Prevent menu from reappearing
                           onDeleteClass();
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
@@ -275,7 +281,10 @@ export const DroppableDiv: React.FC<DroppableDivProps> = React.memo(
         ref={setNodeRef}
         className={className}
         onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          setShowMenu(false); // Close menu on mouse leave
+        }}
       >
         {isLoading ? (
           <div className="flex flex-col p-1 space-y-1">
@@ -296,11 +305,12 @@ export const DroppableDiv: React.FC<DroppableDivProps> = React.memo(
                   <FaEllipsisV className="w-4 h-4" />
                 </button>
                 {showMenu && (
-                  <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                  <div className="absolute right-0 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                     {isEmpty ? (
                       <button
                         onClick={() => {
                           setShowMenu(false);
+                          setIsHovered(false); // Prevent menu from reappearing
                           onAddClass();
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -311,6 +321,7 @@ export const DroppableDiv: React.FC<DroppableDivProps> = React.memo(
                       <button
                         onClick={() => {
                           setShowMenu(false);
+                          setIsHovered(false); // Prevent menu from reappearing
                           onDeleteClass();
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"

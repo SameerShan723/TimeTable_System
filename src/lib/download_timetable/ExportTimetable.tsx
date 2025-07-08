@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { FaDownload } from "react-icons/fa";
+import { FaDownload, FaFilePdf, FaFileExcel } from "react-icons/fa";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
 import autoTable, { Styles, RowInput, CellInput } from "jspdf-autotable";
@@ -38,7 +38,7 @@ const LoaderOverlay = ({ isVisible }: { isVisible: boolean }) =>
         className="animate-spin h-12 w-12 text-blue-500"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
-        viewBox="0 0 24 24"
+        viewBox="0 24 24"
       >
         <circle
           className="opacity-25"
@@ -266,15 +266,16 @@ export default function ExportTimetable({
         Download
       </button>
       {showDropdown && (
-        <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+        <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-hidden">
           <button
             onClick={() => {
               setShowDropdown(false);
               exportToPDF();
             }}
-            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-t-lg disabled:bg-gray-200 disabled:cursor-not-allowed"
+            className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isLoading || isExporting}
           >
+            <FaFilePdf className="text-red-500 text-lg" />
             Download as PDF
           </button>
           <button
@@ -282,10 +283,11 @@ export default function ExportTimetable({
               setShowDropdown(false);
               exportToExcel();
             }}
-            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-t border-gray-200 rounded-b-lg disabled:bg-gray-200 disabled:cursor-not-allowed"
+            className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150 border-t border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isLoading || isExporting}
           >
-            Download as XLSX
+            <FaFileExcel className="text-green-500 text-lg" />
+            Download as Excel
           </button>
         </div>
       )}

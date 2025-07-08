@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SidebarWrapper from "@/components/sidebar/SidebarWrapper";
 import Header from "../components/header/page";
-import { Inter, Roboto } from "next/font/google";
+// import { Inter, Roboto } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import { TimetableVersionProvider } from "@/context/TimetableContext";
 import { getServerData } from "@/lib/serverData/serverData";
@@ -11,17 +11,18 @@ import { Toaster } from "sonner";
 import CourseDataFetcher from "@/lib/serverData/CourseDataFetcher";
 
 // Configure fonts
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-});
-const roboto = Roboto({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-roboto",
-});
+// className={`${inter.variable} ${roboto.variable}`}
+// const inter = Inter({
+//   subsets: ["latin"],
+//   display: "swap",
+//   variable: "--font-inter",
+// });
+// const roboto = Roboto({
+//   weight: ["400", "700"],
+//   subsets: ["latin"],
+//   display: "swap",
+//   variable: "--font-roboto",
+// });
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -44,7 +45,7 @@ export default async function RootLayout({
   const serverData = await getServerData();
 
   return (
-    <html lang="en" className={`${inter.variable} ${roboto.variable}`}>
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
       >
@@ -59,7 +60,7 @@ export default async function RootLayout({
         </div>
         <div className="flex flex-col md:flex-row h-[calc(100vh-4rem)] overflow-hidden">
           <SidebarWrapper />
-          <div className="flex-1 overflow-x-auto">
+          <div className="flex-1 overflow-x-auto overflow-y-auto">
             <CourseDataFetcher>
               <TimetableVersionProvider initialData={serverData}>
                 {children}

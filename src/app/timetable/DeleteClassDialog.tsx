@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   AlertDialog,
@@ -28,16 +29,13 @@ const DeleteClassDialog: React.FC<DeleteClassDialogProps> = ({
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogPortal>
-        <AlertDialogOverlay
-          className="bg-[#042957]"
-          style={{ backdropFilter: "blur(2px)" }}
-        />
-        <AlertDialogContent className="bg-[#042957] text-[#9ea8b5]">
+        <AlertDialogOverlay className="bg-black bg-opacity-50" />
+        <AlertDialogContent className="bg-gradient-to-br from-gray-800 to-gray-900 text-gray-300 border border-gray-700 shadow-lg rounded-xl max-w-3xl mx-auto">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-[#9EA8F5]">
+            <AlertDialogTitle className="text-2xl font-bold text-indigo-300">
               Delete Class
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-[#9ea8b5] text-sm">
+            <AlertDialogDescription className="text-gray-400 text-sm">
               Are you sure you want to delete this class? This action cannot be
               undone.
             </AlertDialogDescription>
@@ -45,7 +43,7 @@ const DeleteClassDialog: React.FC<DeleteClassDialogProps> = ({
           <AlertDialogFooter>
             <AlertDialogCancel
               onClick={onClose}
-              className="bg-red-800 hover:bg-red-900 text-white text-sm"
+              className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none"
               disabled={isLoading}
             >
               Cancel
@@ -55,7 +53,7 @@ const DeleteClassDialog: React.FC<DeleteClassDialogProps> = ({
                 e.preventDefault();
                 onConfirm();
               }}
-              className="bg-blue-900 hover:bg-blue-800 text-white text-sm flex items-center gap-2"
+              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
               disabled={isLoading}
             >
               Delete

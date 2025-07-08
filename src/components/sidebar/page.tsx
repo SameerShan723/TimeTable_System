@@ -43,7 +43,7 @@ export default function Sidebar({
   return (
     <div
       className={`relative bg-[#042954] text-[#9ea8b5] font-serif transition-all duration-200 ${
-        isSidebarOpen ? "md:w-60" : "md:w-16"
+        isSidebarOpen ? "md:w-60" : "md:w-18"
       } w-full ${
         isMobileSidebarOpen ? "h-auto" : "h-16"
       } md:h-[calc(100vh-4rem)] overflow-hidden`}

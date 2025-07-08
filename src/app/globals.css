@@ -5,6 +5,28 @@
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
+/* Style the entire scrollbar */
+::-webkit-scrollbar {
+  width: 6px; /* or height for horizontal scrollbar */
+  height: 5px;
+}
+
+/* Style the scrollbar track (background) */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Style the scrollbar thumb (the draggable handle) */
+::-webkit-scrollbar-thumb {
+  background-color: #b6b4b4;
+  border-radius: 10px;
+  border: 2px solid transparent; /* Optional for padding */
+}
+
+/* On hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 
 @keyframes shimmer {
   0% {

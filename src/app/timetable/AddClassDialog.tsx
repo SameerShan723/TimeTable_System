@@ -92,85 +92,214 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
   return (
     <AlertDialog open={isOpen}>
       <AlertDialogPortal>
-        <AlertDialogOverlay
-          className="bg-[#042957]"
-          style={{ backdropFilter: "blur(2px)" }}
-        />
-        <AlertDialogContent className="bg-[#042957] text-[#9ea8b5]">
+        <AlertDialogOverlay className="bg-black bg-opacity-50" />
+        <AlertDialogContent className="bg-gradient-to-br from-gray-800 to-gray-900 text-gray-300 border border-gray-700 shadow-lg rounded-xl max-w-3xl mx-auto">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-[#9EA8F5]">
+            <AlertDialogTitle className="text-2xl font-bold text-indigo-300">
               Add New Class
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-[#9ea8b5] text-sm">
+            <AlertDialogDescription className="text-gray-400 text-sm">
               Select the subject, teacher, and section for the new class.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-4 p-6">
             <div>
-              <label className="text-[#9ea8b5] text-sm">Subject:</label>
+              <label className="text-gray-300 text-sm font-medium">
+                Subject:
+              </label>
               <Select
                 instanceId={subjectId}
                 options={subjectOptions}
                 value={subject ? { value: subject, label: subject } : null}
                 onChange={(option) => setSubject(option ? option.value : null)}
                 placeholder="Select Subject"
-                className="text-black"
                 isDisabled={isAddClassLoading}
                 styles={{
-                  control: (provided) => ({
-                    ...provided,
-                    fontSize: "0.875rem",
+                  control: (base, state) => ({
+                    ...base,
+                    width: "100%",
+                    backgroundColor: "#374151",
+                    border: state.isFocused
+                      ? "2px solid #818cf8"
+                      : "1px solid #4b5563",
+                    borderRadius: "0.5rem",
+                    padding: "0.5rem",
+                    boxShadow: state.isFocused
+                      ? "0 0 0 2px rgba(129, 140, 248, 0.5)"
+                      : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                    "&:hover": {
+                      borderColor: state.isFocused ? "#818cf8" : "#6b7280",
+                    },
+                    color: "#ffffff",
+                    transition: "all 0.2s",
                     minHeight: "32px",
+                    fontSize: "0.875rem",
                   }),
-                  menu: (provided) => ({
-                    ...provided,
+                  singleValue: (base) => ({
+                    ...base,
+                    color: "#ffffff",
+                    fontSize: "0.875rem",
+                  }),
+                  menu: (base) => ({
+                    ...base,
+                    backgroundColor: "#374151",
+                    color: "#ffffff",
+                    fontSize: "0.875rem",
+                    borderRadius: "0.5rem",
+                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                     zIndex: 50,
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? "#818cf8"
+                      : state.isFocused
+                      ? "#4b5563"
+                      : "#374151",
+                    color: "#ffffff",
+                    "&:hover": {
+                      backgroundColor: "#4b5563",
+                    },
+                    transition: "all 0.2s",
+                  }),
+                  placeholder: (base) => ({
+                    ...base,
+                    color: "#9ca3af",
+                    fontSize: "0.875rem",
                   }),
                 }}
               />
             </div>
             <div>
-              <label className="text-[#9ea8b5] text-sm">Teacher:</label>
+              <label className="text-gray-300 text-sm font-medium">
+                Teacher:
+              </label>
               <Select
                 instanceId={teacherId}
                 options={teacherOptions}
                 value={teacher ? { value: teacher, label: teacher } : null}
                 onChange={(option) => setTeacher(option ? option.value : null)}
                 placeholder="Select Teacher"
-                className="text-black"
                 isDisabled={isAddClassLoading}
                 styles={{
-                  control: (provided) => ({
-                    ...provided,
-                    fontSize: "0.875rem",
+                  control: (base, state) => ({
+                    ...base,
+                    width: "100%",
+                    backgroundColor: "#374151",
+                    border: state.isFocused
+                      ? "2px solid #818cf8"
+                      : "1px solid #4b5563",
+                    borderRadius: "0.5rem",
+                    padding: "0.5rem",
+                    boxShadow: state.isFocused
+                      ? "0 0 0 2px rgba(129, 140, 248, 0.5)"
+                      : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                    "&:hover": {
+                      borderColor: state.isFocused ? "#818cf8" : "#6b7280",
+                    },
+                    color: "#ffffff",
+                    transition: "all 0.2s",
                     minHeight: "32px",
+                    fontSize: "0.875rem",
                   }),
-                  menu: (provided) => ({
-                    ...provided,
+                  singleValue: (base) => ({
+                    ...base,
+                    color: "#ffffff",
+                    fontSize: "0.875rem",
+                  }),
+                  menu: (base) => ({
+                    ...base,
+                    backgroundColor: "#374151",
+                    color: "#ffffff",
+                    fontSize: "0.875rem",
+                    borderRadius: "0.5rem",
+                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                     zIndex: 50,
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? "#818cf8"
+                      : state.isFocused
+                      ? "#4b5563"
+                      : "#374151",
+                    color: "#ffffff",
+                    "&:hover": {
+                      backgroundColor: "#4b5563",
+                    },
+                    transition: "all 0.2s",
+                  }),
+                  placeholder: (base) => ({
+                    ...base,
+                    color: "#9ca3af",
+                    fontSize: "0.875rem",
                   }),
                 }}
               />
             </div>
             <div>
-              <label className="text-[#9ea8b5] text-sm">Section:</label>
+              <label className="text-gray-300 text-sm font-medium">
+                Section:
+              </label>
               <Select
                 instanceId={sectionId}
                 options={sectionOptions}
                 value={section ? { value: section, label: section } : null}
                 onChange={(option) => setSection(option ? option.value : null)}
                 placeholder="Select Section"
-                className="text-black"
                 isDisabled={isAddClassLoading}
                 styles={{
-                  control: (provided) => ({
-                    ...provided,
-                    fontSize: "0.875rem",
+                  control: (base, state) => ({
+                    ...base,
+                    width: "100%",
+                    backgroundColor: "#374151",
+                    border: state.isFocused
+                      ? "2px solid #818cf8"
+                      : "1px solid #4b5563",
+                    borderRadius: "0.5rem",
+                    padding: "0.5rem",
+                    boxShadow: state.isFocused
+                      ? "0 0 0 2px rgba(129, 140, 248, 0.5)"
+                      : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                    "&:hover": {
+                      borderColor: state.isFocused ? "#818cf8" : "#6b7280",
+                    },
+                    color: "#ffffff",
+                    transition: "all 0.2s",
                     minHeight: "32px",
+                    fontSize: "0.875rem",
                   }),
-                  menu: (provided) => ({
-                    ...provided,
+                  singleValue: (base) => ({
+                    ...base,
+                    color: "#ffffff",
+                    fontSize: "0.875rem",
+                  }),
+                  menu: (base) => ({
+                    ...base,
+                    backgroundColor: "#374151",
+                    color: "#ffffff",
+                    fontSize: "0.875rem",
+                    borderRadius: "0.5rem",
+                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                     zIndex: 50,
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? "#818cf8"
+                      : state.isFocused
+                      ? "#4b5563"
+                      : "#374151",
+                    color: "#ffffff",
+                    "&:hover": {
+                      backgroundColor: "#4b5563",
+                    },
+                    transition: "all 0.2s",
+                  }),
+                  placeholder: (base) => ({
+                    ...base,
+                    color: "#9ca3af",
+                    fontSize: "0.875rem",
                   }),
                 }}
               />
@@ -183,14 +312,14 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                   onClose();
                 }
               }}
-              className="bg-red-800 hover:bg-red-900 text-white text-sm"
+              className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none"
               disabled={isAddClassLoading}
             >
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleSubmit}
-              className="bg-blue-900 hover:bg-blue-800 text-white text-sm flex items-center gap-2"
+              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
               disabled={isAddClassLoading}
             >
               Add Class

@@ -21,7 +21,7 @@ export default function SidebarWrapper() {
 
   return (
     <div
-      className={`w-full ${isSidebarOpen ? "md:w-60" : "md:w-16"} flex-shrink-0 
+      className={`w-full ${isSidebarOpen ? "md:w-60" : "md:w-18"} flex-shrink-0 
        transition-all duration-300 `}
     >
       <Sidebar

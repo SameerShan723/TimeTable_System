@@ -1,7 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
-import { FaRegTrashAlt, FaDownload } from "react-icons/fa";
+import {
+  FaRegTrashAlt,
+  FaDownload,
+  FaFileExcel,
+  FaFilePdf,
+} from "react-icons/fa";
 import Select from "react-select";
 import { TimetableData, Session, EmptySlot, RoomSchedule } from "./types";
 import { Days } from "@/helpers/page";
@@ -271,22 +276,23 @@ const Navbar: React.FC<NavbarProps> = ({
         <div className="relative" ref={exportDropdownRef}>
           <button
             onClick={() => setShowExportDropdown(true)}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded flex items-center gap-2 text-xs sm:text-sm"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isVersionLoading}
           >
-            <FaDownload className="text-base sm:text-lg" />
+            <FaDownload className="text-lg" />
             Download
           </button>
           {showExportDropdown && (
-            <div className="absolute right-0 mt-2 w-40 sm:w-36 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-hidden">
               <button
                 onClick={() => {
                   setShowExportDropdown(false);
                   exportToPDF();
                 }}
-                className="w-full text-left px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"
+                className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isVersionLoading}
               >
+                <FaFilePdf className="text-red-500 text-lg" />
                 Download as PDF
               </button>
               <button
@@ -294,10 +300,11 @@ const Navbar: React.FC<NavbarProps> = ({
                   setShowExportDropdown(false);
                   exportToXLSX();
                 }}
-                className="w-full text-left px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100 border-t"
+                className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150 border-t border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isVersionLoading}
               >
-                Download as Excel
+                <FaFileExcel className="text-green-500 text-lg" />
+                Download as Xlsx
               </button>
             </div>
           )}
