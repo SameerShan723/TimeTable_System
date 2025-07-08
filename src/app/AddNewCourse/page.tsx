@@ -17,6 +17,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase/supabase";
 import { useState } from "react";
+import { useCourses } from "@/context/CourseContext";
+import { Course } from "@/lib/serverData/CourseDataFetcher";
 
 // Validation schema
 const formSchema = z.object({
@@ -58,6 +60,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function CourseForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { courses, setCourses } = useCourses(); // Access CourseContext
 
   // Define form with explicit typing
   const form = useForm<FormValues>({
@@ -81,23 +84,33 @@ export default function CourseForm() {
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from("courses").insert([
-        {
-          course_details: values.courseDetails,
-          section: values.section,
-          semester: values.semester,
-          semester_details: values.semesterDetails,
-          credit_hour: parseInt(values.creditHour),
-          faculty_assigned: values.facultyAssigned,
-          is_regular_teacher: values.isRegularTeacher,
-          domain: values.domain || null,
-          subject_code: values.subjectCode || null,
-          subject_type: values.subjectType || null,
-        },
-      ]);
+      // Insert the new course into Supabase and select the inserted row
+      const { data, error } = await supabase
+        .from("courses")
+        .insert([
+          {
+            course_details: values.courseDetails,
+            section: values.section,
+            semester: parseInt(values.semester),
+            semester_details: values.semesterDetails || null,
+            credit_hour: parseInt(values.creditHour),
+            faculty_assigned: values.facultyAssigned,
+            is_regular_teacher: values.isRegularTeacher,
+            domain: values.domain || null,
+            subject_code: values.subjectCode || null,
+            subject_type: values.subjectType || null,
+          },
+        ])
+        .select()
+        .single();
 
       if (error) {
         throw error;
+      }
+
+      // Update the CourseContext with the new course
+      if (data) {
+        setCourses([...courses, data as Course]);
       }
 
       toast.success("Course data saved successfully!", {
