@@ -12,7 +12,7 @@ export interface EmptySlot {
 }
 
 export interface RoomSchedule {
-  [roomName: string]: (Session | EmptySlot)[] | undefined;
+  [roomName: string]: (Session | EmptySlot)[];
 }
 
 export type DaySchedule = RoomSchedule[];
@@ -28,12 +28,13 @@ export interface VersionOption {
 
 // Teacher/Student-specific types
 export interface ClassItem {
-  Room: string;
-  Time: string;
-  Teacher: string;
   Subject: string;
+  Teacher: string;
   Section?: string;
-  Day: string;
+  Time: string;
+  Room?: string;
+  Day?: string;
+  [key: string]: string | undefined;
 }
 
 export interface TeacherRoomObject {
@@ -44,4 +45,11 @@ export type TeacherDaySchedule = TeacherRoomObject[];
 
 export interface TeacherTimetableData {
   [day: string]: TeacherDaySchedule;
+}
+export interface TimetableData {
+  Monday: RoomSchedule[];
+  Tuesday: RoomSchedule[];
+  Wednesday: RoomSchedule[];
+  Thursday: RoomSchedule[];
+  Friday: RoomSchedule[];
 }

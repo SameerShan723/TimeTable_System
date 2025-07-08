@@ -1,6 +1,41 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+.shimmer {
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+/* Style the entire scrollbar */
+::-webkit-scrollbar {
+  width: 6px; /* or height for horizontal scrollbar */
+  height: 5px;
+}
 
+/* Style the scrollbar track (background) */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Style the scrollbar thumb (the draggable handle) */
+::-webkit-scrollbar-thumb {
+  background-color: #b6b4b4;
+  border-radius: 10px;
+  border: 2px solid transparent; /* Optional for padding */
+}
+
+/* On hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
