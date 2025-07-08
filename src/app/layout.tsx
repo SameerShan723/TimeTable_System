@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SidebarWrapper from "@/components/sidebar/SidebarWrapper";
 import Header from "../components/header/page";
@@ -23,14 +22,6 @@ import CourseDataFetcher from "@/lib/serverData/CourseDataFetcher";
 //   display: "swap",
 //   variable: "--font-roboto",
 // });
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Timetable Management System",
@@ -47,7 +38,8 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
+        style={{ fontFamily: "Arial, sans-serif" }}
+        className=" antialiased overflow-hidden"
       >
         <NextTopLoader
           showSpinner={false}

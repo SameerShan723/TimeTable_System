@@ -1,8 +1,8 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { supabase } from "@/lib/supabase/supabase";
 
-// Define validation schema for course updates (aligned with FacultyData.tsx)
+// Validation schema
 const courseSchema = z.object({
   subject_code: z.string().trim().nullable().optional(),
   course_details: z
@@ -39,12 +39,14 @@ const courseSchema = z.object({
   }),
 });
 
+// Define the handler function type
 export async function PUT(
   req: NextRequest,
-  context: { params: Record<string, string> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = context.params;
+    const params = await context.params; // Resolve the Promise
+    const { id } = params;
     if (!id) {
       return NextResponse.json(
         { message: "Course ID is required" },
@@ -66,8 +68,8 @@ export async function PUT(
     const updateData = {
       ...parsedData.data,
       subject_code: parsedData.data.subject_code?.trim() || null,
-      credit_hour: parseInt(parsedData.data.credit_hour), // Convert to number
-      semester: parseInt(parsedData.data.semester), // Convert to number
+      credit_hour: parseInt(parsedData.data.credit_hour),
+      semester: parseInt(parsedData.data.semester),
     };
 
     const { data, error } = await supabase
@@ -88,13 +90,6 @@ export async function PUT(
       return NextResponse.json({ message: error.message }, { status: 500 });
     }
 
-    if (!data) {
-      return NextResponse.json(
-        { message: "Course not found" },
-        { status: 404 }
-      );
-    }
-
     return NextResponse.json({
       message: "Course updated successfully",
       data,
@@ -109,11 +104,12 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _req: NextRequest,
-  context: { params: Record<string, string> }
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = context.params;
+    const params = await context.params; // Resolve the Promise
+    const { id } = params;
     if (!id) {
       return NextResponse.json(
         { message: "Course ID is required" },
