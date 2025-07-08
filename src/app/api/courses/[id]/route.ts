@@ -41,10 +41,10 @@ const courseSchema = z.object({
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Record<string, string> }
 ) {
   try {
-    const { id } = params;
+    const { id } = context.params;
     if (!id) {
       return NextResponse.json(
         { message: "Course ID is required" },
@@ -110,10 +110,10 @@ export async function PUT(
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Record<string, string> }
 ) {
   try {
-    const { id } = params;
+    const { id } = context.params;
     if (!id) {
       return NextResponse.json(
         { message: "Course ID is required" },
