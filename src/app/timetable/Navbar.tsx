@@ -80,9 +80,9 @@ const Navbar: React.FC<NavbarProps> = ({
   }, [timetableData]);
 
   return (
-    <div className="bg-[#042954] w-full flex flex-col md:flex-row items-center px-4 py-3 sticky top-0 justify-between z-40 min-h-[60px]">
+    <div className="bg-[#042954] w-full flex flex-col md:flex-row items-center px-4 py-3 sticky top-0 justify-between z-40 min-h-[60px] ">
       <div className="flex flex-col md:flex-row items-center w-full md:w-2/3 gap-3 sm:gap-4">
-        <div className="w-full sm:w-3/4 md:w-50 lg:w-56 flex items-center text-sm min-w-[160px]">
+        <div className="w-full  md:w-50 lg:w-56 flex items-center text-sm min-w-[160px] md:max-w[200px] ">
           <label className="text-white mr-2 text-xs sm:text-sm">
             Select Version:
           </label>
@@ -160,7 +160,7 @@ const Navbar: React.FC<NavbarProps> = ({
             }}
           />
         </div>
-        <div className="w-full sm:w-3/4 md:w-50 lg:w-65 flex items-center text-sm min-w-[160px]">
+        <div className=" w-full  md:w-60 lg:w-90 lg:max-w-90  flex items-center text-sm ">
           <label className="text-white mr-2 text-xs sm:text-sm">
             Filter Teachers:
           </label>
@@ -181,8 +181,8 @@ const Navbar: React.FC<NavbarProps> = ({
               control: (provided, state) => ({
                 ...provided,
                 border: state.isFocused ? "0px" : provided.border,
-                outline: state.isFocused ? "none" : provided.outline,
-                boxShadow: state.isFocused ? "none" : provided.boxShadow,
+                outline: "none",
+                boxShadow: "none",
                 fontSize: "0.875rem",
                 minHeight: "32px",
                 width: "100%",
@@ -194,9 +194,10 @@ const Navbar: React.FC<NavbarProps> = ({
                 width: "100%",
                 maxWidth: "100%",
               }),
-              option: (provided) => ({
+              multiValue: (provided) => ({
                 ...provided,
-                padding: "8px",
+                maxWidth: "100%",
+                // flexWrap: "wrap",
               }),
             }}
           />

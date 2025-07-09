@@ -211,23 +211,23 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
             })}
           </div>
 
-          <div className="hidden md:block max-h-[calc(100vh-150px)] overflow-y-auto overflow-x-auto">
+          <div className="hidden md:block max-h-[calc(100vh-135px)] overflow-y-auto overflow-x-auto">
             <table
               id="timetable-table"
               className="border-collapse border bg-gray-50 w-full "
             >
-              <thead className="sticky top-[-1]  z-10 ">
+              <thead className="sticky top-0 z-10">
                 <tr>
-                  <th className="border p-3 text-sm md:text-base max-w-[60px] sticky top-[-1] bg-gray-200">
+                  <th className="border p-3 text-sm md:text-base max-w-[60px] top-0  bg-gray-200">
                     Day
                   </th>
-                  <th className="border p-3 text-sm md:text-base max-w-[80px] sticky top-[-1] bg-gray-200">
+                  <th className="border p-3 text-sm md:text-base max-w-[80px] sticky top-0 bg-gray-200">
                     Room
                   </th>
                   {timeSlots.map((time) => (
                     <th
                       key={time}
-                      className="border p-3 text-center text-xs md:text-sm whitespace-normal sticky top-[-1] bg-gray-200  "
+                      className="border p-3 text-center text-xs md:text-sm whitespace-normal sticky top-0 bg-gray-200  "
                     >
                       {time}
                     </th>
@@ -245,7 +245,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
                       <tr>
                         <td
                           rowSpan={allRooms.length + 1}
-                          className="border align-middle bg-gray-50 p-2 max-w-[60px] text-sm md:text-base "
+                          className="border align-middle bg-gray-50 p-2 max-w-[60px] text-sm md:text-base  "
                         >
                           <div className="-rotate-90 font-medium">{day}</div>
                         </td>

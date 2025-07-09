@@ -28,9 +28,17 @@ export default function StudentTimetable(): JSX.Element {
   const [selectedDay, setSelectedDay] = useState<DayType[]>([...Days]);
   const [results, setResult] = useState<EnhancedClassItem[]>([]);
   const [error, setError] = useState<string>("");
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
 
   const sectionSelectedId = useId();
   const daySelectedId = useId();
+
+  // Set portalTarget to document.body only in the browser
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      setPortalTarget(document.body);
+    }
+  }, []);
 
   const sections: string[] = useMemo(() => {
     const sectionSet = new Set<string>();
@@ -209,6 +217,8 @@ export default function StudentTimetable(): JSX.Element {
             placeholder="Select section"
             isDisabled={loading || sections.length === 0}
             isClearable
+            menuPortalTarget={portalTarget}
+            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           />
           {sections.length === 0 && !loading && (
             <p className="text-sm text-gray-500 mt-1">
@@ -232,6 +242,8 @@ export default function StudentTimetable(): JSX.Element {
               selectedDay.includes(opt.value as DayType)
             )}
             isDisabled={loading}
+            menuPortalTarget={portalTarget}
+            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           />
         </div>
 
