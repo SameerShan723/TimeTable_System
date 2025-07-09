@@ -186,7 +186,7 @@ export const SessionDetails: React.FC<SessionDetailsProps> = React.memo(
         isPlaceholder ? "text-gray-300 bg-gray-100 opacity-50" : ""
       }`}
     >
-      <div className="font-medium leading-tight">
+      <div className=" leading-tight font-bold text-sm">
         {session.Subject || "Unknown Course"}
       </div>
       <div className="text-sm leading-tight">

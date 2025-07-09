@@ -766,18 +766,34 @@ export default function ClientTimetable() {
   };
 
   if (hookError) {
+    const handleTryAgain = () => {
+      window.location.reload();
+    };
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-xl text-red-500">Error: {hookError}</div>
+        <div className="text-xl text-red-500">
+          {hookError}
+          <span>
+            <button onClick={() => handleTryAgain()}>Try Again</button>
+          </span>
+        </div>
       </div>
     );
   }
 
   if (versions.length === 0) {
+    const handleTryAgain = () => {
+      window.location.reload();
+    };
     return (
       <div className="flex justify-center items-center h-full">
-        <div className="text-xl text-gray-500">
-          No timetable versions available. Create a new version to start.
+        <div className="text-xl text-gray-500 mt-3">
+          Something thing went wrong{" "}
+          <span>
+            <button onClick={() => handleTryAgain()} className="border-2 p-1">
+              Try Again
+            </button>
+          </span>
         </div>
       </div>
     );

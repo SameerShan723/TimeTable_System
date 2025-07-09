@@ -186,7 +186,7 @@ export default function GenerateTimeTable() {
   return (
     <main className="flex h-[calc(100vh-4rem)] justify-center overflow-hidden">
       <div className="flex justify-center  rounded-2xl border-[#416697]">
-        <div className=" lg:w-[500px] md:max-w-[500px]  px-2">
+        <div className=" lg:w-[500px] md:max-w-[500px]  px-6">
           <h1 className="font-bold text-4xl mb-4 text-[#194c87] pt-8">
             Upload Teacher &<br /> Subject Assignment
           </h1>

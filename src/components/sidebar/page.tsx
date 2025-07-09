@@ -1,18 +1,19 @@
 "use client";
 import React, { useState } from "react";
-import Link from "next/link";
-import { IoMdHome } from "react-icons/io";
 import {
-  FaCalendarDay,
-  FaBars,
-  FaTimes,
-  FaChevronLeft,
-  FaChevronRight,
-  FaChalkboardTeacher,
-} from "react-icons/fa";
-import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
-import { LuSlidersHorizontal } from "react-icons/lu";
-import { FaPlusSquare } from "react-icons/fa";
+  Home,
+  Calendar,
+  Plus,
+  Users,
+  SlidersHorizontal,
+  ChevronLeft,
+  ChevronRight,
+  Menu,
+  X,
+  ChevronDown,
+  ChevronRight as ChevronRightSmall,
+} from "lucide-react";
+import Link from "next/link";
 
 interface SidebarProps {
   isSidebarOpen: boolean;
@@ -40,20 +41,29 @@ export default function Sidebar({
     }
   };
 
+  const navigationItems = [
+    { icon: Home, label: "Home", href: "/" },
+    { icon: Calendar, label: "Generate Timetable", href: "/generateTimeTable" },
+    { icon: Plus, label: "Add New Course", href: "/AddNewCourse" },
+    { icon: Users, label: "Courses", href: "/courses" },
+  ];
+
   return (
     <div
-      className={`relative bg-[#042954] text-[#9ea8b5] font-serif transition-all duration-200 ${
-        isSidebarOpen ? "md:w-60" : "md:w-18"
+      className={`relative bg-[#042954] text-[#9ea8b5] font-serif transition-all duration-300 ease-in-out ${
+        isSidebarOpen ? "md:w-60" : "md:w-16"
       } w-full ${
         isMobileSidebarOpen ? "h-auto" : "h-16"
-      } md:h-[calc(100vh-4rem)] overflow-hidden`}
+      } md:h-[calc(100vh-4rem)] overflow-hidden shadow-lg`}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-4 border-b border-[#051f3e] h-16">
         <span
-          className={`text-[#9ea8b5] font-serif text-lg ${
-            isSidebarOpen ? "block" : "hidden"
-          }`}
+          className={`text-[#9ea8b5] font-serif text-lg transition-all duration-300 ${
+            isSidebarOpen
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 -translate-x-4"
+          } ${isSidebarOpen ? "block" : "hidden"}`}
         >
           Menu
         </span>
@@ -61,28 +71,32 @@ export default function Sidebar({
         <div className="flex items-center gap-2">
           {/* Desktop Toggle */}
           <div className="relative group hidden md:block">
-            <button onClick={toggleSidebar}>
+            <button
+              onClick={toggleSidebar}
+              className="p-2 rounded-lg hover:bg-[#051f3e] transition-all duration-200 hover:scale-105"
+            >
               {isSidebarOpen ? (
-                <FaChevronLeft
-                  size={24}
-                  className="text-[#9ea8b5] hover:bg-[#051f3e] transition-colors   rounded-2xl w-full h-full p-1 cursor-pointer"
-                  title="close"
+                <ChevronLeft
+                  size={20}
+                  className="text-[#9ea8b5] hover:text-white transition-colors"
                 />
               ) : (
-                <FaChevronRight
-                  size={24}
-                  className="text-[#9ea8b5] hover:bg-[#051f3e] rounded-2xl w-full h-full p-1 cursor-pointer"
-                  title="open"
+                <ChevronRight
+                  size={20}
+                  className="text-[#9ea8b5] hover:text-white transition-colors"
                 />
               )}
             </button>
           </div>
           {/* Mobile Toggle */}
-          <button onClick={toggleMobileSidebar} className="md:hidden">
+          <button
+            onClick={toggleMobileSidebar}
+            className="md:hidden p-2 rounded-lg hover:bg-[#051f3e] transition-all duration-200"
+          >
             {isMobileSidebarOpen ? (
-              <FaTimes size={24} className="text-[#9ea8b5]" />
+              <X size={20} className="text-[#9ea8b5]" />
             ) : (
-              <FaBars size={24} className="text-[#9ea8b5]" />
+              <Menu size={20} className="text-[#9ea8b5]" />
             )}
           </button>
         </div>
@@ -96,111 +110,37 @@ export default function Sidebar({
             : "opacity-0 h-0 md:opacity-100 md:h-auto"
         } max-h-[calc(100vh-8rem)] overflow-y-auto md:overflow-y-visible`}
       >
-        {/* Home Link */}
-        <Link href="/" className="w-full" onClick={handleNavigation}>
-          <button
-            className={`flex px-3 py-4 w-full gap-3 hover:bg-[#051f3e] hover:text-white border-b items-center ${
-              !isSidebarOpen && !isMobileSidebarOpen ? "justify-center" : ""
-            }`}
-            title="Home"
-          >
-            <IoMdHome
-              size={isSidebarOpen || isMobileSidebarOpen ? 25 : 30}
-              className="text-[#c49f69]"
-            />
-            <span
-              className={`${
-                isSidebarOpen || isMobileSidebarOpen ? "block" : "hidden"
+        {/* Navigation Items */}
+        {navigationItems.map((item, index) => (
+          <Link href={item.href} key={index} className="w-full">
+            <button
+              className={`flex px-3 py-4 w-full gap-3 hover:bg-[#051f3e] hover:text-white border-b border-[#051f3e]/30 items-center transition-all duration-200 group ${
+                !isSidebarOpen && !isMobileSidebarOpen ? "justify-center" : ""
               }`}
+              title={item.label}
+              onClick={handleNavigation}
             >
-              Home
-            </span>
-          </button>
-        </Link>
+              <item.icon
+                size={isSidebarOpen || isMobileSidebarOpen ? 20 : 24}
+                className="text-[#c49f69] group-hover:text-[#d4b47a] transition-colors flex-shrink-0"
+              />
+              <span
+                className={`transition-all duration-300 ${
+                  isSidebarOpen || isMobileSidebarOpen
+                    ? "opacity-100 translate-x-0"
+                    : "opacity-0 translate-x-4 md:hidden"
+                }`}
+              >
+                {item.label}
+              </span>
+            </button>
+          </Link>
+        ))}
 
-        {/* Generate Timetable Link */}
-        <Link
-          href="/generateTimeTable"
-          className="w-full"
-          onClick={handleNavigation}
-        >
-          <button
-            className={`flex px-3 py-4 w-full gap-3 hover:bg-[#051f3e] hover:text-white border-b items-center ${
-              !isSidebarOpen && !isMobileSidebarOpen ? "justify-center" : ""
-            }`}
-            title="Generate Timetable"
-          >
-            <FaCalendarDay
-              size={isSidebarOpen || isMobileSidebarOpen ? 20 : 23}
-              className="text-[#c49f69]"
-            />
-            <span
-              className={`${
-                isSidebarOpen || isMobileSidebarOpen ? "block" : "hidden"
-              }`}
-            >
-              Generate Timetable
-            </span>
-          </button>
-        </Link>
-        {/* AddNewCourse */}
-        <Link
-          href="/AddNewCourse
-        "
-          className="w-full"
-          onClick={handleNavigation}
-        >
-          <button
-            className={`flex px-3 py-4 w-full gap-3 hover:bg-[#051f3e] hover:text-white border-b items-center ${
-              !isSidebarOpen && !isMobileSidebarOpen ? "justify-center" : ""
-            }`}
-            title="form"
-          >
-            <FaPlusSquare
-              size={isSidebarOpen || isMobileSidebarOpen ? 20 : 23}
-              className="text-[#c49f69]"
-            />
-
-            <span
-              className={`${
-                isSidebarOpen || isMobileSidebarOpen ? "block" : "hidden"
-              }`}
-            >
-              Add New Course
-            </span>
-          </button>
-        </Link>
-        {/* Faculty Data */}
-        <Link
-          href="/courses
-        "
-          className="w-full"
-          onClick={handleNavigation}
-        >
-          <button
-            className={`flex px-3 py-4 w-full gap-3 hover:bg-[#051f3e] hover:text-white border-b items-center ${
-              !isSidebarOpen && !isMobileSidebarOpen ? "justify-center" : ""
-            }`}
-            title="form"
-          >
-            <FaChalkboardTeacher
-              size={isSidebarOpen || isMobileSidebarOpen ? 20 : 23}
-              className="text-[#c49f69]"
-            />
-
-            <span
-              className={`${
-                isSidebarOpen || isMobileSidebarOpen ? "block" : "hidden"
-              }`}
-            >
-              Courses
-            </span>
-          </button>
-        </Link>
         {/* Advance Filters */}
-        <div className="flex flex-col border-b w-full">
+        <div className="flex flex-col border-b border-[#051f3e]/30 w-full">
           <button
-            className={`flex px-3 py-4 justify-between items-center hover:bg-[#051f3e] hover:text-white cursor-pointer w-full ${
+            className={`flex px-3 py-4 justify-between items-center hover:bg-[#051f3e] hover:text-white cursor-pointer w-full transition-all duration-200 group ${
               !isSidebarOpen && !isMobileSidebarOpen ? "justify-center" : ""
             }`}
             onClick={() => {
@@ -211,27 +151,35 @@ export default function Sidebar({
             }}
             title="Advance Filters"
           >
-            <div className="flex items-center gap-2">
-              <LuSlidersHorizontal
+            <div className="flex items-center gap-3">
+              <SlidersHorizontal
                 size={isSidebarOpen || isMobileSidebarOpen ? 20 : 24}
-                className="text-[#c49f69]"
+                className="text-[#c49f69] group-hover:text-[#d4b47a] transition-colors flex-shrink-0"
               />
               <span
-                className={`${
-                  isSidebarOpen || isMobileSidebarOpen ? "block" : "hidden"
+                className={`transition-all duration-300 ${
+                  isSidebarOpen || isMobileSidebarOpen
+                    ? "opacity-100 translate-x-0"
+                    : "opacity-0 translate-x-4 md:hidden"
                 }`}
               >
                 Advance Filters
               </span>
             </div>
             {(isSidebarOpen || isMobileSidebarOpen) && (
-              <>
+              <div className="transition-transform duration-200">
                 {isFiltersOpen ? (
-                  <IoIosArrowDown size={19} />
+                  <ChevronDown
+                    size={16}
+                    className="transition-transform duration-200"
+                  />
                 ) : (
-                  <IoIosArrowForward size={19} />
+                  <ChevronRightSmall
+                    size={16}
+                    className="transition-transform duration-200"
+                  />
                 )}
-              </>
+              </div>
             )}
           </button>
 
@@ -243,25 +191,29 @@ export default function Sidebar({
                 : "max-h-0 opacity-0"
             }`}
           >
-            <Link
-              href="/advanceFilters/students"
-              className="w-full"
-              onClick={handleNavigation}
-            >
-              <div className="flex items-center pl-8 hover:bg-[#051f3e] hover:text-white text-[14px] pb-2 pt-2 gap-1">
-                <LuSlidersHorizontal />
-                <span>For students</span>
-              </div>
+            <Link href="/advance-filters/students">
+              <button
+                className="flex items-center pl-8 hover:bg-[#051f3e] hover:text-white text-sm py-2 gap-2 w-full text-left transition-all duration-200 group"
+                onClick={handleNavigation}
+              >
+                <SlidersHorizontal
+                  size={14}
+                  className="text-[#c49f69] group-hover:text-[#d4b47a] transition-colors"
+                />
+                For Students
+              </button>
             </Link>
-            <Link
-              href="/advanceFilters/checkTeachersTimetable"
-              className="w-full"
-              onClick={handleNavigation}
-            >
-              <div className="flex items-center pl-8 hover:bg-[#051f3e] hover:text-white text-[14px] py-2 gap-1">
-                <LuSlidersHorizontal />
+            <Link href="/advance-filters/check-teachers-timetable">
+              <button
+                className="flex items-center pl-8 hover:bg-[#051f3e] hover:text-white text-sm py-2 gap-2 w-full text-left transition-all duration-200 group"
+                onClick={handleNavigation}
+              >
+                <SlidersHorizontal
+                  size={14}
+                  className="text-[#c49f69] group-hover:text-[#d4b47a] transition-colors"
+                />
                 <span>For teachers</span>
-              </div>
+              </button>
             </Link>
           </div>
         </div>

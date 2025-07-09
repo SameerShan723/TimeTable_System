@@ -181,7 +181,7 @@ export default function StudentTimetable(): JSX.Element {
   }
 
   return (
-    <div className="flex flex-col flex-1 h-full w-full overflow-y-auto">
+    <div className="flex flex-col w-full max-w-full px-4 overflow-x-hidden">
       <div className="flex items-center justify-center flex-col">
         <h1 className="font-bold text-xl mt-3 mb-4 md:text-2xl lg:text-3xl lg:mt-6 lg:mb-6">
           Check Students Timetable
@@ -235,9 +235,9 @@ export default function StudentTimetable(): JSX.Element {
           />
         </div>
 
-        <div className="flex gap-3 flex-col lg:flex-row md:flex-row ">
+        <div className="flex gap-3 flex-col lg:flex-row md:flex-row">
           <button
-            className="bg-blue-900 py-2  lg:px-20 px-12 md:px-16 rounded-md cursor-pointer text-[#ccd8e8] hover:bg-blue-800 transition-colors"
+            className="bg-blue-900 py-2 lg:px-20 px-12 md:px-16 rounded-md cursor-pointer text-[#ccd8e8] hover:bg-blue-800 transition-colors"
             onClick={handleSearch}
             disabled={loading}
           >

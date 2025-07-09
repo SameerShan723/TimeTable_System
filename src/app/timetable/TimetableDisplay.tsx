@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { Session, EmptySlot, RoomSchedule, TimetableData } from "./types";
@@ -53,7 +55,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
   isSaving,
 }) => {
   return (
-    <div className="flex-1 w-full">
+    <div className="flex-1 w-full max-w-full">
       {Object.keys(
         selectedTeachers && selectedTeachers.length > 0 ? filteredData : data
       ).length === 0 ? (
@@ -66,7 +68,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
         <div
           ref={timetableRef}
           id="timetable-container"
-          className="relative w-full"
+          className="relative w-full max-w-full"
         >
           <div className="block md:hidden space-y-4 p-4">
             {Days.map((day) => {
@@ -76,7 +78,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
                   : data)[day] || [];
               return (
                 <div key={day} className="mb-6">
-                  <h2 className="text-lg font-semibold text-gray-700 mb-2">
+                  <h2 className="text-lg font-semibold text-black mb-2">
                     {day}
                   </h2>
                   {allRooms.map((roomName) => {
@@ -209,23 +211,23 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
             })}
           </div>
 
-          <div className="hidden md:block">
+          <div className="hidden md:block max-h-[calc(100vh-150px)] overflow-y-auto overflow-x-auto">
             <table
               id="timetable-table"
-              className="border-collapse border bg-gray-50 w-full"
+              className="border-collapse border bg-gray-50 w-full "
             >
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border p-3 text-sm md:text-base max-w-[60px]">
+              <thead className="sticky top-[-1]  z-10 ">
+                <tr>
+                  <th className="border p-3 text-sm md:text-base max-w-[60px] sticky top-[-1] bg-gray-200">
                     Day
                   </th>
-                  <th className="border p-3 text-sm md:text-base max-w-[80px]">
+                  <th className="border p-3 text-sm md:text-base max-w-[80px] sticky top-[-1] bg-gray-200">
                     Room
                   </th>
                   {timeSlots.map((time) => (
                     <th
                       key={time}
-                      className="border p-3 text-center text-xs md:text-sm whitespace-normal"
+                      className="border p-3 text-center text-xs md:text-sm whitespace-normal sticky top-[-1] bg-gray-200  "
                     >
                       {time}
                     </th>
@@ -243,7 +245,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
                       <tr>
                         <td
                           rowSpan={allRooms.length + 1}
-                          className="border align-middle bg-gray-50 p-2 max-w-[60px] text-sm md:text-base"
+                          className="border align-middle bg-gray-50 p-2 max-w-[60px] text-sm md:text-base "
                         >
                           <div className="-rotate-90 font-medium">{day}</div>
                         </td>
@@ -265,7 +267,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
                             key={`${day}-${roomName}`}
                             className={isLastRow ? "border-b-2" : ""}
                           >
-                            <td className="border p-1 text-sm md:text-base max-w-[80px]">
+                            <td className="border p-1 text-black text-sm md:text-base max-w-[80px]  bg-gray-50">
                               {roomName}
                             </td>
                             {timeSlots.map((timeSlot) => {

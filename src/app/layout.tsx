@@ -52,7 +52,7 @@ export default async function RootLayout({
         </div>
         <div className="flex flex-col md:flex-row h-[calc(100vh-4rem)] overflow-hidden">
           <SidebarWrapper />
-          <div className="flex-1 overflow-x-auto overflow-y-auto">
+          <div className="flex-1 overflow-x-auto ">
             <CourseDataFetcher>
               <TimetableVersionProvider initialData={serverData}>
                 {children}

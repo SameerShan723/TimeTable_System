@@ -46,10 +46,18 @@ export default function TeacherTimetable(): JSX.Element {
   const [selectedDay, setSelectedDay] = useState<DayType[]>(Days);
   const [results, setResults] = useState<EnhancedClassItem[]>([]);
   const [error, setError] = useState<string>("");
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
 
   const teacherSelectedId: string = useId();
   const daySelectedId: string = useId();
   const versionSelectedId: string = useId();
+
+  // Set portalTarget to document.body only in the browser
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      setPortalTarget(document.body);
+    }
+  }, []);
 
   // Extract unique teachers from timetable data
   const teachers = useMemo(() => {
@@ -185,8 +193,9 @@ export default function TeacherTimetable(): JSX.Element {
       </div>
     );
   }
+
   return (
-    <div className="flex flex-col flex-1 h-full w-full ">
+    <div className="flex flex-col w-full max-w-full px-4 overflow-x-hidden">
       <div className="flex items-center justify-center flex-col">
         <h1 className="font-bold text-3xl mt-6 mb-6">
           Check Teachers Timetable
@@ -209,6 +218,8 @@ export default function TeacherTimetable(): JSX.Element {
               className="text-black w-full"
               placeholder="Select version"
               isClearable
+              menuPortalTarget={portalTarget}
+              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
             />
           </div>
         </div>
@@ -230,6 +241,8 @@ export default function TeacherTimetable(): JSX.Element {
             placeholder="Select teacher"
             isDisabled={loading || teachers.length === 0}
             isClearable
+            menuPortalTarget={portalTarget}
+            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           />
           {teachers.length === 0 && !loading && (
             <p className="text-sm text-gray-500 mt-1">
@@ -250,6 +263,8 @@ export default function TeacherTimetable(): JSX.Element {
               selectedDay.includes(opt.value as DayType)
             )}
             isDisabled={loading}
+            menuPortalTarget={portalTarget}
+            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           />
         </div>
         <div className="flex gap-3 flex-col lg:flex-row md:flex-row">
@@ -284,7 +299,7 @@ export default function TeacherTimetable(): JSX.Element {
         )}
       </div>
       {results.length > 0 && (
-        <div className="mt-6 mb-10 px-10 overflow-auto">
+        <div className="mt-6 mb-10 px-10 overflow-x-auto">
           <table className="table-auto w-full border-collapse border border-gray-300">
             <thead>
               <tr className="bg-gray-100">
