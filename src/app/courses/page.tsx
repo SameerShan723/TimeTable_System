@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { z } from "zod";
 import { useForm, SubmitHandler, UseFormProps } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,7 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Select from "react-select";
 import { useCourses } from "@/context/CourseContext";
-import { supabase } from "@/lib/supabase/supabase";
+import { supabaseClient } from "@/lib/supabase/supabase";
 import { Course } from "@/lib/serverData/CourseDataFetcher";
 
 // Options for react-select
@@ -134,7 +134,7 @@ export default function FacultyData() {
     if (deletingCourseId) {
       setIsDeleting(true);
       try {
-        const { error } = await supabase
+        const { error } = await supabaseClient
           .from("courses")
           .delete()
           .eq("id", deletingCourseId);
@@ -181,7 +181,7 @@ export default function FacultyData() {
         semester_details: values.semester_details?.trim() || null,
       };
 
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from("courses")
         .update(payload)
         .eq("id", editingCourse.id)
@@ -319,20 +319,20 @@ export default function FacultyData() {
                       {course.is_regular_teacher ? "Permanent" : "Visiting"}
                     </td>
                     <td className="p-8 text-sm text-gray-600 border-1 border-gray-300 flex space-x-2">
-                      <Button
+                      <button
                         onClick={() => handleEdit(course)}
-                        className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-lg hover:from-indigo-600 hover:to-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase"
+                        className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-indigo-600 text-[#9ea8b5] rounded-lg hover:from-indigo-600 hover:to-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium "
                         disabled={isUpdating || isDeleting}
                       >
                         Edit
-                      </Button>
-                      <Button
+                      </button>
+                      <button
                         onClick={() => handleDelete(course.id)}
-                        className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase"
+                        className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-[#9ea8b5] rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 hover:scale-105 text-sm font-medium "
                         disabled={isUpdating || isDeleting}
                       >
                         Delete
-                      </Button>
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -346,7 +346,7 @@ export default function FacultyData() {
           <AlertDialog open={isEditDialogOpen}>
             <AlertDialogPortal>
               <AlertDialogOverlay className="bg-black bg-opacity-50" />
-              <AlertDialogContent className="bg-gradient-to-br from-gray-800 to-gray-900 text-gray-300 border border-gray-700 shadow-lg rounded-xl max-w-3xl mx-auto min-h-[500px] max-h-[80vh] overflow-y-auto">
+              <AlertDialogContent className="bg-gradient-to-br from-gray-800 to-gray-900 text-gray-300 border border-gray-700 shadow-lg rounded-xl max-w-3xl px-2  min-h-[500px] max-h-[90vh] overflow-y-auto">
                 <AlertDialogHeader>
                   <AlertDialogTitle className="text-2xl font-bold text-indigo-300">
                     Edit Course

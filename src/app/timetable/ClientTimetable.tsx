@@ -15,10 +15,11 @@ import {
   DragOverlay,
 } from "@dnd-kit/core";
 import { produce } from "immer";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { Session, EmptySlot, RoomSchedule, TimetableData } from "./types";
 import { timeSlots, Days } from "@/helpers/page";
 import { useTimetableVersion } from "@/context/TimetableContext";
+import { useAuth } from "@/context/AuthContext";
 import debounce from "just-debounce-it";
 import { DraggableSession } from "./DragAndDrop";
 import AddClassDialog from "./AddClassDialog";
@@ -31,16 +32,18 @@ import {
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogOverlay,
   AlertDialogPortal,
+  AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
 import jsPDF from "jspdf";
-import autoTable, { RowInput, CellInput, Styles } from "jspdf-autotable";
+import autoTable, { CellInput, RowInput, Styles } from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
+import AuthModal from "../login/page";
+
 export default function ClientTimetable() {
   const {
     versions = [],
@@ -54,6 +57,8 @@ export default function ClientTimetable() {
     deleteVersion: contextDeleteVersion,
     checkConflicts,
   } = useTimetableVersion();
+  const { isSuperadmin, openAuthModal, isAuthModalOpen, closeAuthModal } =
+    useAuth();
 
   const [versionPendingData, setVersionPendingData] = useState<{
     [version: number]: TimetableData | null;
@@ -244,6 +249,10 @@ export default function ClientTimetable() {
 
   const handleDragStart = useCallback(
     (event: DragStartEvent): void => {
+      if (!isSuperadmin) {
+        openAuthModal();
+        return;
+      }
       if (isMobile) return;
       const sourceId = event.active.id as string;
       const {
@@ -268,11 +277,15 @@ export default function ClientTimetable() {
         setActiveSession(sourceSessions[sourceIndex] as Session);
       }
     },
-    [data, parseCellId, isMobile]
+    [data, parseCellId, isMobile, isSuperadmin, openAuthModal]
   );
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent): void => {
+      if (!isSuperadmin) {
+        openAuthModal();
+        return;
+      }
       if (isMobile || selectedVersion === null) return;
       const { active, over } = event;
       setActiveSession(null);
@@ -357,7 +370,15 @@ export default function ClientTimetable() {
       }));
       debouncedCheckConflicts(updatedData);
     },
-    [data, parseCellId, isMobile, debouncedCheckConflicts, selectedVersion]
+    [
+      data,
+      parseCellId,
+      isMobile,
+      debouncedCheckConflicts,
+      selectedVersion,
+      isSuperadmin,
+      openAuthModal,
+    ]
   );
 
   const handleAddClass = useCallback(
@@ -367,6 +388,10 @@ export default function ClientTimetable() {
       time: string,
       classData: { subject: string; teacher: string; section: string }
     ) => {
+      if (!isSuperadmin) {
+        openAuthModal();
+        return;
+      }
       if (selectedVersion === null) return;
       setIsAddClassLoading(true);
       setIsOperationLoading(true);
@@ -404,9 +429,11 @@ export default function ClientTimetable() {
         setIsAddClassDialogOpen(false);
         setAddClassCell(null);
       } catch (error) {
-        toast.error("Failed to save class", {
-          description: error instanceof Error ? error.message : "Unknown error",
-        });
+        toast.error(
+          `Failed to save class${
+            error instanceof Error ? error.message : "Unknown error"
+          }`
+        );
         throw error;
       } finally {
         setIsAddClassLoading(false);
@@ -420,11 +447,17 @@ export default function ClientTimetable() {
       selectedVersion,
       debouncedCheckConflicts,
       setSelectedVersion,
+      isSuperadmin,
+      openAuthModal,
     ]
   );
 
   const handleDeleteClass = useCallback(
     async (day: string, room: string, time: string) => {
+      if (!isSuperadmin) {
+        openAuthModal();
+        return;
+      }
       if (selectedVersion === null) return;
       setIsDeleteClassLoading(true);
       setIsOperationLoading(true);
@@ -454,9 +487,11 @@ export default function ClientTimetable() {
         setIsDeleteClassDialogOpen(false);
         setDeleteClassCell(null);
       } catch (error) {
-        toast.error("Failed to delete class", {
-          description: error instanceof Error ? error.message : "Unknown error",
-        });
+        toast.error(
+          `Failed to delete class ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`
+        );
         throw error;
       } finally {
         setIsDeleteClassLoading(false);
@@ -470,6 +505,8 @@ export default function ClientTimetable() {
       selectedVersion,
       debouncedCheckConflicts,
       setSelectedVersion,
+      isSuperadmin,
+      openAuthModal,
     ]
   );
 
@@ -607,9 +644,11 @@ export default function ClientTimetable() {
       toast.success("PDF Exported Successfully");
     } catch (error) {
       console.error("PDF Export Error:", error);
-      toast.error("PDF Export Failed", {
-        description: error instanceof Error ? error.message : "Unknown error",
-      });
+      toast.error(
+        `PDF Export Failed ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   }, [selectedVersion, data, filteredData, selectedTeachers]);
 
@@ -643,7 +682,7 @@ export default function ClientTimetable() {
                 ? `${session.Subject || "Unknown Course"} (${
                     session.Teacher || "No Faculty"
                   }${session.Section ? ` - ${session.Section}` : ""})`
-                : "Free"
+                : ""
             );
           });
           sheetData.push(row);
@@ -679,10 +718,11 @@ export default function ClientTimetable() {
 
       toast.success("Excel Exported Successfully");
     } catch (error) {
-      console.error("Excel Export Error:", error);
-      toast.error("Excel Export Failed", {
-        description: error instanceof Error ? error.message : "Unknown error",
-      });
+      toast.error(
+        `Excel Export Failed ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   }, [data, selectedVersion, allRooms, filteredData, selectedTeachers]);
 
@@ -692,6 +732,10 @@ export default function ClientTimetable() {
       e?: React.MouseEvent<HTMLButtonElement>
     ): Promise<void> => {
       if (e) e.preventDefault();
+      if (!isSuperadmin) {
+        openAuthModal();
+        return;
+      }
       if (selectedVersion === null) return;
 
       if (action === "cancel") {
@@ -725,18 +769,30 @@ export default function ClientTimetable() {
         }));
         toast.success(`Changes saved successfully as Version ${newVersion}`);
       } catch (error) {
-        toast.error("Save failed", {
-          description: error instanceof Error ? error.message : "Unknown error",
-        });
+        toast.error(
+          `Save failed ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`
+        );
       } finally {
         setIsSaving("none");
       }
     },
-    [versionPendingData, saveTimetableData, selectedVersion]
+    [
+      versionPendingData,
+      saveTimetableData,
+      selectedVersion,
+      isSuperadmin,
+      openAuthModal,
+    ]
   );
 
   const handleDeleteVersion = useCallback(
     async (version: number): Promise<void> => {
+      if (!isSuperadmin) {
+        openAuthModal();
+        return;
+      }
       setIsDeleting(true);
       try {
         await contextDeleteVersion(version);
@@ -747,15 +803,17 @@ export default function ClientTimetable() {
         });
         toast.success(`Version ${version} deleted successfully`);
       } catch (error) {
-        toast.error("Deletion failed", {
-          description: error instanceof Error ? error.message : "Unknown error",
-        });
+        toast.error(
+          `Deletion failed ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`
+        );
       } finally {
         setIsDeleting(false);
         setIsDeleteDialogOpen(false);
       }
     },
-    [contextDeleteVersion]
+    [contextDeleteVersion, isSuperadmin, openAuthModal]
   );
 
   const toggleRoom = (day: string, room: string) => {
@@ -788,7 +846,7 @@ export default function ClientTimetable() {
     return (
       <div className="flex justify-center items-center h-full">
         <div className="text-xl text-gray-500 mt-3">
-          Something thing went wrong{" "}
+          Something went wrong{" "}
           <span>
             <button onClick={() => handleTryAgain()} className="border-2 p-1">
               Try Again
@@ -848,7 +906,7 @@ export default function ClientTimetable() {
           />
 
           <DragOverlay style={{ zIndex: 60, pointerEvents: "none" }}>
-            {!isMobile && activeSession ? (
+            {!isMobile && activeSession && isSuperadmin ? (
               <DraggableSession
                 id={`overlay-${activeSession.Subject}`}
                 session={activeSession}
@@ -957,6 +1015,8 @@ export default function ClientTimetable() {
             }}
             isAddClassLoading={isAddClassLoading}
           />
+
+          <AuthModal isOpen={isAuthModalOpen} onClose={closeAuthModal} />
         </div>
       </DndContext>
     </main>

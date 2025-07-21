@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { supabase } from "@/lib/supabase/supabase";
+import { supabaseClient } from "@/lib/supabase/supabase";
 
 // Validation schema
 const courseSchema = z.object({
@@ -72,7 +72,7 @@ export async function PUT(
       semester: parseInt(parsedData.data.semester),
     };
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from("courses")
       .update(updateData)
       .eq("id", id)
@@ -117,7 +117,7 @@ export async function DELETE(
       );
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from("courses")
       .delete()
       .eq("id", id)

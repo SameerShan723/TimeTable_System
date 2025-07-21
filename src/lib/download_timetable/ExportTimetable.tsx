@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { FaDownload, FaFilePdf, FaFileExcel } from "react-icons/fa";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import jsPDF from "jspdf";
 import autoTable, { Styles, RowInput, CellInput } from "jspdf-autotable";
 import * as XLSX from "xlsx";
@@ -185,7 +185,7 @@ export default function ExportTimetable({
       const message =
         error instanceof Error ? error.message : "Failed to export PDF";
       setError?.(message);
-      toast.error("PDF Export Failed", { description: message });
+      toast.error(`PDF Export Failed" ${message}`);
     } finally {
       setIsExporting(false);
     }
@@ -240,7 +240,7 @@ export default function ExportTimetable({
       const message =
         error instanceof Error ? error.message : "Failed to export Excel";
       setError?.(message);
-      toast.error("Excel Export Failed", { description: message });
+      toast.error(`Excel Export Failed: ${message}`);
     } finally {
       setIsExporting(false);
     }

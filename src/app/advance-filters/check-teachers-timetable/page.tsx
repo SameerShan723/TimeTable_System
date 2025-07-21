@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useId, useCallback, useEffect, useMemo, JSX } from "react";
-import Select, { MultiValue, SingleValue } from "react-select";
+import Select, { MultiValue } from "react-select";
 import { Days } from "@/helpers/page";
 import { timeSlots } from "@/helpers/page";
 import ExportTimetable from "@/lib/download_timetable/ExportTimetable";
@@ -27,22 +27,15 @@ interface SelectOption {
   label: string;
 }
 
-interface VersionOption {
-  value: number;
-  label: string;
-}
-
 export default function TeacherTimetable(): JSX.Element {
   const {
-    versions,
     selectedVersion,
     timetableData,
     loading,
     error: hookError,
-    setSelectedVersion,
   } = useTimetableVersion();
 
-  const [selectedTeacher, setSelectedTeacher] = useState<string>("");
+  const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
   const [selectedDay, setSelectedDay] = useState<DayType[]>(Days);
   const [results, setResults] = useState<EnhancedClassItem[]>([]);
   const [error, setError] = useState<string>("");
@@ -50,8 +43,6 @@ export default function TeacherTimetable(): JSX.Element {
 
   const teacherSelectedId: string = useId();
   const daySelectedId: string = useId();
-  const versionSelectedId: string = useId();
-
   // Set portalTarget to document.body only in the browser
   useEffect(() => {
     if (typeof document !== "undefined") {
@@ -83,7 +74,7 @@ export default function TeacherTimetable(): JSX.Element {
     []
   );
 
-  // "Select All" option
+  // "Select All" option for days
   const allOption: SelectOption = useMemo(
     () => ({ value: "all", label: "Select All Days" }),
     []
@@ -107,11 +98,23 @@ export default function TeacherTimetable(): JSX.Element {
     []
   );
 
-  // Search for teacher's classes
+  // Handle teacher selection changes
+  const handleTeacherSelection = useCallback(
+    (selected: MultiValue<SelectOption>) => {
+      if (!selected) {
+        setSelectedTeachers([]);
+        return;
+      }
+      setSelectedTeachers(selected.map((opt) => opt.value));
+    },
+    []
+  );
+
+  // Search for classes for selected teachers
   const handleSearch = useCallback(() => {
     setError("");
-    if (!selectedTeacher) {
-      setError("Please select a teacher!");
+    if (selectedTeachers.length === 0) {
+      setError("Please select at least one teacher!");
       setResults([]);
       return;
     }
@@ -125,7 +128,7 @@ export default function TeacherTimetable(): JSX.Element {
         const classes = roomObj[roomName] as ClassItem[];
 
         classes.forEach((cls) => {
-          if (cls.Teacher === selectedTeacher) {
+          if (selectedTeachers.includes(cls.Teacher)) {
             const normalizedTime =
               timeSlots.find((time) => cls.Time.includes(time.split("-")[0])) ||
               cls.Time;
@@ -141,11 +144,11 @@ export default function TeacherTimetable(): JSX.Element {
     });
 
     if (foundClasses.length === 0) {
-      setError("No classes found for the selected teacher on selected days.");
+      setError("No classes found for the selected teachers on selected days.");
     }
 
     setResults(foundClasses);
-  }, [selectedTeacher, selectedDay, timetableData]);
+  }, [selectedTeachers, selectedDay, timetableData]);
 
   // Create class lookup for efficient rendering
   const classLookup = useMemo(() => {
@@ -161,7 +164,7 @@ export default function TeacherTimetable(): JSX.Element {
   useEffect(() => {
     setResults([]);
     setError("");
-    setSelectedTeacher("");
+    setSelectedTeachers([]);
     setSelectedDay(Days);
   }, [selectedVersion]);
 
@@ -170,21 +173,6 @@ export default function TeacherTimetable(): JSX.Element {
   const daySelectOptions = isAllSelected
     ? dayOptions
     : [allOption, ...dayOptions];
-
-  const versionOptions = useMemo(() => {
-    if (loading) {
-      return [{ value: 0, label: "Loading..." }];
-    }
-    return versions.map((version) => ({
-      value: version,
-      label: `Version ${version}`,
-    }));
-  }, [loading, versions]);
-
-  // Handle version change
-  const handleVersionChange = (option: SingleValue<VersionOption>) => {
-    setSelectedVersion(option ? option.value : null);
-  };
 
   if (hookError) {
     return (
@@ -201,44 +189,21 @@ export default function TeacherTimetable(): JSX.Element {
           Check Teachers Timetable
         </h1>
         <div className="mb-4 flex flex-col w-full max-w-md">
-          <label className="text-xl mb-2">Version:</label>
-          <div className="flex w-full items-center">
-            <Select<VersionOption>
-              instanceId={versionSelectedId}
-              options={versionOptions}
-              value={
-                selectedVersion !== null && !loading
-                  ? {
-                      value: selectedVersion,
-                      label: `Version ${selectedVersion}`,
-                    }
-                  : null
-              }
-              onChange={handleVersionChange}
-              className="text-black w-full"
-              placeholder="Select version"
-              isClearable
-              menuPortalTarget={portalTarget}
-              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-            />
-          </div>
-        </div>
-        <div className="mb-4 flex flex-col w-full max-w-md">
           <label className="text-xl mb-2">Teacher:</label>
-          <Select<SelectOption>
+          <Select<SelectOption, true>
             instanceId={teacherSelectedId}
+            isMulti
             options={teachers.map((teacher) => ({
               value: teacher,
               label: teacher,
             }))}
-            value={
-              selectedTeacher
-                ? { value: selectedTeacher, label: selectedTeacher }
-                : null
-            }
-            onChange={(option) => setSelectedTeacher(option?.value || "")}
+            value={selectedTeachers.map((teacher) => ({
+              value: teacher,
+              label: teacher,
+            }))}
+            onChange={handleTeacherSelection}
             className="text-black"
-            placeholder="Select teacher"
+            placeholder="Select teachers"
             isDisabled={loading || teachers.length === 0}
             isClearable
             menuPortalTarget={portalTarget}
@@ -246,7 +211,7 @@ export default function TeacherTimetable(): JSX.Element {
           />
           {teachers.length === 0 && !loading && (
             <p className="text-sm text-gray-500 mt-1">
-              No teachers available. Please select a version first.
+              No teachers available. Please check timetable data.
             </p>
           )}
         </div>
@@ -278,7 +243,7 @@ export default function TeacherTimetable(): JSX.Element {
           {results.length > 0 && (
             <ExportTimetable
               results={results}
-              selectedSection={selectedTeacher}
+              selectedSection={selectedTeachers.join(", ")}
               selectedDays={selectedDay}
               selectedVersion={selectedVersion}
               isLoading={loading}
@@ -294,7 +259,7 @@ export default function TeacherTimetable(): JSX.Element {
         {results.length > 0 && (
           <div className="mt-4 text-lg text-green-600">
             Found {results.length} class{results.length !== 1 ? "es" : ""} for{" "}
-            {selectedTeacher}
+            {selectedTeachers.join(", ")}
           </div>
         )}
       </div>

@@ -13,7 +13,7 @@ import {
   AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
 import Select from "react-select";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { useCourses } from "@/context/CourseContext";
 
 interface AddClassDialogProps {

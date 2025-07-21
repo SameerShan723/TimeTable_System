@@ -1,30 +1,49 @@
 "use client";
-import { useFormik } from "formik";
-import { timetableSchema } from "@/lib/validation/formValidationSchema";
 import React, { useState } from "react";
 import FileUploader from "@/components/fileuploader/page";
 import { Days } from "@/helpers/page";
-// import { useDispatch } from "react-redux";
-// import { setData } from "@/state/dataSlice/data_slice";
-// import { useRouter } from "next/navigation";
+import { z } from "zod";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export interface FormValues {
   preferMorningClass: boolean;
-  teacherData: Record<string, string>[];
-  rulesData: Record<string, string>[];
+  teacherData: [Record<string, string>, ...Record<string, string>[]]; // Updated to match Zod's non-empty array
+  rulesData: [Record<string, string>, ...Record<string, string>[]]; // Updated to match Zod's non-empty array
 }
+
+export const timetableSchema = z.object({
+  teacherData: z
+    .array(z.record(z.string()))
+    .min(1, "Teacher data is required")
+    .nonempty("Teacher data is required"),
+  rulesData: z
+    .array(z.record(z.string()))
+    .min(1, "Rules data is required")
+    .nonempty("Rules data is required"),
+  preferMorningClass: z.boolean(),
+});
 
 export default function GenerateTimeTable() {
   const [teacherFileName, setTeacherFileName] = useState<string | null>(null);
   const [rulesFileName, setRulesFileName] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  // const dispatch = useDispatch();
-  // const router = useRouter();
-  // const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
-  // console.log(apiKey, "api key");
 
-  // Debug Formik state changes
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = useForm<FormValues>({
+    resolver: zodResolver(timetableSchema),
+    defaultValues: {
+      preferMorningClass: false,
+      teacherData: [],
+      rulesData: [],
+    },
+  });
 
   const generateDynamicPrompt = (data: FormValues): string => {
     let prompt = `You are an AI assistant tasked with generating a university-level class timetable in strict JSON format. Follow every rule below carefully. Your response must ONLY be valid JSON.\n\n`;
@@ -112,81 +131,73 @@ export default function GenerateTimeTable() {
     return prompt;
   };
 
-  const formik = useFormik<FormValues>({
-    initialValues: {
-      preferMorningClass: false,
-      teacherData: [],
-      rulesData: [],
-    },
-    validationSchema: timetableSchema,
-    onSubmit: async (values, { resetForm }) => {
-      setIsLoading(true);
-      setError("");
-      try {
-        const prompt = generateDynamicPrompt(values);
-        const res = await fetch("/api/generate", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ prompt }),
-        });
+  const onSubmit: SubmitHandler<FormValues> = async (values) => {
+    setIsLoading(true);
+    setError("");
+    try {
+      const prompt = generateDynamicPrompt(values);
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt }),
+      });
 
-        if (!res.ok) {
-          throw new Error(`HTTP error: ${res.status} ${res.statusText}`);
-        }
-
-        const reader = res.body?.getReader();
-        if (!reader) {
-          throw new Error("Failed to get response reader");
-        }
-
-        const decoder = new TextDecoder();
-        let fullText = "";
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const chunk = decoder.decode(value);
-          fullText += chunk;
-        }
-
-        // Parse the response as JSON
-        let parsedTimetable;
-        try {
-          parsedTimetable = JSON.parse(fullText);
-        } catch (parseError) {
-          throw new Error(`Failed to parse response as JSON: ${parseError}`);
-        }
-
-        const missingDays = Days.filter((day) => !parsedTimetable[day]);
-        if (missingDays.length > 0) {
-          throw new Error(
-            `Incomplete timetable: missing days - ${missingDays.join(", ")}`
-          );
-        }
-
-        console.log("Full Timetable:", parsedTimetable);
-        // setTimetable(parsedTimetable);
-
-        // Reset form only after successful submission
-        resetForm();
-        setTeacherFileName(null);
-        setRulesFileName(null);
-      } catch (err) {
-        console.error("Error:", err);
-        setError(
-          "Failed to generate timetable. Please check your files and try again."
-        );
-      } finally {
-        setIsLoading(false);
+      if (!res.ok) {
+        throw new Error(`HTTP error: ${res.status} ${res.statusText}`);
       }
-    },
-  });
+
+      const reader = res.body?.getReader();
+      if (!reader) {
+        throw new Error("Failed to get response reader");
+      }
+
+      const decoder = new TextDecoder();
+      let fullText = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value);
+        fullText += chunk;
+      }
+
+      // Parse the response as JSON
+      let parsedTimetable;
+      try {
+        parsedTimetable = JSON.parse(fullText);
+      } catch (parseError) {
+        throw new Error(`Failed to parse response as JSON: ${parseError}`);
+      }
+
+      const missingDays = Days.filter((day) => !parsedTimetable[day]);
+      if (missingDays.length > 0) {
+        throw new Error(
+          `Incomplete timetable: missing days - ${missingDays.join(", ")}`
+        );
+      }
+
+      console.log("Full Timetable:", parsedTimetable);
+      // setTimetable(parsedTimetable);
+
+      // Reset form only after successful submission
+      reset();
+      setTeacherFileName(null);
+      setRulesFileName(null);
+    } catch (err) {
+      console.error("Error:", err);
+      setError(
+        "Failed to generate timetable. Please check your files and try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <main className="flex h-[calc(100vh-4rem)] justify-center overflow-hidden">
-      <div className="flex justify-center  rounded-2xl border-[#416697]">
-        <div className=" lg:w-[500px] md:max-w-[500px]  px-6">
+      <div className="flex justify-center rounded-2xl border-[#416697]">
+        <div className="lg:w-[500px] md:max-w-[500px] px-6">
           <h1 className="font-bold text-4xl mb-4 text-[#194c87] pt-8">
             Upload Teacher &<br /> Subject Assignment
           </h1>
@@ -196,21 +207,22 @@ export default function GenerateTimeTable() {
             </p>
           )}
 
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <FileUploader
               label="Upload Teacher File"
               placeholder="Select Teachers CSV/XLSX File"
               onParse={(data) => {
-                formik.setFieldValue("teacherData", data);
+                setValue(
+                  "teacherData",
+                  data as [Record<string, string>, ...Record<string, string>[]]
+                );
               }}
               labelName={teacherFileName}
               setFileName={setTeacherFileName}
             />
-            {formik.touched.teacherData && formik.errors.teacherData && (
+            {errors.teacherData && (
               <p className="text-red-500 text-sm mb-2">
-                {Array.isArray(formik.errors.teacherData)
-                  ? formik.errors.teacherData.join(", ")
-                  : formik.errors.teacherData}
+                {errors.teacherData.message}
               </p>
             )}
 
@@ -218,16 +230,17 @@ export default function GenerateTimeTable() {
               label="Upload Rules File"
               placeholder="Select Rules CSV/XLSX File"
               onParse={(data) => {
-                formik.setFieldValue("rulesData", data);
+                setValue(
+                  "rulesData",
+                  data as [Record<string, string>, ...Record<string, string>[]]
+                );
               }}
               labelName={rulesFileName}
               setFileName={setRulesFileName}
             />
-            {formik.touched.rulesData && formik.errors.rulesData && (
+            {errors.rulesData && (
               <p className="text-red-500 text-sm mb-2">
-                {Array.isArray(formik.errors.rulesData)
-                  ? formik.errors.rulesData.join(", ")
-                  : formik.errors.rulesData}
+                {errors.rulesData.message}
               </p>
             )}
 
@@ -242,10 +255,7 @@ export default function GenerateTimeTable() {
                 </p>
                 <input
                   type="checkbox"
-                  name="preferMorningClass"
-                  checked={formik.values.preferMorningClass}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  {...register("preferMorningClass")}
                   className="h-5 w-5 accent-[#416697] rounded-full"
                 />
               </div>

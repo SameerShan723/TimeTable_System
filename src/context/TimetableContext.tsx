@@ -1,18 +1,26 @@
 "use client";
-
-import React, { createContext, useContext, useState, useCallback } from "react";
-import { TimetableData, Session, RoomSchedule } from "@/app/timetable/types";
-import { toast } from "sonner";
-import { Days } from "@/helpers/page";
-
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { toast } from "react-toastify";
+import {
+  TimetableData,
+  Session,
+  EmptySlot,
+  RoomSchedule,
+} from "@/app/timetable/types";
+import { supabaseClient } from "@/lib/supabase/supabase";
 interface Conflict {
-  day: string;
+  day: keyof TimetableData;
   time: string;
   room: string;
   classIndex: number;
   message: string;
 }
-
 interface TimetableVersionContextType {
   versions: number[];
   selectedVersion: number | null;
@@ -20,168 +28,145 @@ interface TimetableVersionContextType {
   conflicts: Conflict[];
   loading: boolean;
   error: string | null;
-  setSelectedVersion: (version: number | null) => Promise<void>;
+  setSelectedVersion: (version: number) => Promise<void>;
   saveTimetableData: (data: TimetableData, version?: number) => Promise<number>;
   deleteVersion: (version: number) => Promise<void>;
   checkConflicts: (data: TimetableData) => void;
+}
+
+interface TimetableVersionProviderProps {
+  children: React.ReactNode;
+  initialData: {
+    versions: number[];
+    selectedVersion: number | null;
+    timetableData: TimetableData | null;
+  };
 }
 
 const TimetableVersionContext = createContext<
   TimetableVersionContextType | undefined
 >(undefined);
 
-interface TimetableVersionProviderProps {
-  initialData: {
-    versions: number[];
-    selectedVersion: number | null;
-    timetableData: TimetableData;
-  };
-  children: React.ReactNode;
-}
-
 export const TimetableVersionProvider: React.FC<
   TimetableVersionProviderProps
-> = ({ initialData, children }) => {
-  const [versions, setVersions] = useState<number[]>(initialData.versions);
-  const [selectedVersion, setSelectedVersion] = useState<number | null>(
+> = ({ children, initialData }) => {
+  const [versions, setVersions] = useState<number[]>(
+    initialData.versions || []
+  );
+  const [selectedVersion, setSelectedVersionState] = useState<number | null>(
     initialData.selectedVersion
   );
   const [timetableData, setTimetableData] = useState<TimetableData>(
-    initialData.timetableData
+    initialData.timetableData || {
+      Monday: [],
+      Tuesday: [],
+      Wednesday: [],
+      Thursday: [],
+      Friday: [],
+    }
   );
   const [conflicts, setConflicts] = useState<Conflict[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const detectConflicts = (data: TimetableData): Conflict[] => {
-    const conflicts: Conflict[] = [];
+  const checkConflicts = useCallback((data: TimetableData) => {
+    const newConflicts: Conflict[] = [];
+    const days = Object.keys(data) as (keyof TimetableData)[];
 
-    Days.forEach((day) => {
-      const roomSchedules: RoomSchedule[] = data[day] || [];
-      const timeSlots: Record<
-        string,
-        { session: Session; room: string; index: number }[]
-      > = {};
-      const roomTimeSlots: Record<
-        string,
-        Record<string, { session: Session; index: number }[]>
-      > = {};
+    days.forEach((day) => {
+      const dayData = data[day];
+      if (!Array.isArray(dayData)) return;
 
-      roomSchedules.forEach((roomSchedule) => {
+      const timeSlots = new Set<string>();
+      dayData.forEach((roomSchedule: RoomSchedule) => {
         const roomName = Object.keys(roomSchedule)[0];
         const sessions = roomSchedule[roomName] || [];
-        if (!roomTimeSlots[roomName]) {
-          roomTimeSlots[roomName] = {};
-        }
-        sessions.forEach((session, index) => {
+        sessions.forEach((session: Session | EmptySlot, index: number) => {
           if (!("Teacher" in session)) return;
-          const time = session.Time;
-          if (!timeSlots[time]) {
-            timeSlots[time] = [];
-          }
-          timeSlots[time].push({
-            session: session as Session,
-            room: roomName,
-            index,
+
+          const { Time, Teacher, Subject, Section } = session;
+
+          // Check for teacher conflicts
+          const teacherConflict = dayData.some((otherRoom: RoomSchedule) => {
+            const otherRoomName = Object.keys(otherRoom)[0];
+            const otherSessions = otherRoom[otherRoomName] || [];
+            return (
+              roomName !== otherRoomName &&
+              otherSessions.some(
+                (otherSession: Session | EmptySlot) =>
+                  "Teacher" in otherSession &&
+                  otherSession.Time === Time &&
+                  otherSession.Teacher === Teacher &&
+                  (otherSession.Subject !== Subject ||
+                    otherSession.Section !== Section)
+              )
+            );
           });
-          if (!roomTimeSlots[roomName][time]) {
-            roomTimeSlots[roomName][time] = [];
+
+          if (teacherConflict) {
+            newConflicts.push({
+              day,
+              time: Time,
+              room: roomName,
+              classIndex: index,
+              message: `Teacher ${Teacher} is scheduled in multiple rooms at ${Time}`,
+            });
           }
-          roomTimeSlots[roomName][time].push({
-            session: session as Session,
-            index,
+
+          // Check for subject/section conflicts
+          const sectionConflict = dayData.some((otherRoom: RoomSchedule) => {
+            const otherRoomName = Object.keys(otherRoom)[0];
+            const otherSessions = otherRoom[otherRoomName] || [];
+            return (
+              roomName !== otherRoomName &&
+              otherSessions.some(
+                (otherSession: Session | EmptySlot) =>
+                  "Subject" in otherSession &&
+                  otherSession.Time === Time &&
+                  otherSession.Subject === Subject &&
+                  otherSession.Section === Section
+              )
+            );
           });
-        });
-      });
 
-      Object.entries(timeSlots).forEach(([time, slotSessions]) => {
-        const teacherCount: Record<string, { room: string; index: number }[]> =
-          {};
-        slotSessions.forEach(({ session, room, index }) => {
-          const teacher = session.Teacher || "Unknown";
-          if (!teacherCount[teacher]) {
-            teacherCount[teacher] = [];
-          }
-          teacherCount[teacher].push({ room, index });
-        });
-
-        Object.entries(teacherCount).forEach(([teacher, instances]) => {
-          if (instances.length > 1 && teacher !== "Unknown") {
-            instances.forEach(({ room, index }) => {
-              conflicts.push({
-                day,
-                time,
-                room,
-                classIndex: index,
-                message: `Teacher ${teacher} has multiple classes at ${time} on ${day}`,
-              });
+          if (sectionConflict) {
+            newConflicts.push({
+              day,
+              time: Time,
+              room: roomName,
+              classIndex: index,
+              message: `Subject ${Subject} for section ${Section} is scheduled multiple times at ${Time}`,
             });
           }
-        });
-      });
 
-      Object.entries(timeSlots).forEach(([time, slotSessions]) => {
-        const subjectSectionCount: Record<
-          string,
-          { room: string; index: number }[]
-        > = {};
+          // Check for room conflicts
+          const roomConflict = sessions.some(
+            (otherSession: Session | EmptySlot, otherIndex: number) =>
+              otherIndex !== index &&
+              "Teacher" in otherSession &&
+              otherSession.Time === Time
+          );
 
-        slotSessions.forEach(({ session, room, index }) => {
-          const subject = session.Subject || "Unknown";
-          const section = session.Section || "";
-          // Create a unique key combining subject and section
-          const key = `${subject}__${section}`;
-
-          if (!subjectSectionCount[key]) {
-            subjectSectionCount[key] = [];
-          }
-          subjectSectionCount[key].push({ room, index });
-        });
-
-        Object.entries(subjectSectionCount).forEach(([key, instances]) => {
-          const [subjectPart] = key.split("__");
-          // Skip if subject is "Unknown"
-          if (subjectPart === "Unknown") return;
-
-          if (instances.length > 1) {
-            instances.forEach(({ room, index }) => {
-              conflicts.push({
-                day,
-                time,
-                room,
-                classIndex: index,
-                message: `Subject "${subjectPart}" has multiple classes for same section at ${time} on ${day}`,
-              });
+          if (roomConflict) {
+            newConflicts.push({
+              day,
+              time: Time,
+              room: roomName,
+              classIndex: index,
+              message: `Room ${roomName} is double-booked at ${Time}`,
             });
           }
+
+          timeSlots.add(Time);
         });
       });
-
-      Object.entries(roomTimeSlots).forEach(([roomName, timeMap]) => {
-        Object.entries(timeMap).forEach(([time, sessions]) => {
-          if (sessions.length > 1) {
-            sessions.forEach(({ index }) => {
-              conflicts.push({
-                day,
-                time,
-                room: roomName,
-                classIndex: index,
-                message: `Room ${roomName} has multiple classes at ${time} on ${day}`,
-              });
-            });
-          }
-        });
-      });
-
-      return conflicts;
     });
 
-    return conflicts;
-  };
-
-  const checkConflicts = useCallback((data: TimetableData) => {
-    const newConflicts = detectConflicts(data);
     setConflicts(newConflicts);
+
+    if (newConflicts.length > 0) {
+      toast.error("Conflicts detected in the timetable. Please resolve them.");
+    }
   }, []);
 
   const fetchTimetableData = useCallback(
@@ -191,38 +176,17 @@ export const TimetableVersionProvider: React.FC<
       try {
         const response = await fetch(`/api/timetable?version=${version}`);
         if (!response.ok) {
-          const { error } = await response.json();
-          throw new Error(error || "Failed to fetch timetable data");
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to fetch timetable data");
         }
         const data = await response.json();
-        const fetchedData: TimetableData = data || {
-          Monday: [],
-          Tuesday: [],
-          Wednesday: [],
-          Thursday: [],
-          Friday: [],
-        };
-
-        Days.forEach((day) => {
-          if (!fetchedData[day]) {
-            fetchedData[day] = [];
-          }
-        });
-
-        setTimetableData(fetchedData);
-        checkConflicts(fetchedData);
+        setTimetableData(data);
+        checkConflicts(data);
       } catch (err) {
-        setError(
+        setError(err instanceof Error ? err.message : "Unknown error");
+        toast.error(
           err instanceof Error ? err.message : "Failed to fetch timetable data"
         );
-        setTimetableData({
-          Monday: [],
-          Tuesday: [],
-          Wednesday: [],
-          Thursday: [],
-          Friday: [],
-        });
-        setConflicts([]);
       } finally {
         setLoading(false);
       }
@@ -230,35 +194,102 @@ export const TimetableVersionProvider: React.FC<
     [checkConflicts]
   );
 
-  const setSelectedVersionHandler = useCallback(
-    async (version: number | null) => {
-      setSelectedVersion(version);
-      if (version !== null && versions.includes(version)) {
+  const fetchVersions = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch("/api/timetable?type=versions");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch versions");
+      }
+      const data = await response.json();
+      setVersions(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to fetch versions"
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchGlobalVersion = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch("/api/timetable?type=global_version");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch global version");
+      }
+      const data = await response.json();
+      const version = data.version_number;
+      if (version !== null && !isNaN(version)) {
+        setSelectedVersionState(version);
         await fetchTimetableData(version);
+      } else {
+        throw new Error("Invalid global version received");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to fetch global version"
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchTimetableData]);
+
+  const setSelectedVersion = useCallback(
+    async (version: number) => {
+      setLoading(true);
+      try {
+        const {
+          data: { user },
+        } = await supabaseClient.auth.getUser();
+        if (!user) {
+          throw new Error("User not authenticated");
+        }
+
+        const response = await fetch(`/api/timetable?version=${version}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to update global version");
+        }
+
+        setSelectedVersionState(version);
+        await fetchTimetableData(version);
+        toast.success(`Version ${version} set as global version`);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to set version");
+        toast.error(
+          err instanceof Error ? err.message : "Failed to set version"
+        );
+      } finally {
+        setLoading(false);
       }
     },
-    [versions, fetchTimetableData]
+    [fetchTimetableData]
   );
 
   const saveTimetableData = useCallback(
-    async (data: TimetableData, version?: number): Promise<number> => {
+    async (data: TimetableData, version?: number) => {
+      checkConflicts(data);
+      if (conflicts.length > 0) {
+        toast.error("Cannot save: Conflicts detected in the timetable");
+        throw new Error("Conflicts detected");
+      }
+
+      setLoading(true);
       try {
-        setLoading(true);
-        const conflicts = detectConflicts(data);
-
-        if (conflicts.length > 0) {
-          const visibleConflicts = conflicts.slice(0, 5);
-          visibleConflicts.forEach((conflict) => {
-            toast.error(
-              `Conflict on ${conflict.day} at ${conflict.time}: ${conflict.message}`
-            );
-          });
-          if (conflicts.length > 5) {
-            toast.warning("You have many conflicts. Please resolve them.");
-          }
-          throw new Error("Cannot save timetable due to Conflicts");
-        }
-
         const response = await fetch("/api/timetable", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -266,100 +297,104 @@ export const TimetableVersionProvider: React.FC<
         });
 
         if (!response.ok) {
-          const { error } = await response.json();
-          throw new Error(error || "Failed to save timetable");
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to save timetable data");
         }
 
-        const { version_number: newVersion } = await response.json();
-
-        // Update versions list
-        if (!versions.includes(newVersion)) {
-          setVersions((prev) => [...prev, newVersion]);
-        }
-
-        setSelectedVersion(newVersion);
-        await fetchTimetableData(newVersion);
-
+        const result = await response.json();
+        const newVersion = result.version_number;
+        setVersions((prev) =>
+          [...new Set([...prev, newVersion])].sort((a, b) => a - b)
+        );
+        setTimetableData(data);
         toast.success(`Timetable saved as Version ${newVersion}`);
         return newVersion;
       } catch (err) {
-        toast.error(
-          err instanceof Error ? err.message : "Failed to save timetable"
-        );
+        setError(err instanceof Error ? err.message : "Unknown error");
+        toast.error("Failed to save timetable data");
         throw err;
       } finally {
         setLoading(false);
       }
     },
-    [versions, fetchTimetableData]
+    [checkConflicts, conflicts]
   );
 
   const deleteVersion = useCallback(
     async (version: number) => {
+      setLoading(true);
       try {
-        setLoading(true);
+        const {
+          data: { user },
+        } = await supabaseClient.auth.getUser();
+        if (!user) {
+          throw new Error("User not authenticated");
+        }
+
         const response = await fetch(
           `/api/timetable?version_number=${version}`,
           {
             method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
         );
 
         if (!response.ok) {
-          const { error } = await response.json();
-          throw new Error(error || "Failed to delete version");
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to delete version");
         }
 
-        const newVersions = versions.filter((v) => v !== version);
-        setVersions(newVersions);
-
+        setVersions((prev) => prev.filter((v) => v !== version));
         if (selectedVersion === version) {
-          const newSelectedVersion =
-            newVersions.length > 0 ? newVersions[newVersions.length - 1] : null;
-
-          setSelectedVersion(newSelectedVersion);
-
-          if (newSelectedVersion) {
-            await fetchTimetableData(newSelectedVersion);
-          } else {
-            setTimetableData({
-              Monday: [],
-              Tuesday: [],
-              Wednesday: [],
-              Thursday: [],
-              Friday: [],
-            });
-          }
+          await fetchGlobalVersion();
         }
-
-        toast.success(`Version ${version} deleted`);
+        toast.success(`Version ${version} deleted successfully`);
       } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
         toast.error(
           err instanceof Error ? err.message : "Failed to delete version"
         );
-        throw err;
       } finally {
         setLoading(false);
       }
     },
-    [versions, selectedVersion, fetchTimetableData]
+    [selectedVersion, fetchGlobalVersion]
   );
 
-  const value: TimetableVersionContextType = {
-    versions,
-    selectedVersion,
-    timetableData,
-    conflicts,
-    loading,
-    error,
-    setSelectedVersion: setSelectedVersionHandler,
-    saveTimetableData,
-    deleteVersion,
-    checkConflicts,
-  };
+  // Check conflicts for initial timetable data
+  useEffect(() => {
+    if (initialData.timetableData) {
+      checkConflicts(initialData.timetableData);
+    }
+  }, [initialData.timetableData, checkConflicts]);
+
+  // Only fetch versions and global version if initial data is missing
+  useEffect(() => {
+    if (!initialData.versions.length) {
+      fetchVersions();
+    }
+    if (!initialData.selectedVersion || !initialData.timetableData) {
+      fetchGlobalVersion();
+    }
+  }, [initialData, fetchVersions, fetchGlobalVersion]);
 
   return (
-    <TimetableVersionContext.Provider value={value}>
+    <TimetableVersionContext.Provider
+      value={{
+        versions,
+        selectedVersion,
+        timetableData,
+        conflicts,
+        loading,
+        error,
+        setSelectedVersion,
+        saveTimetableData,
+        deleteVersion,
+        checkConflicts,
+      }}
+    >
       {children}
     </TimetableVersionContext.Provider>
   );

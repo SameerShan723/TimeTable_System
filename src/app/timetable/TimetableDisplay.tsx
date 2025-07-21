@@ -10,6 +10,7 @@ import {
   DroppableDiv,
   SessionDetails,
 } from "./DragAndDrop";
+import { useAuth } from "@/context/AuthContext";
 
 interface TimetableDisplayProps {
   data: TimetableData;
@@ -54,6 +55,8 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
   timetableRef,
   isSaving,
 }) => {
+  const { isSuperadmin, openAuthModal } = useAuth();
+
   return (
     <div className="flex-1 w-full max-w-full">
       {Object.keys(
@@ -151,6 +154,10 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
                                         isOperationLoading || isVersionLoading
                                       }
                                       onAddClass={() => {
+                                        if (!isSuperadmin) {
+                                          openAuthModal();
+                                          return;
+                                        }
                                         setAddClassCell({
                                           day,
                                           room: roomName,
@@ -159,6 +166,10 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
                                         setIsAddClassDialogOpen(true);
                                       }}
                                       onDeleteClass={() => {
+                                        if (!isSuperadmin) {
+                                          openAuthModal();
+                                          return;
+                                        }
                                         setDeleteClassCell({
                                           day,
                                           room: roomName,
@@ -178,7 +189,9 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
                                             ).replace(/[^a-zA-Z0-9]/g, "_")}`}
                                             session={session as Session}
                                             isDisabled={
-                                              isSaving !== "none" || isMobile
+                                              isSaving !== "none" ||
+                                              isMobile ||
+                                              !isSuperadmin
                                             }
                                           />
                                         )}
@@ -214,11 +227,11 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
           <div className="hidden md:block max-h-[calc(100vh-135px)] overflow-y-auto overflow-x-auto">
             <table
               id="timetable-table"
-              className="border-collapse border bg-gray-50 w-full "
+              className="border-collapse border bg-gray-50 w-full"
             >
               <thead className="sticky top-0 z-10">
                 <tr>
-                  <th className="border p-3 text-sm md:text-base max-w-[60px] top-0  bg-gray-200">
+                  <th className="border p-3 text-sm md:text-base max-w-[60px] top-0 bg-gray-200">
                     Day
                   </th>
                   <th className="border p-3 text-sm md:text-base max-w-[80px] sticky top-0 bg-gray-200">
@@ -227,7 +240,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
                   {timeSlots.map((time) => (
                     <th
                       key={time}
-                      className="border p-3 text-center text-xs md:text-sm whitespace-normal sticky top-0 bg-gray-200  "
+                      className="border p-3 text-center text-xs md:text-sm whitespace-normal sticky top-0 bg-gray-200"
                     >
                       {time}
                     </th>
@@ -245,7 +258,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
                       <tr>
                         <td
                           rowSpan={allRooms.length + 1}
-                          className="border align-middle bg-gray-50 p-2 max-w-[60px] text-sm md:text-base  "
+                          className="border align-middle bg-gray-50 p-2 max-w-[60px] text-sm md:text-base"
                         >
                           <div className="-rotate-90 font-medium">{day}</div>
                         </td>
@@ -267,7 +280,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
                             key={`${day}-${roomName}`}
                             className={isLastRow ? "border-b-2" : ""}
                           >
-                            <td className="border p-1 text-black text-sm md:text-base max-w-[80px]  bg-gray-50">
+                            <td className="border p-1 text-black text-sm md:text-base max-w-[80px] bg-gray-50">
                               {roomName}
                             </td>
                             {timeSlots.map((timeSlot) => {
@@ -300,6 +313,10 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
                                     isOperationLoading || isVersionLoading
                                   }
                                   onAddClass={() => {
+                                    if (!isSuperadmin) {
+                                      openAuthModal();
+                                      return;
+                                    }
                                     setAddClassCell({
                                       day,
                                       room: roomName,
@@ -308,6 +325,10 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
                                     setIsAddClassDialogOpen(true);
                                   }}
                                   onDeleteClass={() => {
+                                    if (!isSuperadmin) {
+                                      openAuthModal();
+                                      return;
+                                    }
                                     setDeleteClassCell({
                                       day,
                                       room: roomName,
@@ -327,7 +348,9 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
                                         ).replace(/[^a-zA-Z0-9]/g, "_")}`}
                                         session={session as Session}
                                         isDisabled={
-                                          isSaving !== "none" || isMobile
+                                          isSaving !== "none" ||
+                                          isMobile ||
+                                          !isSuperadmin
                                         }
                                       />
                                     )}

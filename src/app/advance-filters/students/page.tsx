@@ -32,7 +32,6 @@ export default function StudentTimetable(): JSX.Element {
 
   const sectionSelectedId = useId();
   const daySelectedId = useId();
-
   // Set portalTarget to document.body only in the browser
   useEffect(() => {
     if (typeof document !== "undefined") {

@@ -11,9 +11,11 @@ import {
   Menu,
   X,
   ChevronDown,
+  ShieldCheck,
   ChevronRight as ChevronRightSmall,
 } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 interface SidebarProps {
   isSidebarOpen: boolean;
@@ -31,6 +33,7 @@ export default function Sidebar({
   openSidebar,
 }: SidebarProps) {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const { isSuperadmin } = useAuth();
 
   const handleNavigation = () => {
     if (isMobileSidebarOpen) {
@@ -40,12 +43,16 @@ export default function Sidebar({
       openSidebar();
     }
   };
-
-  const navigationItems = [
-    { icon: Home, label: "Home", href: "/" },
-    { icon: Calendar, label: "Generate Timetable", href: "/generateTimeTable" },
+  const baseNavigationItems = [{ icon: Home, label: "Home", href: "/" }];
+  const superadminNavigationItems = [
     { icon: Plus, label: "Add New Course", href: "/AddNewCourse" },
     { icon: Users, label: "Courses", href: "/courses" },
+    { icon: Calendar, label: "Generate Timetable", href: "/generateTimeTable" },
+    { icon: ShieldCheck, label: "Super Admin", href: "/super-admin" },
+  ];
+  const navigationItems = [
+    ...baseNavigationItems,
+    ...(isSuperadmin ? superadminNavigationItems : []),
   ];
 
   return (

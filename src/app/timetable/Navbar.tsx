@@ -11,7 +11,7 @@ import Select from "react-select";
 import { TimetableData, Session, EmptySlot, RoomSchedule } from "./types";
 import { Days } from "@/helpers/page";
 import { useTimetableVersion } from "@/context/TimetableContext";
-
+import { useAuth } from "@/context/AuthContext";
 interface NavbarProps {
   versionId: string;
   versions: number[];
@@ -55,7 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({
   handleSaveAction,
 }) => {
   const { timetableData } = useTimetableVersion();
-
+  const { isSuperadmin } = useAuth();
   // Extract unique teachers from timetableData
   const teacherOptions = useMemo(() => {
     const teachers = new Set<string>();
@@ -111,7 +111,7 @@ const Navbar: React.FC<NavbarProps> = ({
               }
             }}
             placeholder="Select Version"
-            isDisabled={isSaving !== "none" || isDeleting}
+            isDisabled={isSaving !== "none" || isDeleting || !isSuperadmin}
             components={{
               Option: ({ innerRef, innerProps, data, isSelected }) => (
                 <div
@@ -209,20 +209,20 @@ const Navbar: React.FC<NavbarProps> = ({
           <div className="hidden lg:flex items-center gap-2">
             <button
               onClick={() => handleSaveAction("cancel")}
-              className="bg-red-800 hover:bg-red-900 text-white px-3 py-1.5 rounded disabled:opacity-50 text-xs sm:text-sm"
+              className="bg-red-800 hover:bg-red-900 text-white px-3 py-1.5 rounded disabled:opacity-50 text-sm"
               disabled={isSaving !== "none"}
             >
               Cancel
             </button>
             <button
               onClick={(e) => handleSaveAction("same", e)}
-              className="bg-blue-900 hover:bg-blue-800 text-[#9EA8F5] px-3 py-1.5 rounded flex items-center gap-2 disabled:opacity-50 text-xs sm:text-sm"
+              className="bg-blue-900 hover:bg-blue-800 text-[#9EA8F5] px-3 py-1.5 rounded flex items-center gap-2 disabled:opacity-50 text-sm "
               disabled={isSaving !== "none"}
             >
               Save in Same Version
               {isSaving === "same" && (
                 <svg
-                  className="animate-spin h-5 w-5 text-white"
+                  className="animate-spin h-4 w-4 text-white"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -251,7 +251,7 @@ const Navbar: React.FC<NavbarProps> = ({
               Save in New Version
               {isSaving === "new" && (
                 <svg
-                  className="animate-spin h-5 w-5 text-white"
+                  className="animate-spin h-4 w-4 text-white"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"

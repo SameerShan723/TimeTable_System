@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { toast } from "sonner";
-import { supabase } from "@/lib/supabase/supabase";
+import { toast } from "react-toastify";
+import { supabaseClient } from "@/lib/supabase/supabase";
 import { useState } from "react";
 import { useCourses } from "@/context/CourseContext";
 import { Course } from "@/lib/serverData/CourseDataFetcher";
@@ -85,7 +85,7 @@ export default function CourseForm() {
     setIsSubmitting(true);
     try {
       // Insert the new course into Supabase and select the inserted row
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from("courses")
         .insert([
           {
@@ -113,15 +113,11 @@ export default function CourseForm() {
         setCourses([...courses, data as Course]);
       }
 
-      toast.success("Course data saved successfully!", {
-        description: "The course has been added to the database.",
-      });
+      toast.success("Course data saved successfully!");
       form.reset();
     } catch (error) {
       if (error instanceof Error) {
-        toast.error("Failed to save course data.", {
-          description: "Please try again or check your connection.",
-        });
+        toast.error("Failed to save course data.");
       }
     } finally {
       setIsSubmitting(false);

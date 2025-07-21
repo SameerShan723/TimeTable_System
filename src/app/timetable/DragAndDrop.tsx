@@ -5,6 +5,7 @@ import { FaEllipsisV, FaInfoCircle } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import React, { useState, useRef, useEffect } from "react";
 import { Session } from "./types";
+import { useAuth } from "@/context/AuthContext";
 
 interface DroppableCellProps {
   id: string;
@@ -65,6 +66,7 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
     onDeleteClass,
   }) => {
     const { setNodeRef, isOver } = useDroppable({ id, disabled: isMobile });
+    const { isSuperadmin } = useAuth();
     const [isHovered, setIsHovered] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -104,7 +106,7 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => {
           setIsHovered(false);
-          setShowMenu(false); // Close menu on mouse leave
+          setShowMenu(false);
         }}
       >
         {isLoading ? (
@@ -116,7 +118,7 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
         ) : (
           <>
             {children}
-            {!isMobile && isHovered && !isDraggingOver && (
+            {!isMobile && isHovered && !isDraggingOver && isSuperadmin && (
               <div className="absolute top-1 right-1" ref={menuRef}>
                 <button
                   onClick={() => setShowMenu(!showMenu)}
@@ -131,7 +133,7 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
                       <button
                         onClick={() => {
                           setShowMenu(false);
-                          setIsHovered(false); // Prevent menu from reappearing
+                          setIsHovered(false);
                           onAddClass();
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -142,7 +144,7 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
                       <button
                         onClick={() => {
                           setShowMenu(false);
-                          setIsHovered(false); // Prevent menu from reappearing
+                          setIsHovered(false);
                           onDeleteClass();
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
@@ -154,7 +156,6 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
                 )}
               </div>
             )}
-
             {!isLoading && conflicts && conflicts.length > 0 && (
               <div
                 className="absolute top-1 right-6"
@@ -186,7 +187,7 @@ export const SessionDetails: React.FC<SessionDetailsProps> = React.memo(
         isPlaceholder ? "text-gray-300 bg-gray-100 opacity-50" : ""
       }`}
     >
-      <div className=" leading-tight font-bold text-sm">
+      <div className="leading-tight font-bold text-sm">
         {session.Subject || "Unknown Course"}
       </div>
       <div className="text-sm leading-tight">
@@ -205,9 +206,7 @@ export const DraggableSession: React.FC<DraggableSessionProps> = React.memo(
       disabled: isDisabled,
     });
     const className = `transition-all ease-in-out ${
-      isDisabled
-        ? "cursor-not-allowed opacity-50"
-        : "cursor-move hover:bg-gray-50"
+      isDisabled ? " " : "cursor-move hover:bg-gray-50"
     } ${
       isDragging ? "opacity-70 scale-105 rotate-1 shadow-xl bg-blue-50" : ""
     }`;
@@ -245,6 +244,7 @@ export const DroppableDiv: React.FC<DroppableDivProps> = React.memo(
       id,
       disabled: isMobile,
     });
+    const { isSuperadmin } = useAuth();
     const [isHovered, setIsHovered] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -283,7 +283,7 @@ export const DroppableDiv: React.FC<DroppableDivProps> = React.memo(
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => {
           setIsHovered(false);
-          setShowMenu(false); // Close menu on mouse leave
+          setShowMenu(false);
         }}
       >
         {isLoading ? (
@@ -295,7 +295,7 @@ export const DroppableDiv: React.FC<DroppableDivProps> = React.memo(
         ) : (
           <>
             {children}
-            {!isMobile && isHovered && !isDraggingOver && (
+            {!isMobile && isHovered && !isDraggingOver && isSuperadmin && (
               <div className="absolute top-1 right-1" ref={menuRef}>
                 <button
                   onClick={() => setShowMenu(!showMenu)}
@@ -310,7 +310,7 @@ export const DroppableDiv: React.FC<DroppableDivProps> = React.memo(
                       <button
                         onClick={() => {
                           setShowMenu(false);
-                          setIsHovered(false); // Prevent menu from reappearing
+                          setIsHovered(false);
                           onAddClass();
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -321,7 +321,7 @@ export const DroppableDiv: React.FC<DroppableDivProps> = React.memo(
                       <button
                         onClick={() => {
                           setShowMenu(false);
-                          setIsHovered(false); // Prevent menu from reappearing
+                          setIsHovered(false);
                           onDeleteClass();
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
