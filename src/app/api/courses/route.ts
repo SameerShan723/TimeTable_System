@@ -1,15 +1,26 @@
+// src/app/api/courses/route.ts
 import { NextResponse } from "next/server";
-import { supabaseClient } from "@/lib/supabase/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function GET() {
-  const { data, error } = await supabaseClient
-    .from("courses")
-    .select("*")
-    .order("id", { ascending: true }); // 👈 Sort by id
+  try {
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("courses")
+      .select("*")
+      .order("id", { ascending: true });
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      console.error("Supabase error:", error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    return NextResponse.json(
+      { error: "Server error while fetching courses", details: String(error) },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json(data);
 }
