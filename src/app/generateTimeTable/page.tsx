@@ -2,27 +2,31 @@
 import React, { useState } from "react";
 import FileUploader from "@/components/fileuploader/page";
 import { Days } from "@/helpers/page";
-import { z } from "zod";
+// import { z } from "zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  FormValues,
+  timetableSchema,
+} from "@/lib/generate-timetable-schema/page";
 
-export interface FormValues {
-  preferMorningClass: boolean;
-  teacherData: [Record<string, string>, ...Record<string, string>[]]; // Updated to match Zod's non-empty array
-  rulesData: [Record<string, string>, ...Record<string, string>[]]; // Updated to match Zod's non-empty array
-}
+// export interface FormValues {
+//   preferMorningClass: boolean;
+//   teacherData: [Record<string, string>, ...Record<string, string>[]]; // Updated to match Zod's non-empty array
+//   rulesData: [Record<string, string>, ...Record<string, string>[]]; // Updated to match Zod's non-empty array
+// }
 
-export const timetableSchema = z.object({
-  teacherData: z
-    .array(z.record(z.string()))
-    .min(1, "Teacher data is required")
-    .nonempty("Teacher data is required"),
-  rulesData: z
-    .array(z.record(z.string()))
-    .min(1, "Rules data is required")
-    .nonempty("Rules data is required"),
-  preferMorningClass: z.boolean(),
-});
+// export const timetableSchema = z.object({
+//   teacherData: z
+//     .array(z.record(z.string()))
+//     .min(1, "Teacher data is required")
+//     .nonempty("Teacher data is required"),
+//   rulesData: z
+//     .array(z.record(z.string()))
+//     .min(1, "Rules data is required")
+//     .nonempty("Rules data is required"),
+//   preferMorningClass: z.boolean(),
+// });
 
 export default function GenerateTimeTable() {
   const [teacherFileName, setTeacherFileName] = useState<string | null>(null);
