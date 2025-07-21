@@ -1,6 +1,7 @@
+// src/app/api/courses/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { supabaseClient } from "@/lib/supabase/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase/server"; // Updated import
 
 // Validation schema
 const courseSchema = z.object({
@@ -39,13 +40,13 @@ const courseSchema = z.object({
   }),
 });
 
-// Define the handler function type
 export async function PUT(
   req: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const params = await context.params; // Resolve the Promise
+    const supabase = createSupabaseServerClient();
+    const params = await context.params;
     const { id } = params;
     if (!id) {
       return NextResponse.json(
@@ -72,7 +73,7 @@ export async function PUT(
       semester: parseInt(parsedData.data.semester),
     };
 
-    const { data, error } = await supabaseClient
+    const { data, error } = await supabase
       .from("courses")
       .update(updateData)
       .eq("id", id)
@@ -108,6 +109,7 @@ export async function DELETE(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const supabase = createSupabaseServerClient(); // Create server client
     const params = await context.params; // Resolve the Promise
     const { id } = params;
     if (!id) {
@@ -117,7 +119,7 @@ export async function DELETE(
       );
     }
 
-    const { data, error } = await supabaseClient
+    const { data, error } = await supabase
       .from("courses")
       .delete()
       .eq("id", id)
