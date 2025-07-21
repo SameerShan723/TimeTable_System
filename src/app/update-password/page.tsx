@@ -50,7 +50,7 @@ export default function UpdatePasswordPage() {
       // Clear session to prevent auto-login
       await supabaseClient.auth.signOut();
       toast.success("Password updated successfully!");
-      setTimeout(() => router.push("/"), 100); // Delay redirect for toast visibility
+      setTimeout(() => router.push("/")); // Delay redirect for toast visibility
     } catch (err) {
       console.error("Unexpected update password error:", err);
       setError("An unexpected error occurred. Please try again.");
@@ -64,7 +64,7 @@ export default function UpdatePasswordPage() {
       <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md relative transform transition-all duration-300 scale-100">
         <button
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-          onClick={() => router.push("/login")}
+          onClick={() => router.push("/")}
           aria-label="Close and return to login"
         >
           <X size={24} />
@@ -83,6 +83,7 @@ export default function UpdatePasswordPage() {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
+              autoComplete="New Password"
               disabled={isLoading}
             />
             <button
@@ -102,6 +103,7 @@ export default function UpdatePasswordPage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              autoComplete="Confirm Password"
               disabled={isLoading}
             />
             <button

@@ -32,6 +32,7 @@ export default function ResetPassword() {
       const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
         redirectTo: redirectUrl,
       });
+      console.log(redirectUrl, "redirect url");
 
       if (error) {
         console.error("Reset password error:", error);
