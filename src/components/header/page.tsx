@@ -1,8 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import SuperadminLogin from "@/app/login/page";
 import { useAuth } from "@/context/AuthContext";
+import AuthModal from "@/components/auth-model/page";
 
 export default function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,10 +36,7 @@ export default function Header() {
           {isSuperadmin ? "Logout" : "Login"}
         </button>
       </div>
-      <SuperadminLogin
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
+      <AuthModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 }

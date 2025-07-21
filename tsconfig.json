@@ -27,7 +27,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/timetable/Navbar.tsx"
+    "src/app/timetable/Navbar.tsx",
+    "src/lib/generate-timetable-schema"
   ],
   "exclude": ["node_modules"]
 }

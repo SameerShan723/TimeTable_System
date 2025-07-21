@@ -42,7 +42,7 @@ import jsPDF from "jspdf";
 import autoTable, { CellInput, RowInput, Styles } from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import AuthModal from "../login/page";
+import AuthModal from "../../components/auth-model/page";
 
 export default function ClientTimetable() {
   const {
