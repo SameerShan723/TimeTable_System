@@ -83,11 +83,18 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         return;
       }
 
-      toast.success("Login successful!");
+      // Close modal immediately after successful login
       resetForm();
-      closeAuthModal(); // Update AuthContext state
-      onClose(); // Update parent component state
-      router.refresh();
+      onClose(); // Close the modal first
+      closeAuthModal(); // Then update auth context
+
+      // Show success message after modal is closed
+      toast.success("Login successful!");
+
+      // Refresh after a small delay to ensure modal is closed
+      setTimeout(() => {
+        router.refresh();
+      }, 300);
     } catch (err) {
       console.error("Unexpected login error:", err);
       setErrorMsg("An unexpected error occurred. Please try again.");
@@ -95,7 +102,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       setIsLoading(false);
     }
   };
-
   const handleLogout = async () => {
     setErrorMsg("");
     setMessage("");
@@ -134,10 +140,19 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     setIsLoading(true);
 
     try {
-      const redirectUrl = process.env.NEXT_PUBLIC_BASE_URL
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}/update-password`
-        : "http://localhost:3000/update-password";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setErrorMsg("Please enter a valid email address.");
+        toast.error("Please enter a valid email address.");
+        setIsLoading(false);
+        return;
+      }
 
+      const redirectUrl =
+        typeof window !== "undefined"
+          ? `${window.location.origin}/update-password`
+          : `${
+              process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+            }/update-password`;
       const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
         redirectTo: redirectUrl,
       });
@@ -147,8 +162,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         setErrorMsg("Error: " + error.message);
         toast.error(error.message);
       } else {
-        setMessage("Reset link sent to your email.");
+        setMessage(
+          "Reset link sent to your email. Please check your inbox and spam folder."
+        );
         toast.success("Reset link sent to your email.");
+        setEmail(""); // Clear email after successful request
       }
     } catch (err) {
       console.error("Unexpected reset password error:", err);
@@ -159,11 +177,25 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     }
   };
 
+  const handleBackToLogin = () => {
+    setIsForgotPassword(false);
+    setErrorMsg("");
+    setMessage("");
+    setEmail(""); // Clear email when going back to login
+  };
+
+  const handleForgotPassword = () => {
+    setIsForgotPassword(true);
+    setErrorMsg("");
+    setMessage("");
+    setPassword(""); // Clear password when switching to forgot password
+  };
+
   if (!isOpen) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 px-2 md:px-0 lg:px-0"
       aria-modal="true"
       role="dialog"
     >
@@ -221,7 +253,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   />
                 </svg>
               )}
-              Log Out
+              {isLoading ? "Logging Out..." : "Log Out"}
             </button>
           </div>
         ) : isForgotPassword ? (
@@ -263,24 +295,20 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   />
                 </svg>
               )}
-              Send Reset Link
+              {isLoading ? "Sending..." : "Send Reset Link"}
             </button>
 
             <button
               type="button"
               className="text-blue-600 text-sm underline hover:text-blue-800 text-center"
-              onClick={resetForm}
+              onClick={handleBackToLogin}
               disabled={isLoading}
             >
               Back to Login
             </button>
 
             {message && (
-              <p
-                className={`text-sm text-center mt-2 ${
-                  message.includes("Error") ? "text-red-600" : "text-green-600"
-                }`}
-              >
+              <p className="text-green-600 text-sm text-center mt-2">
                 {message}
               </p>
             )}
@@ -347,16 +375,13 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   />
                 </svg>
               )}
-              Sign In
+              {isLoading ? "Signing In..." : "Sign In"}
             </button>
 
             <button
               type="button"
               className="text-blue-600 text-sm underline hover:text-blue-800 text-center"
-              onClick={() => {
-                resetForm();
-                setIsForgotPassword(true);
-              }}
+              onClick={handleForgotPassword}
               disabled={isLoading}
             >
               Forgot Password?

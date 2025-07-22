@@ -4,7 +4,7 @@ import { useState, useId, useCallback, useEffect, useMemo, JSX } from "react";
 import Select, { MultiValue } from "react-select";
 import { Days } from "@/helpers/page";
 import { timeSlots } from "@/helpers/page";
-import ExportTimetable from "@/lib/download_timetable/ExportTimetable";
+import ExportTimetable from "@/lib/download-timetable/ExportTimetable";
 import { useTimetableVersion } from "@/context/TimetableContext";
 
 type DayType = (typeof Days)[number];

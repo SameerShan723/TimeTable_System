@@ -4,9 +4,9 @@ import { useState, useId, useCallback, useMemo, useEffect, JSX } from "react";
 import Select, { MultiValue, SingleValue } from "react-select";
 import { useTimetableVersion } from "@/context/TimetableContext";
 import { timeSlots, Days } from "@/helpers/page";
-import ExportTimetable from "@/lib/download_timetable/ExportTimetable";
+import ExportTimetable from "@/lib/download-timetable/ExportTimetable";
 import { RoomSchedule, Session, EmptySlot } from "@/app/timetable/types";
-import { EnhancedClassItem } from "@/lib/download_timetable/ExportTimetable";
+import { EnhancedClassItem } from "@/lib/download-timetable/ExportTimetable";
 
 type DayType = (typeof Days)[number];
 type TimeSlotType = (typeof timeSlots)[number];

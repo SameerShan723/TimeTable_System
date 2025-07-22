@@ -13,11 +13,13 @@ export default function ResetPassword() {
 
   const handleReset = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    console.log("handleReset triggered");
     setErrorMsg("");
     setMessage("");
     setIsLoading(true);
 
     try {
+      console.log("Email validation check");
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         setErrorMsg("Please enter a valid email address.");
         toast.error("Please enter a valid email address.");
@@ -25,21 +27,23 @@ export default function ResetPassword() {
         return;
       }
 
-      const redirectUrl = process.env.NEXT_PUBLIC_BASE_URL
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}/update-password`
-        : "http://localhost:3000/update-password";
+      // Use window.location.origin for more reliable URL
+      const redirectUrl = `${window.location.origin}/update-password`;
+      console.log("Redirect URL:", redirectUrl);
 
+      console.log("Calling resetPasswordForEmail");
       const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
         redirectTo: redirectUrl,
       });
-      console.log(redirectUrl, "redirect url");
 
       if (error) {
         console.error("Reset password error:", error);
         setErrorMsg("Error: " + error.message);
         toast.error(error.message);
       } else {
-        setMessage("Reset link sent to your email.");
+        setMessage(
+          "Reset link sent to your email. Please check your inbox and spam folder."
+        );
         toast.success("Reset link sent to your email.");
         setEmail("");
       }

@@ -1,4 +1,3 @@
-// middleware.ts
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
@@ -35,6 +34,15 @@ export async function middleware(request: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
+  // Redirect / with a code parameter to /update-password
+  // const url = request.nextUrl;
+  // const code = url.searchParams.get("code");
+  // if (code && url.pathname === "/") {
+  //   return NextResponse.redirect(
+  //     new URL(`/update-password?code=${code}`, request.url)
+  //   );
+  // }
+
   // Protect /protected routes as before
   if (!session && request.nextUrl.pathname.startsWith("/protected")) {
     return NextResponse.redirect(new URL("/", request.url));
@@ -69,9 +77,10 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/", // Add root path to matcher
     "/protected/:path*",
     "/course/:path*",
     "/AddNewCourse/:path*",
-    "/generateTimeTable/:path*",
+    "/generateTimetable/:path*",
   ],
 };

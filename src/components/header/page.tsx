@@ -10,7 +10,7 @@ export default function Header() {
 
   return (
     <>
-      <div className="h-full bg-white flex items-center justify-between pr-4 shadow-md sticky top-0 z-50">
+      <div className="h-full bg-white flex items-center justify-between pr-1 md:pr-4 shadow-md sticky top-0 z-50">
         <div className="flex-shrink-0">
           <Image
             src="/logo.png"
@@ -30,7 +30,7 @@ export default function Header() {
         <button
           className={`${
             isSuperadmin ? "bg-red-600" : "bg-blue-600"
-          } px-4 py-1 mr-3 rounded-lg text-white bg-blue-600  transition-colors duration-200`}
+          } px-2 md:px-4 py-1 mr-1 rounded-lg text-white bg-blue-600  transition-colors duration-200`}
           onClick={() => setIsModalOpen(true)}
         >
           {isSuperadmin ? "Logout" : "Login"}
