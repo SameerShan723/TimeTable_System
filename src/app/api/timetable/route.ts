@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
 
     if (error || !data) {
       return NextResponse.json(
-        { error: "Timetable data not found for global version" },
+        { error: "Timetable data not found" },
         { status: 404 }
       );
     }

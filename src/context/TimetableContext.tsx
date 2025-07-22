@@ -222,7 +222,7 @@ export const TimetableVersionProvider: React.FC<
       const response = await fetch("/api/timetable?type=global_version");
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to fetch global version");
+        throw new Error(errorData.error || "Failed to fetch ");
       }
       const data = await response.json();
       const version = data.version_number;
@@ -230,13 +230,11 @@ export const TimetableVersionProvider: React.FC<
         setSelectedVersionState(version);
         await fetchTimetableData(version);
       } else {
-        throw new Error("Invalid global version received");
+        throw new Error("Invalid  version received");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
-      toast.error(
-        err instanceof Error ? err.message : "Failed to fetch global version"
-      );
+      toast.error(err instanceof Error ? err.message : "Failed to fetch ");
     } finally {
       setLoading(false);
     }
@@ -262,12 +260,12 @@ export const TimetableVersionProvider: React.FC<
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to update global version");
+          throw new Error(errorData.error || "Failed to update  version");
         }
 
         setSelectedVersionState(version);
         await fetchTimetableData(version);
-        toast.success(`Version ${version} set as global version`);
+        toast.success(`Successfully change to Version ${version} `);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to set version");
         toast.error(
