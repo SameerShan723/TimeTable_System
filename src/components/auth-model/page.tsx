@@ -147,15 +147,14 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         return;
       }
 
-//   const redirectUrl = process.env.NEXT_PUBLIC_BASE_URL
-//   ? `${process.env.NEXT_PUBLIC_BASE_URL}/update-password`
-//   : `${window.location.origin || "https://time-table-system-three.vercel.app"}/update-password`;
-// console.log("NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
-// console.log("window.location.origin:", window.location.origin);
-// console.log("Constructed redirectUrl:", redirectUrl);
+  const redirectUrl = process.env.NEXT_PUBLIC_BASE_URL
+  ? `${process.env.NEXT_PUBLIC_BASE_URL}/update-password`
+  : `${window.location.origin || "https://time-table-system-three.vercel.app"}/update-password`;
+console.log("NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
+console.log("window.location.origin:", window.location.origin);
+console.log("Constructed redirectUrl:", redirectUrl);
 
-const redirectUrl = 
-`${process.env.NEXT_PUBLIC_BASE_URL}/update-password`;
+
 
 const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
   redirectTo: redirectUrl,
