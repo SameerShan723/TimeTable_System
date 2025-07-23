@@ -147,17 +147,20 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         return;
       }
 
-      const redirectUrl = process.env.NEXT_PUBLIC_BASE_URL
-      ? `${process.env.NEXT_PUBLIC_BASE_URL}/update-password`
-      : `${window.location.origin || "https://time-table-system-three.vercel.app"}/update-password`;
-    console.log("NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
-    console.log("window.location.origin:", window.location.origin);
-    console.log("Constructed redirectUrl:", redirectUrl);
-    
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectUrl,
-    });
-    console.log("Supabase reset response:", { error, redirectUrl });
+//   const redirectUrl = process.env.NEXT_PUBLIC_BASE_URL
+//   ? `${process.env.NEXT_PUBLIC_BASE_URL}/update-password`
+//   : `${window.location.origin || "https://time-table-system-three.vercel.app"}/update-password`;
+// console.log("NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
+// console.log("window.location.origin:", window.location.origin);
+// console.log("Constructed redirectUrl:", redirectUrl);
+
+const redirectUrl = 
+`${process.env.NEXT_PUBLIC_BASE_URL}/update-password`;
+
+const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+  redirectTo: redirectUrl,
+});
+console.log("Supabase reset response:", { error, redirectUrl })
       if (error) {
         console.error("Reset password error:", error);
         setErrorMsg("Error: " + error.message);
