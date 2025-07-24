@@ -8,12 +8,17 @@ export interface TimetableServerData {
   isAuthenticated: boolean;
   isSuperadmin: boolean;
   error: string | null;
+  user: {
+    id: string;
+    email: string;
+    name?: string;
+    avatar_url?: string;
+  } | null;
 }
 
 export async function getTimetableData(): Promise<TimetableServerData> {
   const supabase = await createSupabaseServerClient();
 
-  // Check user authentication and superadmin status
   const {
     data: { user },
     error: authError,
@@ -21,11 +26,23 @@ export async function getTimetableData(): Promise<TimetableServerData> {
   const isAuthenticated = !authError && !!user;
   let isSuperadmin = false;
 
-  if (isAuthenticated) {
+  let userObj = null;
+  if (isAuthenticated && user) {
+    userObj = {
+      id: user.id,
+      email: user.email || "",
+      name: user.user_metadata?.full_name || user.user_metadata?.name,
+      avatar_url:
+
+        user.user_metadata?.profile_picture ||
+        user.user_metadata?.picture ||
+        "",
+    };
+
     const { data: roleData, error: roleError } = await supabase
       .from("user_roles")
       .select("role")
-      .eq("id", user!.id)
+      .eq("id", user.id)
       .eq("role", "superadmin")
       .maybeSingle();
 
@@ -60,6 +77,7 @@ export async function getTimetableData(): Promise<TimetableServerData> {
         isSuperadmin,
         error:
           versionError?.message || "No global version or timetable data found",
+        user: userObj,
       };
     }
 
@@ -80,6 +98,7 @@ export async function getTimetableData(): Promise<TimetableServerData> {
       error: dataError
         ? dataError.message
         : "Global version not found, using default version",
+      user: userObj,
     };
   }
 
@@ -99,15 +118,17 @@ export async function getTimetableData(): Promise<TimetableServerData> {
       isSuperadmin,
       error:
         dataError?.message || "Timetable data not found for selected version",
+      user: userObj,
     };
   }
 
   return {
     versions,
-    selectedVersion: selectedVersion.version_number,
-    timetableData: timetableData.data,
+    selectedVersion: selectedVersion?.version_number ?? null,
+    timetableData: timetableData?.data ?? null,
     isAuthenticated,
     isSuperadmin,
     error: null,
+    user: userObj,
   };
 }

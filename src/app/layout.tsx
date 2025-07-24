@@ -32,6 +32,7 @@ export default async function RootLayout({
           initialAuth={{
             isAuthenticated: serverData.isAuthenticated,
             isSuperadmin: serverData.isSuperadmin,
+            user: serverData.user, // Pass user object here
           }}
         >
           <div className="h-16 sticky top-0 z-50 shadow-xl">

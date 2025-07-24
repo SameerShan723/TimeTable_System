@@ -1,51 +1,38 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabaseClient } from "@/lib/supabase/supabase";
 import { Eye, EyeOff, X } from "lucide-react";
 import { toast } from "react-toastify";
 
 export default function UpdatePasswordPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isValidSession, setIsValidSession] = useState(false);
+  const [isValidLink, setIsValidLink] = useState(true);
 
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const {
-          data: { session },
-          error,
-        } = await supabaseClient.auth.getSession();
+    // Check for error-related words in search parameters
+    const params = new URLSearchParams(searchParams.toString().toLowerCase());
+    const hasErrorWords = ["error", "denied", "expired"].some((word) =>
+      Array.from(params.keys()).some((key) => key.includes(word)) ||
+      Array.from(params.values()).some((value) => value.includes(word))
+    );
 
-        if (error) {
-          console.error("Session error:", error);
-          setError("Invalid or expired reset link. Please request a new one.");
-          return;
-        }
-
-        if (!session) {
-          console.log("No session found");
-          setError("Invalid or expired reset link. Please request a new one.");
-          return;
-        }
-
-        console.log("Valid session found:", session.user?.email);
-        setIsValidSession(true);
-      } catch (err) {
-        console.error("Session check error:", err);
-        setError("Failed to verify reset link. Please try again.");
-      }
-    };
-
-    checkSession();
-  }, []);
+    if (hasErrorWords) {
+      
+      setError("OTP expired, please regenerate link.");
+      setIsValidLink(false);
+    } else {
+      setIsValidLink(true);
+    }
+  }, [searchParams]);
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,102 +61,66 @@ export default function UpdatePasswordPage() {
         return;
       }
 
-      console.log("Updating password...");
       const { error: updateError } = await supabaseClient.auth.updateUser({
         password: newPassword,
       });
 
       if (updateError) {
-        console.error("Update password error:", updateError);
-        setError(updateError.message);
-        toast.error(updateError.message);
+        setError("OTP expired, please regenerate link.");
+        toast.error("OTP expired, please regenerate link.");
         setIsLoading(false);
         return;
       }
 
-      console.log("Password updated successfully");
-      toast.success("Password updated successfully!.");
+      toast.success("Password updated successfully!");
+      setNewPassword("");
+      setConfirmPassword("");
 
-      // Wait a bit for the toast to show, then sign out and redirect
-      setTimeout(async () => {
-        try {
-          await supabaseClient.auth.signOut();
-          router.push("/");
-        } catch (signOutError) {
-          console.error("Sign out error:", signOutError);
-          // Even if sign out fails, redirect to login
-          router.push("/");
-        }
+      await supabaseClient.auth.signOut();
+      setTimeout(() => {
+        router.push("/");
       }, 2000);
     } catch (err) {
-      console.error("Unexpected update password error:", err);
-      setError("An unexpected error occurred. Please try again.");
-      toast.error("An unexpected error occurred.");
+      if(err instanceof Error) {
+      setError("OTP expired, please regenerate link.");
+      toast.error("OTP expired, please regenerate link.");
       setIsLoading(false);
-    }
+    }}
   };
 
   const handleClose = async () => {
     try {
       await supabaseClient.auth.signOut();
     } catch (error) {
-      console.error("Error signing out:", error);
-    }
-    router.push("/login");
+      if(error instanceof Error) {
+      toast.error("OTP expired, please regenerate link.");
+    }}
+    router.push("/");
   };
 
-  if (!isValidSession && !error) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-        <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
-          <div className="flex items-center justify-center">
-            <svg
-              className="animate-spin h-8 w-8 text-blue-600"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-          </div>
-          <p className="text-center mt-4 text-gray-600">
-            Verifying reset link...
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error && !isValidSession) {
+  if (!isValidLink) {
+    const regenerateLink = async()=>{
+await supabaseClient.auth.signOut();
+router.push("/reset-password")
+    }
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
         <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
           <button
             className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
             onClick={handleClose}
+            aria-label="Close and return to home"
           >
             <X size={24} />
           </button>
           <div className="text-center">
-            <h2 className="text-xl font-bold text-red-600 mb-4">
-              Invalid Reset Link
-            </h2>
+            <h2 className="text-xl font-bold text-red-600 mb-4">Error</h2>
             <p className="text-gray-600 mb-6">{error}</p>
             <button
-              onClick={() => router.push("/reset-password")}
+              onClick={() => regenerateLink()}
               className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
             >
-              Request New Reset Link
+              Regenerate Link
             </button>
           </div>
         </div>
@@ -183,7 +134,7 @@ export default function UpdatePasswordPage() {
         <button
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
           onClick={handleClose}
-          aria-label="Close and return to login"
+          aria-label="Close and return to home"
         >
           <X size={24} />
         </button>

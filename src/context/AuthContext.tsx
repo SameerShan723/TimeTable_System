@@ -9,13 +9,23 @@ import React, {
 } from "react";
 import { supabaseClient } from "@/lib/supabase/supabase";
 
+interface User {
+  id: string;
+  email: string;
+  name?: string;
+  avatar_url?: string;
+  // Add other user fields as needed
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
   isSuperadmin: boolean;
   canEdit: boolean;
+  user: User | null;
   openAuthModal: () => void;
   closeAuthModal: () => void;
   isAuthModalOpen: boolean;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,6 +35,7 @@ interface AuthProviderProps {
   initialAuth: {
     isAuthenticated: boolean;
     isSuperadmin: boolean;
+    user?: User | null;
   };
 }
 
@@ -32,11 +43,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
   children,
   initialAuth,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    initialAuth.isAuthenticated
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(initialAuth.isAuthenticated);
   const [isSuperadmin, setIsSuperadmin] = useState(initialAuth.isSuperadmin);
   const [canEdit, setCanEdit] = useState(initialAuth.isSuperadmin);
+  const [user, setUser] = useState<User | null>(initialAuth.user || null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const isMounted = useRef(true);
 
@@ -47,15 +57,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     const syncAuthState = async () => {
       try {
         const {
-          data: { user },
+          data: { user: authUser },
         } = await supabaseClient.auth.getUser();
         if (!isMounted.current) return;
 
-        if (user) {
+        if (authUser) {
+          // Set user data
+          setUser({
+            id: authUser.id,
+            email: authUser.email || '',
+            name: authUser.user_metadata?.full_name || authUser.user_metadata?.name,
+            avatar_url:
+              authUser.user_metadata?.avatar_url ||
+              authUser.user_metadata?.profile_picture ||
+              authUser.user_metadata?.picture ||
+              "",
+          });
+
           const { data: roleData, error: roleError } = await supabaseClient
             .from("user_roles")
             .select("role")
-            .eq("id", user.id)
+            .eq("id", authUser.id)
             .eq("role", "superadmin")
             .maybeSingle();
           if (!isMounted.current) return;
@@ -73,6 +95,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
           setIsAuthenticated(false);
           setIsSuperadmin(false);
           setCanEdit(false);
+          setUser(null);
         }
       } catch (error) {
         console.error("Error syncing auth state:", error);
@@ -80,6 +103,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         setIsAuthenticated(false);
         setIsSuperadmin(false);
         setCanEdit(false);
+        setUser(null);
       }
     };
 
@@ -92,6 +116,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
         if (event === "SIGNED_IN" && session?.user) {
           setIsAuthenticated(true);
+          
+          // Set user data
+          setUser({
+            id: session.user.id,
+            email: session.user.email || '',
+            name: session.user.user_metadata?.full_name || session.user.user_metadata?.name,
+            avatar_url:
+              session.user.user_metadata?.avatar_url ||
+              session.user.user_metadata?.profile_picture ||
+              session.user.user_metadata?.picture ||
+              "",
+          });
+
           const { data: roleData, error: roleError } = await supabaseClient
             .from("user_roles")
             .select("role")
@@ -111,6 +148,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
           setIsAuthenticated(false);
           setIsSuperadmin(false);
           setCanEdit(false);
+          setUser(null);
         }
       }
     );
@@ -124,13 +162,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
   const openAuthModal = () => setIsAuthModalOpen(true);
   const closeAuthModal = () => setIsAuthModalOpen(false);
 
+  const logout = async () => {
+    try {
+      await supabaseClient.auth.signOut();
+      // State will be updated by the auth state change listener
+    } catch (error) {
+      console.error("Error logging out:", error);
+      throw error;
+    }
+  };
+
   const value: AuthContextType = {
     isAuthenticated,
     isSuperadmin,
     canEdit,
+    user,
     openAuthModal,
     closeAuthModal,
     isAuthModalOpen,
+    logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
