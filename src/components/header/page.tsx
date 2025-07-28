@@ -62,7 +62,7 @@ export default function Header() {
         </div>
 
         <div className="flex-1 flex justify-center px-2">
-          <h1 className="text-blue-900 text-[9px] md:text-2xl font-bold text-center overflow-hidden text-ellipsis whitespace-nowrap">
+          <h1 className="text-blue-900 text-[9px] md:text-2xl font-bold text-center overflow-hidden text-ellipsis whitespace-nowrap hidden md:block sm:block">
             Weekly Timetable For The CS Department
           </h1>
         </div>
