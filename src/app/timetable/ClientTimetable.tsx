@@ -42,7 +42,6 @@ import jsPDF from "jspdf";
 import autoTable, { CellInput, RowInput, Styles } from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import AuthModal from "../../components/auth-model/page";
 
 export default function ClientTimetable() {
   const {
@@ -57,7 +56,7 @@ export default function ClientTimetable() {
     deleteVersion: contextDeleteVersion,
     checkConflicts,
   } = useTimetableVersion();
-  const { isSuperadmin, openAuthModal, isAuthModalOpen, closeAuthModal } =
+  const { isSuperadmin, openAuthModal, } =
     useAuth();
 
   const [versionPendingData, setVersionPendingData] = useState<{
@@ -1016,7 +1015,6 @@ export default function ClientTimetable() {
             isAddClassLoading={isAddClassLoading}
           />
 
-          <AuthModal isOpen={isAuthModalOpen} onClose={closeAuthModal} />
         </div>
       </DndContext>
     </main>

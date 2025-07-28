@@ -1,16 +1,16 @@
 "use client";
+
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-// import { supabaseClient } from "@/lib/supabase/supabase";
-import AuthModal from "@/components/auth-model/page";
+import { useRouter } from "next/navigation";
 import ProfileModal from "../profile-model/page";
 
 export default function Header() {
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const { user } = useAuth(); 
-const menuRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const router = useRouter();
+  const menuRef = useRef<HTMLDivElement>(null);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -29,12 +29,12 @@ const menuRef = useRef<HTMLDivElement>(null);
 
   const handleLogin = () => {
     setIsProfileModalOpen(false);
-    setIsAuthModalOpen(true);
+    router.push("/auth/login"); // Navigate to login page instead of opening modal
   };
 
   const handleLogout = async () => {
     try {
-      await fetch("/api/logout", {
+      await fetch("/api/auth/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,52 +73,44 @@ const menuRef = useRef<HTMLDivElement>(null);
             className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border-2 border-gray-300 hover:border-blue-500 transition-colors duration-200"
             onClick={handleAvatarClick}
           >
-        {user?.avatar_url?.trim() ? (
-  <Image
-    src={user.avatar_url}
-    alt="Profile"
-    width={48}
-    height={48}
-    className="w-full h-full object-cover rounded-full"
-  />
-) : user?.email ? (
-  <div className="w-full h-full rounded-full bg-[#1a73e8] text-white flex items-center justify-center font-medium text-lg md:text-xl uppercase">
-    {user.email.charAt(0)}
-  </div>
-) : (
-  <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center">
-    <svg
-      className="w-6 h-6 text-gray-400"
-      fill="currentColor"
-      viewBox="0 0 20 20"
-    >
-      <path
-        fillRule="evenodd"
-        d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-        clipRule="evenodd"
-      />
-    </svg>
-  </div>
-)}
-
+            {user?.avatar_url?.trim() ? (
+              <Image
+                src={user.avatar_url}
+                alt="Profile"
+                width={48}
+                height={48}
+                className="w-full h-full object-cover rounded-full"
+              />
+            ) : user?.email ? (
+              <div className="w-full h-full rounded-full bg-[#1a73e8] text-white flex items-center justify-center font-medium text-lg md:text-xl uppercase">
+                {user.email.charAt(0)}
+              </div>
+            ) : (
+              <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            )}
           </button>
 
           {/* Profile Modal */}
           <ProfileModal 
-            isOpen={isProfileModalOpen}
-            
-      setIsProfileModalOpen={setIsProfileModalOpen}
+            isOpen={isProfileModalOpen}             
+            setIsProfileModalOpen={setIsProfileModalOpen}
             user={user} // <-- pass user object
             onLogin={handleLogin}
             onLogout={handleLogout}
           />
         </div>
-
-        {/* Auth Modal */}
-        <AuthModal 
-          isOpen={isAuthModalOpen} 
-          onClose={() => setIsAuthModalOpen(false)} 
-        />
       </div>
     </>
   );

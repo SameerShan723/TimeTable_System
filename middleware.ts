@@ -1,54 +1,27 @@
-import { createServerClient } from "@supabase/ssr";
+import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          const cookie = request.cookies.get(name);
-          return cookie?.value;
-        },
-        set(name: string, value: string) {
-          try {
-            request.cookies.set(name, value);
-          } catch (error) {
-            console.error(`Error setting cookie ${name}:`, error);
-          }
-        },
-        remove(name: string) {
-          try {
-            request.cookies.delete(name);
-          } catch (error) {
-            console.error(`Error removing cookie ${name}:`, error);
-          }
-        },
-      },
-    }
-  );
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req: request, res });
+  const { data: { session } } = await supabase.auth.getSession();
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  // Bypass auth checks for /update-password, /login, and /reset-password
+  if (
+    request.nextUrl.pathname === "/update-password" ||
+    request.nextUrl.pathname === "/login" ||
+    request.nextUrl.pathname === "/reset-password"
+  ) {
+    return res;
+  }
 
-  // Redirect / with a code parameter to /update-password
-  // const url = request.nextUrl;
-  // const code = url.searchParams.get("code");
-  // if (code && url.pathname === "/") {
-  //   return NextResponse.redirect(
-  //     new URL(`/update-password?code=${code}`, request.url)
-  //   );
-  // }
-
-  // Protect /protected routes as before
+  // Protect /protected routes
   if (!session && request.nextUrl.pathname.startsWith("/protected")) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // Protect /course routes for superadmin only
+  // Protect /course, /AddNewCourse, /generateTimetable for superadmin only
   if (
     request.nextUrl.pathname.startsWith("/course") ||
     request.nextUrl.pathname.startsWith("/AddNewCourse") ||
@@ -58,7 +31,6 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/", request.url));
     }
 
-    // Check role from Supabase
     const { data: roleData, error: roleError } = await supabase
       .from("user_roles")
       .select("role")
@@ -67,17 +39,24 @@ export async function middleware(request: NextRequest) {
       .maybeSingle();
 
     if (roleError || !roleData) {
-      // Optionally, redirect to a 403 page instead of login
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
-  return NextResponse.next();
+  // Redirect logged-in users from /login to /dashboard
+  if (session && request.nextUrl.pathname === "/login") {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  return res;
 }
 
 export const config = {
   matcher: [
-    "/", // Add root path to matcher
+    "/",
+    "/login",
+    "/reset-password",
+    "/update-password",
     "/protected/:path*",
     "/course/:path*",
     "/AddNewCourse/:path*",

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { supabaseClient } from "@/lib/supabase/supabase";
 import { useAuth } from "@/context/AuthContext";
@@ -25,6 +25,9 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
 }) => {
   const { isAuthenticated, isSuperadmin } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isFromReset = searchParams.get('reset') === 'true';
+  
   const [userDetails, setUserDetails] = useState<{
     id: string;
     email: string;
@@ -43,15 +46,30 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
   const [successMsg, setSuccessMsg] = useState("");
   const [activeTab, setActiveTab] = useState("email");
 
+  // Check if user came from password reset link and show success message
+  useEffect(() => {
+    if (isFromReset && isAuthenticated && isSuperadmin) {
+      toast.success("Successfully logged in! Now you can change your password.");
+      // Remove the reset parameter from URL without page reload
+      const url = new URL(window.location.href);
+      url.searchParams.delete('reset');
+      window.history.replaceState({}, '', url.toString());
+      // Auto-switch to password tab
+      setActiveTab("password");
+    }
+  }, [isFromReset, isAuthenticated, isSuperadmin]);
+
   // Redirect if not authenticated or not superadmin
   useEffect(() => {
     if (!isAuthenticated || !isSuperadmin) {
-      toast.error("You are not authorized to access this page.");
-      router.push("/");
+      if (!isFromReset) { // Don't show error if coming from reset link
+        toast.error("You are not authorized to access this page.");
+        router.push("/");
+      }
     }
-  }, [isAuthenticated, isSuperadmin, router]);
+  }, [isAuthenticated, isSuperadmin, router, isFromReset]);
 
-  // Validate current password
+  // Validate current password (only for email updates)
   const validateCurrentPassword = async () => {
     if (!currentPassword) {
       setErrorMsg("Please enter your current password.");
@@ -138,11 +156,13 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
     setIsLoading(true);
 
     try {
-      // Validate current password
-      const isPasswordValid = await validateCurrentPassword();
-      if (!isPasswordValid) {
-        setIsLoading(false);
-        return;
+      // For password reset flow, skip current password validation
+      if (!isFromReset && currentPassword) {
+        const isPasswordValid = await validateCurrentPassword();
+        if (!isPasswordValid) {
+          setIsLoading(false);
+          return;
+        }
       }
 
       if (newPassword.length < 6) {
@@ -340,34 +360,38 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
                   onSubmit={handlePasswordUpdate}
                   className="flex flex-col gap-4"
                 >
-                  <div className="relative">
-                    <input
-                      type={showCurrentPassword ? "text" : "password"}
-                      placeholder="Current password"
-                      className="w-full p-3 rounded-lg border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      required
-                      disabled={isLoading}
-                      autoComplete="current-password"
-                    />
-                    <button
-                      type="button"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600"
-                      onClick={() =>
-                        setShowCurrentPassword(!showCurrentPassword)
-                      }
-                      aria-label={
-                        showCurrentPassword ? "Hide password" : "Show password"
-                      }
-                    >
-                      {showCurrentPassword ? (
-                        <EyeOff size={20} />
-                      ) : (
-                        <Eye size={20} />
-                      )}
-                    </button>
-                  </div>
+                  {/* Only show current password field if NOT coming from reset link */}
+                  {!isFromReset && (
+                    <div className="relative">
+                      <input
+                        type={showCurrentPassword ? "text" : "password"}
+                        placeholder="Current password"
+                        className="w-full p-3 rounded-lg border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        required
+                        disabled={isLoading}
+                        autoComplete="current-password"
+                      />
+                      <button
+                        type="button"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600"
+                        onClick={() =>
+                          setShowCurrentPassword(!showCurrentPassword)
+                        }
+                        aria-label={
+                          showCurrentPassword ? "Hide password" : "Show password"
+                        }
+                      >
+                        {showCurrentPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </button>
+                    </div>
+                  )}
+                  
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}

@@ -371,7 +371,6 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
                                     )}
                                   {!isVersionLoading && isEmpty && (
                                     <div className="text-center text-gray-600 text-sm h-full flex items-center justify-center">
-                                      Free
                                     </div>
                                   )}
                                 </DroppableCell>
