@@ -39,8 +39,7 @@ export async function POST(request: Request) {
     userId,
     {
       email: newEmail,
-      email_confirm: true, // ✅ This skips the confirmation email
-    }
+      email_confirm: true, }
   );
 
   if (error) {

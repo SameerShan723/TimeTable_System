@@ -22,14 +22,38 @@ export default function ResetPassword({ onBackToLogin }: { onBackToLogin?: () =>
       return;
     }
 
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+    try {
+      // First, verify if the email belongs to a superadmin using our API
+      const verifyResponse = await fetch("/api/auth/verify-superadmin-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
 
-    if (error) {
-      setErrorMsg(error.message);
-      toast.error(error.message);
-    } else {
-      toast.success("OTP sent to your email. Check inbox/spam.");
-      router.push(`/auth/otp?email=${encodeURIComponent(email)}`);
+      const verifyData = await verifyResponse.json();
+
+      if (!verifyResponse.ok) {
+        setErrorMsg(verifyData.error || "Failed to verify email");
+        toast.error(verifyData.error || "Failed to verify email");
+        setLoading(false);
+        return;
+      }
+
+      // If email is verified, send OTP
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+
+      if (error) {
+        setErrorMsg(error.message);
+        toast.error(error.message);
+      } else {
+        toast.success("OTP sent to your email. Check inbox/spam.");
+        router.push(`/auth/otp?email=${encodeURIComponent(email)}`);
+      }
+    } catch (err) {
+      setErrorMsg("An unexpected error occurred. Please try again.");
+      toast.error("An unexpected error occurred.");
     }
 
     setLoading(false);

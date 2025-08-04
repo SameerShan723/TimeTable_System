@@ -28,6 +28,7 @@ interface NavbarProps {
   exportToPDF: () => void;
   exportToXLSX: () => void;
   setSelectedTeacher: (teachers: string[] | null) => void;
+  setSelectedSubject: (subjects: string[] | null) => void;
   versionPendingData: { [version: number]: TimetableData | null };
   handleSaveAction: (
     action: "cancel" | "same" | "new",
@@ -51,12 +52,13 @@ const Navbar: React.FC<NavbarProps> = ({
   exportToPDF,
   exportToXLSX,
   setSelectedTeacher,
+  setSelectedSubject,
   versionPendingData,
   handleSaveAction,
 }) => {
   const { timetableData } = useTimetableVersion();
   const { isSuperadmin } = useAuth();
-  // Extract unique teachers from timetableData
+  // Extract unique teachers and subjects from timetableData
   const teacherOptions = useMemo(() => {
     const teachers = new Set<string>();
     Days.forEach((day) => {
@@ -76,6 +78,28 @@ const Navbar: React.FC<NavbarProps> = ({
       .map((teacher) => ({
         value: teacher,
         label: teacher,
+      }));
+  }, [timetableData]);
+
+  const subjectOptions = useMemo(() => {
+    const subjects = new Set<string>();
+    Days.forEach((day) => {
+      const dayData = timetableData[day] || [];
+      dayData.forEach((roomSchedule: RoomSchedule) => {
+        const roomName = Object.keys(roomSchedule)[0];
+        const sessions = roomSchedule[roomName] || [];
+        sessions.forEach((session: Session | EmptySlot) => {
+          if ("Subject" in session && typeof session.Subject === "string") {
+            subjects.add(session.Subject);
+          }
+        });
+      });
+    });
+    return Array.from(subjects)
+      .sort()
+      .map((subject) => ({
+        value: subject,
+        label: subject,
       }));
   }, [timetableData]);
 
@@ -175,6 +199,48 @@ const Navbar: React.FC<NavbarProps> = ({
               setSelectedTeacher(selectedTeachers);
             }}
             placeholder="Select Teachers"
+            isDisabled={isSaving !== "none" || isDeleting}
+            className="text-black w-full"
+            styles={{
+              control: (provided, state) => ({
+                ...provided,
+                border: state.isFocused ? "0px" : provided.border,
+                outline: "none",
+                boxShadow: "none",
+                fontSize: "0.875rem",
+                minHeight: "32px",
+                width: "100%",
+                maxWidth: "100%",
+              }),
+              menu: (provided) => ({
+                ...provided,
+                zIndex: 50,
+                width: "100%",
+                maxWidth: "100%",
+              }),
+              multiValue: (provided) => ({
+                ...provided,
+                maxWidth: "100%",
+                // flexWrap: "wrap",
+              }),
+            }}
+          />
+        </div>
+        <div className=" w-full  md:w-60 lg:w-90 lg:max-w-90  flex items-center text-sm ">
+          <label className="text-white mr-2 text-xs sm:text-sm">
+            Filter Subjects:
+          </label>
+          <Select
+            instanceId={`subject-filter-${versionId}`}
+            options={subjectOptions}
+            isMulti
+            onChange={(selectedOptions) => {
+              const selectedSubjects = selectedOptions
+                ? selectedOptions.map((option) => option.value)
+                : null;
+              setSelectedSubject(selectedSubjects);
+            }}
+            placeholder="Select Subjects"
             isDisabled={isSaving !== "none" || isDeleting}
             className="text-black w-full"
             styles={{

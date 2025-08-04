@@ -18,6 +18,7 @@ export default function OtpVerification() {
     setErrorMsg("");
 
     try {
+      // First verify the OTP
       const { error } = await supabaseClient.auth.verifyOtp({
         email,
         token: otp,
@@ -40,16 +41,33 @@ export default function OtpVerification() {
         return;
       }
 
+      // Now check if the user is a superadmin
+      const { data: userData, error: userError } = await supabaseClient
+        .from("user_roles")
+        .select("role")
+        .eq("id", session.user.id)
+        .eq("role", "superadmin")
+        .single();
+
+      if (userError || !userData) {
+        setErrorMsg("This email is not registered as a superadmin account.");
+        toast.error("This email is not registered as a superadmin account.");
+        // Sign out the user since they're not authorized
+        await supabaseClient.auth.signOut();
+        setLoading(false);
+        return;
+      }
+
       toast.success("OTP verified successfully!");
       router.push("/auth/update-password");
     } catch (err) {
-        if(err instanceof Error) {
-      setErrorMsg("An unexpected error occurred. Please try again.");
-      toast.error("An unexpected error occurred.");
+      if(err instanceof Error) {
+        setErrorMsg("An unexpected error occurred. Please try again.");
+        toast.error("An unexpected error occurred.");
+      }
       setLoading(false);
-
-    setLoading(false);
-  };}}
+    }
+  };
 
   const handleBackToLogin = async () => {
     await supabaseClient.auth.signOut(); // Invalidate session

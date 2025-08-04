@@ -75,6 +75,9 @@ export default function ClientTimetable() {
   const [selectedTeachers, setSelectedTeachers] = useState<string[] | null>(
     null
   );
+  const [selectedSubjects, setSelectedSubjects] = useState<string[] | null>(
+    null
+  );
   const [isAddClassDialogOpen, setIsAddClassDialogOpen] = useState(false);
   const [addClassCell, setAddClassCell] = useState<{
     day: string;
@@ -117,7 +120,9 @@ export default function ClientTimetable() {
   }, [selectedVersion, versionPendingData]);
 
   const filteredData = useMemo(() => {
-    if (!selectedTeachers || selectedTeachers.length === 0) return data;
+    if ((!selectedTeachers || selectedTeachers.length === 0) && 
+        (!selectedSubjects || selectedSubjects.length === 0)) return data;
+    
     const filtered: TimetableData = {
       Monday: [],
       Tuesday: [],
@@ -133,10 +138,17 @@ export default function ClientTimetable() {
           if (!roomName) return null;
           const sessions = roomSchedule[roomName] || [];
           const filteredSessions = sessions.filter(
-            (session: Session | EmptySlot): session is Session =>
-              "Teacher" in session &&
-              typeof session.Teacher === "string" &&
-              selectedTeachers.includes(session.Teacher)
+            (session: Session | EmptySlot): session is Session => {
+              if (!("Teacher" in session)) return false;
+              
+              const teacherMatch = !selectedTeachers || selectedTeachers.length === 0 || 
+                (typeof session.Teacher === "string" && selectedTeachers.includes(session.Teacher));
+              
+              const subjectMatch = !selectedSubjects || selectedSubjects.length === 0 || 
+                (typeof session.Subject === "string" && selectedSubjects.includes(session.Subject));
+              
+              return teacherMatch && subjectMatch;
+            }
           );
           return { [roomName]: filteredSessions } as RoomSchedule;
         })
@@ -147,7 +159,7 @@ export default function ClientTimetable() {
       if (filteredRooms.length > 0) filtered[day] = filteredRooms;
     });
     return filtered;
-  }, [data, selectedTeachers]);
+  }, [data, selectedTeachers, selectedSubjects]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -224,7 +236,7 @@ export default function ClientTimetable() {
   const getCellConflicts = useCallback(
     (day: string, room: string, time: string): string[] => {
       const roomData = (
-        selectedTeachers && selectedTeachers.length > 0 ? filteredData : data
+        (selectedTeachers && selectedTeachers.length > 0) || (selectedSubjects && selectedSubjects.length > 0) ? filteredData : data
       )[day]?.find((r: RoomSchedule) => Object.keys(r)[0] === room);
       if (!roomData) return [];
       const sessions = roomData[room] || [];
@@ -243,7 +255,7 @@ export default function ClientTimetable() {
         )
         .map((c) => c.message);
     },
-    [data, filteredData, conflicts, selectedTeachers]
+    [data, filteredData, conflicts, selectedTeachers, selectedSubjects]
   );
 
   const handleDragStart = useCallback(
@@ -533,6 +545,11 @@ export default function ClientTimetable() {
           align: "center",
         });
       }
+      if (selectedSubjects && selectedSubjects.length > 0) {
+        doc.text(`Subjects: ${selectedSubjects.join(", ")}`, 105, 45, {
+          align: "center",
+        });
+      }
       doc.addPage();
 
       for (const day of days) {
@@ -637,6 +654,10 @@ export default function ClientTimetable() {
         selectedTeachers && selectedTeachers.length > 0
           ? `-teachers-${selectedTeachers.join("_")}`
           : ""
+      }${
+        selectedSubjects && selectedSubjects.length > 0
+          ? `-subjects-${selectedSubjects.join("_")}`
+          : ""
       }.pdf`;
       doc.save(fileName);
 
@@ -697,6 +718,10 @@ export default function ClientTimetable() {
       }${
         selectedTeachers && selectedTeachers.length > 0
           ? `-teachers-${selectedTeachers.join("_")}`
+          : ""
+      }${
+        selectedSubjects && selectedSubjects.length > 0
+          ? `-subjects-${selectedSubjects.join("_")}`
           : ""
       }.xlsx`;
       const binary = XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
@@ -880,6 +905,7 @@ export default function ClientTimetable() {
             exportToPDF={exportToPDF}
             exportToXLSX={exportToXLSX}
             setSelectedTeacher={setSelectedTeachers}
+            setSelectedSubject={setSelectedSubjects}
             versionPendingData={versionPendingData}
             handleSaveAction={handleSaveAction}
           />
@@ -888,6 +914,7 @@ export default function ClientTimetable() {
             data={data}
             filteredData={filteredData}
             selectedTeachers={selectedTeachers}
+            selectedSubjects={selectedSubjects}
             isVersionLoading={isVersionLoading}
             isOperationLoading={isOperationLoading}
             isMobile={isMobile}

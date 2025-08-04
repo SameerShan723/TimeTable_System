@@ -16,6 +16,7 @@ interface TimetableDisplayProps {
   data: TimetableData;
   filteredData: TimetableData;
   selectedTeachers: string[] | null;
+  selectedSubjects: string[] | null;
   isVersionLoading: boolean;
   isOperationLoading: boolean;
   isMobile: boolean;
@@ -40,6 +41,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
   data,
   filteredData,
   selectedTeachers,
+  selectedSubjects,
   isVersionLoading,
   isOperationLoading,
   isMobile,
@@ -60,7 +62,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
   return (
     <div className="flex-1 w-full max-w-full">
       {Object.keys(
-        selectedTeachers && selectedTeachers.length > 0 ? filteredData : data
+        (selectedTeachers && selectedTeachers.length > 0) || (selectedSubjects && selectedSubjects.length > 0) ? filteredData : data
       ).length === 0 ? (
         <div className="flex justify-center items-center h-full flex-1">
           <div className="text-xl text-gray-500">
@@ -77,7 +79,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
           <div className="block md:hidden space-y-2 p-2">
             {Days.map((day) => {
               const rooms =
-                (selectedTeachers && selectedTeachers.length > 0
+                ((selectedTeachers && selectedTeachers.length > 0) || (selectedSubjects && selectedSubjects.length > 0)
                   ? filteredData
                   : data)[day] || [];
               return (
@@ -252,7 +254,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
               <tbody>
                 {Days.map((day) => {
                   const rooms =
-                    (selectedTeachers && selectedTeachers.length > 0
+                    ((selectedTeachers && selectedTeachers.length > 0) || (selectedSubjects && selectedSubjects.length > 0)
                       ? filteredData
                       : data)[day] || [];
                   return (

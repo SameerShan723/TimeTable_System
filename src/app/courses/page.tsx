@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { z } from "zod";
 import { useForm, SubmitHandler, UseFormProps } from "react-hook-form";
@@ -90,6 +90,16 @@ export default function FacultyData() {
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
+  const [isDeleteAllDialogOpen, setIsDeleteAllDialogOpen] = useState<boolean>(false);
+  const [isDeletingAll, setIsDeletingAll] = useState<boolean>(false);
+  const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+  const [isClient, setIsClient] = useState(false);
+
+  // Fix hydration issues with react-select
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Define form with react-hook-form
   const form = useForm<FormValues>({
@@ -130,6 +140,38 @@ export default function FacultyData() {
     setDeletingCourseId(id);
   };
 
+  const handleDeleteAll = () => {
+    setIsDeleteAllDialogOpen(true);
+  };
+
+  const confirmDeleteAll = async () => {
+    setIsDeletingAll(true);
+    try {
+      // Delete all courses with a WHERE clause that matches all records
+      const { error } = await supabaseClient
+        .from("courses")
+        .delete()
+        .not("course_details", "is", null); // This matches all records that have course_details
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      setCourses([]);
+      toast.success("All courses deleted successfully.", {
+        position: "top-right",
+      });
+    } catch (error) {
+      toast.error(`Failed to delete all courses: ${(error as Error).message}`, {
+        position: "top-right",
+      });
+      console.error("Delete all error:", error);
+    } finally {
+      setIsDeletingAll(false);
+      setIsDeleteAllDialogOpen(false);
+    }
+  };
+
   const confirmDelete = async () => {
     if (deletingCourseId) {
       setIsDeleting(true);
@@ -160,6 +202,17 @@ export default function FacultyData() {
       }
     }
   };
+
+  // Get unique teachers and subjects for filter dropdowns
+  const uniqueTeachers = Array.from(new Set(courses.map(course => course.faculty_assigned).filter(Boolean)));
+  const uniqueSubjects = Array.from(new Set(courses.map(course => course.course_details).filter(Boolean)));
+
+  // Filter courses based on selected filters
+  const filteredCourses = courses.filter(course => {
+    const teacherMatch = selectedTeachers.length === 0 || selectedTeachers.includes(course.faculty_assigned || "");
+    const subjectMatch = selectedSubjects.length === 0 || selectedSubjects.includes(course.course_details || "");
+    return teacherMatch && subjectMatch;
+  });
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     if (!editingCourse) return;
@@ -231,11 +284,169 @@ export default function FacultyData() {
           isEditDialogOpen || deletingCourseId ? "backdrop-blur-sm" : ""
         }`}
       >
-        <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">
-          Courses List
-        </h1>
-        {courses.length === 0 ? (
-          <div className="text-center text-gray-600">No courses available.</div>
+        <div className="mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
+            Courses List
+          </h1>
+        </div>
+
+        {/* Filter and Delete Section */}
+        {courses.length > 0 && (
+          <div className="mb-6 flex flex-col lg:flex-row gap-4">
+            {/* Filter Container */}
+                         <div className="flex-1 p-4 bg-gray-50 rounded-lg border border-gray-200 ">
+               <div className="flex flex-col md:flex-row gap-4 items-center ">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Filter by Teacher
+                  </label>
+                                   {isClient && (
+                     <Select
+                       isMulti
+                       options={uniqueTeachers.map(teacher => ({ value: teacher || "", label: teacher || "" }))}
+                       value={selectedTeachers.map(teacher => ({ value: teacher, label: teacher }))}
+                       onChange={(options) => setSelectedTeachers(options ? options.map(option => option.value) : [])}
+                       placeholder="Select teachers"
+                       isClearable
+                       className="w-full"
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        width: "100%",
+                        minWidth: "100%",
+                        backgroundColor: "#ffffff",
+                        border: "1px solid #d1d5db",
+                        borderRadius: "0.5rem",
+                        padding: "0.5rem",
+                        boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                        "&:hover": {
+                          borderColor: "#9ca3af",
+                        },
+                        transition: "all 0.2s",
+                      }),
+                      menu: (base) => ({
+                        ...base,
+                        backgroundColor: "#ffffff",
+                        borderRadius: "0.5rem",
+                        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                        zIndex: 50,
+                      }),
+                      option: (base, state) => ({
+                        ...base,
+                        backgroundColor: state.isSelected
+                          ? "#3b82f6"
+                          : state.isFocused
+                          ? "#f3f4f6"
+                          : "#ffffff",
+                        color: state.isSelected ? "#ffffff" : "#374151",
+                        "&:hover": {
+                          backgroundColor: "#f3f4f6",
+                        },
+                        transition: "all 0.2s",
+                      }),
+                    }}
+                  />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Filter by Subject
+                  </label>
+                  {isClient && (
+                    <Select
+                     isMulti
+                     options={uniqueSubjects.map(subject => ({ value: subject || "", label: subject || "" }))}
+                     value={selectedSubjects.map(subject => ({ value: subject, label: subject }))}
+                     onChange={(options) => setSelectedSubjects(options ? options.map(option => option.value) : [])}
+                     placeholder="Select subjects"
+                     isClearable
+                     className="w-full"
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        width: "100%",
+                        minWidth: "100%",
+                        backgroundColor: "#ffffff",
+                        border: "1px solid #d1d5db",
+                        borderRadius: "0.5rem",
+                        padding: "0.5rem",
+                        boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                        "&:hover": {
+                          borderColor: "#9ca3af",
+                        },
+                        transition: "all 0.2s",
+                      }),
+                      menu: (base) => ({
+                        ...base,
+                        backgroundColor: "#ffffff",
+                        borderRadius: "0.5rem",
+                        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                        zIndex: 50,
+                      }),
+                      option: (base, state) => ({
+                        ...base,
+                        backgroundColor: state.isSelected
+                          ? "#3b82f6"
+                          : state.isFocused
+                          ? "#f3f4f6"
+                          : "#ffffff",
+                        color: state.isSelected ? "#ffffff" : "#374151",
+                        "&:hover": {
+                          backgroundColor: "#f3f4f6",
+                        },
+                        transition: "all 0.2s",
+                      }),
+                    }}
+                  />
+                  )}
+                </div>
+                <div className="flex items-end">
+                  <Button
+                    onClick={() => {
+                      setSelectedTeachers([]);
+                      setSelectedSubjects([]);
+                    }}
+                    className="px-4 py-2 bg-gradient-to-r mt-5 from-gray-500 to-gray-600 text-white rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all duration-200 hover:scale-105 text-sm font-medium"
+                    disabled={selectedTeachers.length === 0 && selectedSubjects.length === 0}
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
+              </div>
+                           {(selectedTeachers.length > 0 || selectedSubjects.length > 0) && (
+                 <div className="mt-3 text-sm text-gray-600">
+                   Showing {filteredCourses.length} of {courses.length} courses
+                   {/* {selectedTeachers.length > 0 && (
+                     <span className="ml-2">
+                       • Teachers: {selectedTeachers.join(", ")}
+                     </span>
+                   )}
+                   {selectedSubjects.length > 0 && (
+                     <span className="ml-2">
+                       • Subjects: {selectedSubjects.join(", ")}
+                     </span>
+                   )} */}
+                 </div>
+               )}
+            </div>
+
+            {/* Delete All Courses Container */}
+            <div className="flex flex-col gap-2 justify-center">
+              <Button
+                onClick={handleDeleteAll}
+                className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase shadow-lg"
+                disabled={isUpdating || isDeleting || isDeletingAll}
+              >
+                Delete All Courses
+              </Button>
+            </div>
+          </div>
+        )}
+        
+        {filteredCourses.length === 0 ? (
+          <div className="text-center text-gray-600">
+            {courses.length === 0 ? "No courses available." : "No courses match the selected filters."}
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full border-2 border-gray-300 bg-white rounded-lg shadow-lg">
@@ -280,7 +491,7 @@ export default function FacultyData() {
                 </tr>
               </thead>
               <tbody>
-                {courses.map((course, index) => (
+                {filteredCourses.map((course, index) => (
                   <tr
                     key={course.id}
                     className="hover:bg-gray-50 transition-colors"
@@ -782,6 +993,64 @@ export default function FacultyData() {
                   >
                     Delete
                     {isDeleting && (
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
+                      </svg>
+                    )}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogPortal>
+          </AlertDialog>
+        )}
+
+        {/* Delete All Courses Dialog */}
+        {isDeleteAllDialogOpen && (
+          <AlertDialog open={isDeleteAllDialogOpen}>
+            <AlertDialogPortal>
+              <AlertDialogOverlay className="bg-black bg-opacity-50" />
+              <AlertDialogContent className="bg-gradient-to-br from-gray-800 to-gray-900 text-gray-300 border border-gray-700 shadow-lg rounded-xl max-w-3xl mx-auto">
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-2xl font-bold text-indigo-300">
+                    Delete All Courses
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="text-gray-400 text-sm">
+                    Are you sure you want to delete all courses? This action
+                    cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel
+                    onClick={() => setIsDeleteAllDialogOpen(false)}
+                    className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none"
+                    disabled={isDeletingAll}
+                  >
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={confirmDeleteAll}
+                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
+                    disabled={isDeletingAll}
+                  >
+                    Delete All
+                    {isDeletingAll && (
                       <svg
                         className="animate-spin h-5 w-5 text-white"
                         xmlns="http://www.w3.org/2000/svg"

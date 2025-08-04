@@ -62,7 +62,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         if (!isMounted.current) return;
 
         if (authUser) {
-          // Set user data
+          // Set user data directly from auth response
           setUser({
             id: authUser.id,
             email: authUser.email || '',
@@ -74,6 +74,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
               "",
           });
 
+          // Check role from user_roles
           const { data: roleData, error: roleError } = await supabaseClient
             .from("user_roles")
             .select("role")
@@ -116,8 +117,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
         if (event === "SIGNED_IN" && session?.user) {
           setIsAuthenticated(true);
-          
-          // Set user data
+
+          // Set user data directly from session
           setUser({
             id: session.user.id,
             email: session.user.email || '',
@@ -129,6 +130,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
               "",
           });
 
+          // Check role from user_roles
           const { data: roleData, error: roleError } = await supabaseClient
             .from("user_roles")
             .select("role")
