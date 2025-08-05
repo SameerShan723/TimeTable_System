@@ -671,7 +671,7 @@ export default function ClientTimetable() {
         }`
       );
     }
-  }, [selectedVersion, data, filteredData, selectedTeachers]);
+  }, [selectedVersion, selectedTeachers, selectedSubjects, filteredData, data]);
 
   const exportToXLSX = useCallback(() => {
     try {
@@ -749,7 +749,7 @@ export default function ClientTimetable() {
         }`
       );
     }
-  }, [data, selectedVersion, allRooms, filteredData, selectedTeachers]);
+  }, [selectedVersion, selectedTeachers, selectedSubjects, filteredData, data, allRooms]);
 
   const handleSaveAction = useCallback(
     async (

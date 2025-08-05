@@ -52,6 +52,7 @@ export default function ResetPassword({ onBackToLogin }: { onBackToLogin?: () =>
         router.push(`/auth/otp?email=${encodeURIComponent(email)}`);
       }
     } catch (err) {
+      console.error(err);
       setErrorMsg("An unexpected error occurred. Please try again.");
       toast.error("An unexpected error occurred.");
     }

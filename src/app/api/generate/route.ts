@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     const { prompt } = await req.json();
 
     const stream = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4.1",
       stream: true,
       messages: [
         {
@@ -55,6 +55,7 @@ export async function POST(req: NextRequest) {
     }
   }
 }
+
 // import { NextRequest, NextResponse } from "next/server";
 
 // export async function POST(req: NextRequest) {
