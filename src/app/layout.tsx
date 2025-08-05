@@ -5,7 +5,7 @@ import Header from "@/components/header/page";
 import NextTopLoader from "nextjs-toploader";
 import { TimetableVersionProvider } from "@/context/TimetableContext";
 import { AuthProvider } from "@/context/AuthContext";
-import { ToastContainer } from "react-toastify";
+import { Bounce, ToastContainer } from "react-toastify";
 import CourseDataFetcher from "@/lib/serverData/CourseDataFetcher";
 import {
   getTimetableData,
@@ -51,18 +51,20 @@ export default async function RootLayout({
                 >
                   {children}
                   <ToastContainer
-                    position="top-right"
-                    autoClose={3000}
-                    hideProgressBar={false}
-                    newestOnTop={true}
-                    closeOnClick
-                    pauseOnHover
-                    draggable
-                    limit={3}
-                    className="w-full max-w-md mx-auto p-2"
-                    toastClassName="min-h-[40px] mb-1 p-2 rounded-md transition-all duration-300 hover:min-h-[80px] opacity-100 bg-red-500 text-white"
-                  />
+position="top-right"
+autoClose={3000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick={false}
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="colored"
+transition={Bounce}
+/>
                 </TimetableVersionProvider>
+                
               </CourseDataFetcher>
             </div>
           </div>

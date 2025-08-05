@@ -30,6 +30,7 @@ interface TimetableVersionContextType {
   error: string | null;
   setSelectedVersion: (version: number) => Promise<void>;
   saveTimetableData: (data: TimetableData, version?: number) => Promise<number>;
+  saveTimetableDataWithConflicts: (data: TimetableData, version?: number) => Promise<number>;
   deleteVersion: (version: number) => Promise<void>;
   checkConflicts: (data: TimetableData) => void;
 }
@@ -318,6 +319,39 @@ export const TimetableVersionProvider: React.FC<
     [checkConflicts, conflicts]
   );
 
+  const saveTimetableDataWithConflicts = useCallback(
+    async (data: TimetableData, version?: number) => {
+      setLoading(true);
+      try {
+        const response = await fetch("/api/timetable", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ version_number: version, ...data }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to save timetable data");
+        }
+
+        const result = await response.json();
+        const newVersion = result.version_number;
+        setVersions((prev) =>
+          [...new Set([...prev, newVersion])].sort((a, b) => a - b)
+        );
+        setTimetableData(data);
+        return newVersion;
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
+        toast.error("Failed to save timetable data");
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
+
   const deleteVersion = useCallback(
     async (version: number) => {
       setLoading(true);
@@ -389,6 +423,7 @@ export const TimetableVersionProvider: React.FC<
         error,
         setSelectedVersion,
         saveTimetableData,
+        saveTimetableDataWithConflicts,
         deleteVersion,
         checkConflicts,
       }}

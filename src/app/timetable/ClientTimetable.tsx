@@ -53,6 +53,7 @@ export default function ClientTimetable() {
     error: hookError,
     setSelectedVersion,
     saveTimetableData,
+    saveTimetableDataWithConflicts,
     deleteVersion: contextDeleteVersion,
     checkConflicts,
   } = useTimetableVersion();
@@ -485,7 +486,7 @@ export default function ClientTimetable() {
         sessions[sessionIndex] = { Time: time };
       });
       try {
-        const newVersion = await saveTimetableData(
+        const newVersion = await saveTimetableDataWithConflicts(
           updatedData,
           selectedVersion
         );
@@ -494,12 +495,12 @@ export default function ClientTimetable() {
           ...prev,
           [selectedVersion]: null,
         }));
-        toast.success("Class deleted successfully");
+        toast.success("Class deleted successfully!");
         setIsDeleteClassDialogOpen(false);
         setDeleteClassCell(null);
       } catch (error) {
         toast.error(
-          `Failed to delete class ${
+          `Failed to delete class: ${
             error instanceof Error ? error.message : "Unknown error"
           }`
         );
@@ -512,7 +513,7 @@ export default function ClientTimetable() {
     },
     [
       timetableData,
-      saveTimetableData,
+      saveTimetableDataWithConflicts,
       selectedVersion,
       debouncedCheckConflicts,
       setSelectedVersion,

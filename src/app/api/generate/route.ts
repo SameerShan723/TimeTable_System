@@ -3,59 +3,58 @@
 
 
 
-// import { OpenAI } from "openai";
-// import { NextRequest } from "next/server";
+import { OpenAI } from "openai";
+import { NextRequest } from "next/server";
 
-// const openai = new OpenAI({
-//   apiKey: process.env.OPENAI_API_KEY!, // Make sure your .env has OPENAI_API_KEY
-// });
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY!, // Make sure your .env has OPENAI_API_KEY
+});
 
-// export async function POST(req: NextRequest) {
-//   try {
-//     const { prompt } = await req.json();
+export async function POST(req: NextRequest) {
+  try {
+    const { prompt } = await req.json();
 
-//     const stream = await openai.chat.completions.create({
-//       model: "gpt-4.1",
-//       stream: true,
-//       messages: [
-//         {
-//           role: "system",
-//           content: "You are a university timetable generator.",
-//         },
-//         { role: "user", content: prompt },
-//       ],
-//     });
+    const stream = await openai.chat.completions.create({
+      model: "gpt-4o",
+      stream: true,
+      messages: [
+        {
+          role: "system",
+          content: "You are a university timetable generator.",
+        },
+        { role: "user", content: prompt },
+      ],
+    });
 
-//     const encoder = new TextEncoder();
-//     const readable = new ReadableStream({
-//       async start(controller) {
-//         try {
-//           for await (const chunk of stream) {
-//             controller.enqueue(
-//               encoder.encode(chunk.choices[0]?.delta?.content || "")
-//             );
-//           }
-//           controller.close();
-//         } catch (streamError) {
-//           controller.error(streamError);
-//         }
-//       },
-//     });
+    const encoder = new TextEncoder();
+    const readable = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of stream) {
+            controller.enqueue(
+              encoder.encode(chunk.choices[0]?.delta?.content || "")
+            );
+          }
+          controller.close();
+        } catch (streamError) {
+          controller.error(streamError);
+        }
+      },
+    });
 
-//     return new Response(readable, {
-//       headers: { "Content-Type": "text/plain" },
-//     });
-//   } catch (error) {
-//     if (error instanceof Error) {
-//       console.error("API error:", error);
-//       return new Response(JSON.stringify({ error: error.message }), {
-//         status: 500,
-//         headers: { "Content-Type": "application/json" },
-//       });
-//     }
-//   }
-// }
-
+    return new Response(readable, {
+      headers: { "Content-Type": "text/plain" },
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("API error:", error);
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+  }
+}
 // import { NextRequest, NextResponse } from "next/server";
 
 // export async function POST(req: NextRequest) {
@@ -128,3 +127,4 @@
 //     );
 //   }
 // }
+
