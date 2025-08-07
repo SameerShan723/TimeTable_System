@@ -12,7 +12,6 @@ import { TimetableData, Session, EmptySlot, RoomSchedule } from "./types";
 import { Days } from "@/helpers/page";
 import { useTimetableVersion } from "@/context/TimetableContext";
 import { useAuth } from "@/context/AuthContext";
-import { toast } from "react-toastify";
 interface NavbarProps {
   versionId: string;
   versions: number[];
@@ -57,11 +56,10 @@ const Navbar: React.FC<NavbarProps> = ({
   versionPendingData,
   handleSaveAction,
 }) => {
-  const { timetableData, finalizeVersion: contextFinalizeVersion, selectedVersion: contextSelectedVersion } = useTimetableVersion();
+  const { timetableData, finalizeVersion: contextFinalizeVersion } = useTimetableVersion();
   const { isSuperadmin } = useAuth();
   const [finalizeVersion, setFinalizeVersion] = useState(false);
   const [isFinalizing, setIsFinalizing] = useState(false);
-  const [globalVersion, setGlobalVersion] = useState<number | null>(null);
   // Extract unique teachers and subjects from timetableData
   const teacherOptions = useMemo(() => {
     const teachers = new Set<string>();
@@ -114,7 +112,6 @@ const Navbar: React.FC<NavbarProps> = ({
       if (response.ok) {
         const data = await response.json();
         const globalVersionNumber = data.version_number;
-        setGlobalVersion(globalVersionNumber);
         
         // Check if selected version matches global version
         if (selectedVersion === globalVersionNumber) {
@@ -141,10 +138,8 @@ const Navbar: React.FC<NavbarProps> = ({
     setIsFinalizing(true);
     try {
       await contextFinalizeVersion(selectedVersion);
-      // Update global version state after successful finalization
-      setGlobalVersion(selectedVersion);
       // Keep checkbox checked to show it's finalized
-    } catch (error) {
+    } catch {
       // Error is already handled by the context
       setFinalizeVersion(false); // Uncheck if error occurs
     } finally {
