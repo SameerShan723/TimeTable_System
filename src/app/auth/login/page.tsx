@@ -59,11 +59,11 @@ export default function LoginPage() {
       }
 
       closeAuthModal();
+      
+      router.push("/");
+      router.refresh();
       toast.success("Login successful!");
-      setTimeout(() => {
-        router.push("/");
-        router.refresh();
-      }, 300);
+  
     } catch (err) {
       if (err instanceof Error) {
         setErrorMsg("An unexpected error occurred. Please try again.");

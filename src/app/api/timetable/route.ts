@@ -10,6 +10,8 @@ export async function GET(request: NextRequest) {
   const supabase = await createSupabaseServerClient();
   const { searchParams } = new URL(request.url);
   const type = searchParams.get("type");
+  const version = searchParams.get("version");
+  const fetchOnly = searchParams.get("fetch_only") === "true";
 
   if (type === "versions") {
     const { data, error } = await supabase
@@ -80,6 +82,41 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({ version_number: data.version_number });
+  }
+
+  // If version parameter is provided and fetch_only is true, fetch that specific version
+  if (version && fetchOnly) {
+    const versionNumber = parseInt(version);
+    if (isNaN(versionNumber) || versionNumber <= 0) {
+      return NextResponse.json(
+        { error: "Invalid version number" },
+        { status: 400 }
+      );
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("timetable_data")
+        .select("data")
+        .eq("version_number", versionNumber)
+        .single();
+
+      if (error || !data) {
+        return NextResponse.json(
+          { error: "Timetable data not found for specified version" },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json(data.data);
+    } catch (error) {
+      return NextResponse.json(
+        {
+          error: error instanceof Error ? error.message : "Internal server error",
+        },
+        { status: 500 }
+      );
+    }
   }
 
   // Default: Fetch timetable data for global version

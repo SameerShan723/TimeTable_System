@@ -13,6 +13,8 @@ export type Course = {
   subject_type: string | null;
   semester_details: string | null;
   is_regular_teacher: boolean;
+  theory_classes_week: number | null;
+  lab_classes_week: number | null;
 };
 
 export default async function CourseDataFetcher({

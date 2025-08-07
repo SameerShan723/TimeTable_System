@@ -29,6 +29,7 @@ interface TimetableVersionContextType {
   loading: boolean;
   error: string | null;
   setSelectedVersion: (version: number) => Promise<void>;
+  finalizeVersion: (version: number) => Promise<void>;
   saveTimetableData: (data: TimetableData, version?: number) => Promise<number>;
   saveTimetableDataWithConflicts: (data: TimetableData, version?: number) => Promise<number>;
   deleteVersion: (version: number) => Promise<void>;
@@ -114,7 +115,7 @@ export const TimetableVersionProvider: React.FC<
             });
           }
 
-          // Check for subject/section conflicts
+          // Check for section conflicts (same section has multiple classes at same time)
           const sectionConflict = dayData.some((otherRoom: RoomSchedule) => {
             const otherRoomName = Object.keys(otherRoom)[0];
             const otherSessions = otherRoom[otherRoomName] || [];
@@ -122,9 +123,8 @@ export const TimetableVersionProvider: React.FC<
               roomName !== otherRoomName &&
               otherSessions.some(
                 (otherSession: Session | EmptySlot) =>
-                  "Subject" in otherSession &&
+                  "Section" in otherSession &&
                   otherSession.Time === Time &&
-                  otherSession.Subject === Subject &&
                   otherSession.Section === Section
               )
             );
@@ -136,7 +136,7 @@ export const TimetableVersionProvider: React.FC<
               time: Time,
               room: roomName,
               classIndex: index,
-              message: `Subject ${Subject} for section ${Section} is scheduled multiple times at ${Time}`,
+              message: `Section ${Section} has multiple classes scheduled at ${Time}`,
             });
           }
 
@@ -252,21 +252,18 @@ export const TimetableVersionProvider: React.FC<
           throw new Error("User not authenticated");
         }
 
-        const response = await fetch(`/api/timetable?version=${version}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
+        // Just fetch the timetable data for the selected version without setting it as global
+        const response = await fetch(`/api/timetable?version=${version}&fetch_only=true`);
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to update  version");
+          throw new Error(errorData.error || "Failed to fetch version data");
         }
 
+        const data = await response.json();
         setSelectedVersionState(version);
-        await fetchTimetableData(version);
-        toast.success(`Successfully change to Version ${version} `);
+        setTimetableData(data);
+        checkConflicts(data);
+        toast.success(`Successfully loaded Version ${version}`);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to set version");
         toast.error(
@@ -276,7 +273,44 @@ export const TimetableVersionProvider: React.FC<
         setLoading(false);
       }
     },
-    [fetchTimetableData]
+    [checkConflicts]
+  );
+
+  const finalizeVersion = useCallback(
+    async (version: number) => {
+      setLoading(true);
+      try {
+        const {
+          data: { user },
+        } = await supabaseClient.auth.getUser();
+        if (!user) {
+          throw new Error("User not authenticated");
+        }
+
+        const response = await fetch(`/api/timetable?version=${version}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to finalize version");
+        }
+
+        toast.success(`Version ${version} has been finalized as the global version!`);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to finalize version");
+        toast.error(
+          err instanceof Error ? err.message : "Failed to finalize version"
+        );
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
   );
 
   const saveTimetableData = useCallback(
@@ -422,6 +456,7 @@ export const TimetableVersionProvider: React.FC<
         loading,
         error,
         setSelectedVersion,
+        finalizeVersion,
         saveTimetableData,
         saveTimetableDataWithConflicts,
         deleteVersion,

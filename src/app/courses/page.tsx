@@ -78,6 +78,8 @@ const formSchema = z.object({
   domain: z.string().trim().optional(),
   subject_type: z.string().trim().optional(),
   semester_details: z.string().trim().optional(),
+  theory_classes_week: z.number().min(1, { message: "Theory classes per week is required and must be at least 1." }),
+  lab_classes_week: z.number().min(0).default(0),
 });
 
 // Define form values type
@@ -116,6 +118,8 @@ export default function FacultyData() {
       domain: "",
       subject_type: "",
       semester_details: "",
+      theory_classes_week: 1,
+      lab_classes_week: 0,
     },
   });
 
@@ -133,6 +137,8 @@ export default function FacultyData() {
       domain: course.domain || "",
       subject_type: course.subject_type || "",
       semester_details: course.semester_details || "",
+      theory_classes_week: course.theory_classes_week || 1,
+      lab_classes_week: course.lab_classes_week || 0,
     });
   };
 
@@ -232,6 +238,8 @@ export default function FacultyData() {
         domain: values.domain?.trim() || null,
         subject_type: values.subject_type?.trim() || null,
         semester_details: values.semester_details?.trim() || null,
+        theory_classes_week: values.theory_classes_week,
+        lab_classes_week: values.lab_classes_week,
       };
 
       const { data, error } = await supabaseClient
@@ -486,6 +494,12 @@ export default function FacultyData() {
                     Teacher Type
                   </th>
                   <th className="p-3 text-left text-sm font-semibold text-gray-700 border-2 border-gray-300">
+                    Theory Classes/Week
+                  </th>
+                  <th className="p-3 text-left text-sm font-semibold text-gray-700 border-2 border-gray-300">
+                    Lab Classes/Week
+                  </th>
+                  <th className="p-3 text-left text-sm font-semibold text-gray-700 border-2 border-gray-300">
                     Actions
                   </th>
                 </tr>
@@ -528,6 +542,12 @@ export default function FacultyData() {
                     </td>
                     <td className="p-3 text-sm text-gray-600 border-2 border-gray-300">
                       {course.is_regular_teacher ? "Permanent" : "Visiting"}
+                    </td>
+                    <td className="p-3 text-sm text-gray-600 border-2 border-gray-300">
+                      {course.theory_classes_week || "N/A"}
+                    </td>
+                    <td className="p-3 text-sm text-gray-600 border-2 border-gray-300">
+                      {course.lab_classes_week || "N/A"}
                     </td>
                     <td className="p-8 text-sm text-gray-600 border-1 border-gray-300 flex space-x-2">
                       <button
@@ -819,6 +839,62 @@ export default function FacultyData() {
                     />
                     <FormField
                       control={form.control}
+                      name="theory_classes_week"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel className="text-gray-300 text-sm font-medium">
+                            Theory Classes per Week
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min="1"
+                              placeholder="e.g., 2"
+                              className={`mt-1 p-2 w-full bg-gray-700 text-white border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 ${
+                                form.formState.errors.theory_classes_week
+                                  ? "border-red-500"
+                                  : ""
+                              }`}
+                              disabled={isUpdating}
+                              {...field}
+                              onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                              value={field.value}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-red-400 text-xs mt-1" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="lab_classes_week"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel className="text-gray-300 text-sm font-medium">
+                            Lab Classes per Week (Optional)
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min="0"
+                              placeholder="e.g., 1"
+                              className={`mt-1 p-2 w-full bg-gray-700 text-white border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 ${
+                                form.formState.errors.lab_classes_week
+                                  ? "border-red-500"
+                                  : ""
+                              }`}
+                              disabled={isUpdating}
+                              {...field}
+                              onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                              value={field.value}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-red-400 text-xs mt-1" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
                       name="is_regular_teacher"
                       render={({ field }) => (
                         <FormItem className="w-full md:col-span-2">
@@ -917,6 +993,8 @@ export default function FacultyData() {
                             domain: "",
                             subject_type: "",
                             semester_details: "",
+                            theory_classes_week: 1,
+                            lab_classes_week: 0,
                           });
                         }}
                         className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none"
