@@ -140,7 +140,7 @@ const RulesAutocomplete = ({
               <button
                 type="button"
                 onClick={() => handleRemoveRule(rule)}
-                className="ml-1 text-blue-600 hover:text-blue-800 text-xs font-bold hover:scale-110 transition-transform duration-200"
+                className="ml-1 text-[#042954] hover:brightness-110 text-xs font-bold hover:scale-110 transition-transform duration-200"
               >
                 ×
               </button>

@@ -151,7 +151,7 @@ export default function LoginPage() {
 
               <button
                 type="submit"
-                className={`bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 flex items-center justify-center gap-2 transition ${
+                className={`bg-[#042954] text-white py-3 rounded-lg font-semibold hover:brightness-110 flex items-center justify-center gap-2 transition ${
                   isLoading ? "opacity-70 cursor-not-allowed" : ""
                 }`}
                 disabled={isLoading}

@@ -86,7 +86,7 @@ export default function ResetPassword({ onBackToLogin }: { onBackToLogin?: () =>
         <button
           type="submit"
           disabled={loading}
-          className={`bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 flex items-center justify-center gap-2 transition ${
+          className={`bg-[#042954] text-white py-3 rounded-lg font-semibold hover:brightness-110 flex items-center justify-center gap-2 transition ${
             loading ? "opacity-70 cursor-not-allowed" : ""
           }`}
         >
@@ -114,7 +114,7 @@ export default function ResetPassword({ onBackToLogin }: { onBackToLogin?: () =>
         </button>
         <button
           type="button"
-          className="text-blue-600 text-sm font-medium hover:text-blue-800 text-center transition"
+          className="text-[#042954] text-sm font-medium hover:brightness-110 text-center transition"
           onClick={handleBack}
           disabled={loading}
         >

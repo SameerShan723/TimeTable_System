@@ -258,7 +258,7 @@ export default function ExportTimetable({
       <LoaderOverlay isVisible={isExporting} />
       <button
         onClick={() => setShowDropdown(!showDropdown)}
-        className="bg-blue-900 py-2 px-20 cursor-pointer text-[#ccd8e8] hover:bg-blue-700 transition-colors rounded-md flex items-center justify-center gap-2 disabled:opacity-50 text-sm md:text-lg"
+        className="bg-[#042954] py-2 px-20 cursor-pointer text-white hover:brightness-110 transition-colors rounded-md flex items-center justify-center gap-2 disabled:opacity-50 text-sm md:text-lg"
         disabled={isLoading || isExporting}
         aria-label="Export Timetable"
       >

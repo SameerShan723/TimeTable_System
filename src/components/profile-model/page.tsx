@@ -47,7 +47,7 @@ export default function ProfileModal({
                       className="w-full h-full object-cover"
                     />
                   ) : user?.email ? (
-                    <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-semibold text-2xl uppercase">
+                    <div className="w-full h-full bg-[#042954] text-white flex items-center justify-center font-semibold text-2xl uppercase">
                       {user.email.charAt(0)}
                     </div>
                   ) : (
@@ -75,7 +75,7 @@ export default function ProfileModal({
                 <p className="text-xs text-gray-600 truncate max-w-full px-2">
                   {user.email}
                 </p>
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#042954]/10 text-[#042954]">
                   Super Admin
                 </span>
               </div>
@@ -89,8 +89,8 @@ export default function ProfileModal({
               className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150 flex items-center space-x-3 group"
               onClick={handleProfileClick}
             >
-              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-8 h-8 rounded-full bg-[#042954]/10 flex items-center justify-center group-hover:bg-[#042954]/20 transition-colors">
+                <svg className="w-4 h-4 text-[#042954]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
@@ -144,7 +144,7 @@ export default function ProfileModal({
           <div className="p-4">
             <button
               onClick={onLogin}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+              className="w-full bg-[#042954] hover:brightness-110 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />

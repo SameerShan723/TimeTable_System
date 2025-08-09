@@ -27,11 +27,11 @@ const formSchema = z.object({
   courseDetails: z
     .string()
     .trim()
-    .min(5, { message: "Course details must be at least 5 characters." }),
+    .min(3, { message: "Course details must be at least 3 characters." }),
   section: z
     .string()
     .trim()
-    .min(5, { message: "Section must be at least 5 characters." }),
+    .min(3, { message: "Section must be at least 3 characters." }),
   semester: z
     .string()
     .trim()
@@ -47,7 +47,7 @@ const formSchema = z.object({
   facultyAssigned: z
     .string()
     .trim()
-    .min(5, { message: "Faculty name must be at least 5 characters." }),
+    .min(3, { message: "Faculty name must be at least 3 characters." }),
   isRegularTeacher: z.boolean().default(false),
   domain: z.string().optional(),
   subjectCode: z.string().optional(),
@@ -75,6 +75,7 @@ export default function CourseForm() {
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { courses, setCourses } = useCourses(); // Access CourseContext
+  const [activeTab, setActiveTab] = useState<"manual" | "excel">("manual");
 
   // Semester options for react-select
   const semesterOptions = [
@@ -167,6 +168,16 @@ export default function CourseForm() {
   const normalize = (v: unknown) =>
     typeof v === "string" ? v.trim() : v === undefined ? "" : v;
 
+  const getCell = (
+    row: Record<string, unknown>,
+    ...aliases: Array<string>
+  ): unknown => {
+    for (const key of aliases) {
+      if (Object.prototype.hasOwnProperty.call(row, key)) return row[key];
+    }
+    return undefined;
+  };
+
   const parseTeacherType = (v: unknown): boolean => {
     const s = String(v ?? "").toLowerCase();
     if (["permanent", "regular", "yes", "true", "1"].includes(s)) return true;
@@ -182,33 +193,81 @@ export default function CourseForm() {
   const validateAndMap = (
     row: Record<string, unknown>,
   ): { errors: string[]; insertable?: CourseInsert } => {
-    const errors: string[] = [];
-    const subject_code = String(normalize(row["Subject Code"])) || null;
-    const course_details = String(normalize(row["Course Details"])) as string;
-    const section = String(normalize(row["Section"])) as string;
-    const semester = toInt(normalize(row["Semester"])) as number;
-    const credit_hour = toInt(normalize(row["Credit Hour"])) as number;
-    const faculty_assigned = String(normalize(row["Faculty Assigned"])) as string;
-    const is_regular_teacher = parseTeacherType(normalize(row["Teacher Type"]));
-    const domainRaw = String(normalize(row["Domain"])) as string;
-    const subject_typeRaw = String(normalize(row["Subject Type"])) as string;
-    const semester_detailsRaw = String(normalize(row["Semester Details"])) as string;
-    const theory_classes_week = toInt(normalize(row["Theory Classes/Week"])) as number;
-    const lab_classes_week = toInt(normalize(row["Lab Classes/Week"])) as number;
+    // Remove validation: always try to map and provide sensible defaults
+    const subject_code = String(
+      normalize(
+        getCell(row, "subject_code", "Subject Code")
+      )
+    ) || null;
 
-    if (!course_details || course_details.length < 5)
-      errors.push("Course Details min length 5");
-    if (!section || section.length < 5) errors.push("Section min length 5");
-    if (!Number.isFinite(semester) || semester < 1 || semester > 9)
-      errors.push("Semester must be 1-9");
-    if (!Number.isFinite(credit_hour) || credit_hour < 1 || credit_hour > 9)
-      errors.push("Credit Hour must be 1-9");
-    if (!faculty_assigned || faculty_assigned.length < 5)
-      errors.push("Faculty Assigned min length 5");
-    const tWeek = Number.isFinite(theory_classes_week) && theory_classes_week >= 1 ? theory_classes_week : 1;
-    const lWeek = Number.isFinite(lab_classes_week) && lab_classes_week >= 0 ? lab_classes_week : 0;
+    const course_details = String(
+      normalize(
+        getCell(row, "course_details", "Course Details")
+      )
+    );
 
-    if (errors.length) return { errors };
+    const section = String(
+      normalize(
+        getCell(row, "section", "Section")
+      )
+    );
+
+    const semesterRaw = toInt(
+      normalize(
+        getCell(row, "semester", "Semester")
+      )
+    ) as number;
+    const creditHourRaw = toInt(
+      normalize(
+        getCell(row, "credit_hour", "Credit Hour")
+      )
+    ) as number;
+
+    const faculty_assigned = String(
+      normalize(
+        getCell(row, "faculty_assigned", "Faculty Assigned")
+      )
+    );
+
+    const is_regular_teacher = parseTeacherType(
+      normalize(
+        getCell(row, "is_regular_teacher", "Teacher Type")
+      )
+    );
+
+    const domainRaw = String(
+      normalize(
+        getCell(row, "domain", "Domain")
+      )
+    ) as string;
+
+    const subject_typeRaw = String(
+      normalize(
+        getCell(row, "subject_type", "Subject Type")
+      )
+    ) as string;
+
+    const semester_detailsRaw = String(
+      normalize(
+        getCell(row, "semester_details", "Semester Details")
+      )
+    ) as string;
+
+    const theoryClassesRaw = toInt(
+      normalize(
+        getCell(row, "theory_classes_week", "Theory Classes/Week")
+      )
+    ) as number;
+    const labClassesRaw = toInt(
+      normalize(
+        getCell(row, "lab_classes_week", "Lab Classes/Week")
+      )
+    ) as number;
+
+    const semester = Number.isFinite(semesterRaw) && semesterRaw >= 1 ? semesterRaw : 1;
+    const credit_hour = Number.isFinite(creditHourRaw) && creditHourRaw >= 1 ? creditHourRaw : 1;
+    const theory_classes_week = Number.isFinite(theoryClassesRaw) && theoryClassesRaw >= 1 ? theoryClassesRaw : 1;
+    const lab_classes_week = Number.isFinite(labClassesRaw) && labClassesRaw >= 0 ? labClassesRaw : 0;
 
     return {
       errors: [],
@@ -223,8 +282,8 @@ export default function CourseForm() {
         domain: domainRaw ? domainRaw : null,
         subject_type: subject_typeRaw ? subject_typeRaw : null,
         semester_details: semester_detailsRaw ? semester_detailsRaw : null,
-        theory_classes_week: tWeek,
-        lab_classes_week: lWeek,
+        theory_classes_week,
+        lab_classes_week,
       },
     };
   };
@@ -254,10 +313,7 @@ export default function CourseForm() {
       if (previews.length === 0) {
         toast.warn("No data rows found in sheet");
       } else {
-        const invalid = previews.filter((p) => p.errors.length > 0).length;
-        if (invalid)
-          toast.warn(`${invalid} row(s) have validation issues. Fix template and re-upload or proceed to insert only valid rows.`);
-        else toast.success("File parsed successfully");
+        toast.success("File parsed successfully");
       }
     } catch (e) {
       console.error(e);
@@ -346,14 +402,43 @@ export default function CourseForm() {
       <h1 className="flex items-center justify-center text-4xl font-bold pb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-900 to-indigo-600">
         Add New Course
       </h1>
-      <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 space-y-5">
+      {/* Tabs */}
+      <div className="flex items-center justify-center">
+        <div className="inline-flex rounded-lg bg-gray-100 p-1">
+          <button
+            type="button"
+            onClick={() => setActiveTab("manual")}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition ${
+              activeTab === "manual"
+                ? "bg-white text-gray-900 shadow"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            Manual
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("excel")}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition ${
+              activeTab === "excel"
+                ? "bg-white text-gray-900 shadow"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            Excel
+          </button>
+        </div>
+      </div>
+
+      {activeTab === "excel" && (
+        <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 space-y-5">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="space-y-1">
             <p className="text-lg font-semibold text-gray-900">Bulk import (Excel)</p>
             <p className="text-sm text-gray-600">Upload .xlsx/.xls using the official template.</p>
           </div>
           <div className="flex gap-2">
-            <Button type="button" onClick={downloadTemplate} className="bg-blue-900 text-white hover:bg-blue-700">
+            <Button type="button" onClick={downloadTemplate}>
               Download Template
             </Button>
             {bulkPreview.length > 0 && (
@@ -423,7 +508,6 @@ export default function CourseForm() {
                 type="button"
                 disabled={isBulkSaving || bulkPreview.every((p) => p.errors.length > 0)}
                 onClick={handleBulkInsert}
-                className="bg-blue-900 text-white hover:bg-blue-700"
               >
                 {isBulkSaving ? "Saving..." : "Insert valid rows"}
               </Button>
@@ -467,8 +551,11 @@ export default function CourseForm() {
             </table>
           </div>
         )}
-      </div>
-      <Form {...form}>
+        </div>
+      )}
+
+      {activeTab === "manual" && (
+        <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 bg-white p-8 rounded-2xl shadow-lg border border-gray-100  overflow-y-auto"
@@ -749,12 +836,13 @@ export default function CourseForm() {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full h-12 text-white bg-gradient-to-r from-blue-900 to-indigo-900 hover:from-blue-700 hover:to-indigo-700 rounded-lg font-semibold text-lg transition-all duration-200 shadow-md"
+            className="w-full h-12 text-white rounded-lg font-semibold text-lg"
           >
             {isSubmitting ? "Submitting..." : "Submit"}
           </Button>
         </form>
       </Form>
+      )}
     </div>
   );
 }

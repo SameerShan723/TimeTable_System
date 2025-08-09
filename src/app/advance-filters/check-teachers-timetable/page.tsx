@@ -234,7 +234,7 @@ export default function TeacherTimetable(): JSX.Element {
         </div>
         <div className="flex gap-3 flex-col lg:flex-row md:flex-row">
           <button
-            className="bg-blue-900 py-2 lg:px-20 px-12 md:px-16 rounded-md cursor-pointer text-[#ccd8e8] disabled:opacity-50 hover:bg-blue-800 transition-colors"
+            className="bg-[#042954] py-2 lg:px-20 px-12 md:px-16 rounded-md cursor-pointer text-white disabled:opacity-50 hover:brightness-110 transition-colors"
             onClick={handleSearch}
             disabled={loading}
           >

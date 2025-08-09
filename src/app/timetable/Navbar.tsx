@@ -352,7 +352,7 @@ const Navbar: React.FC<NavbarProps> = ({
             </button>
             <button
               onClick={(e) => handleSaveAction("same", e)}
-              className="bg-blue-900 hover:bg-blue-800 text-[#9EA8F5] px-3 py-1.5 rounded flex items-center gap-2 disabled:opacity-50 text-sm "
+              className="bg-blue-900 hover:brightness-110 text-white px-3 py-1.5 rounded flex items-center gap-2 disabled:opacity-50 text-sm "
               disabled={isSaving !== "none"}
             >
               Save in Same Version
@@ -381,7 +381,7 @@ const Navbar: React.FC<NavbarProps> = ({
             </button>
             <button
               onClick={(e) => handleSaveAction("new", e)}
-              className="bg-blue-900 hover:bg-blue-800 text-[#9EA8F5] px-3 py-1.5 rounded flex items-center gap-2 disabled:opacity-50 text-xs sm:text-sm"
+              className="bg-blue-900 hover:brightness-110 text-white px-3 py-1.5 rounded flex items-center gap-2 disabled:opacity-50 text-xs sm:text-sm"
               disabled={isSaving !== "none"}
             >
               Save in New Version
@@ -413,7 +413,7 @@ const Navbar: React.FC<NavbarProps> = ({
         <div className="relative" ref={exportDropdownRef}>
           <button
             onClick={() => setShowExportDropdown(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#042954] hover:brightness-110 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isVersionLoading}
           >
             <FaDownload className="text-lg" />

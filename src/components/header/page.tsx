@@ -82,7 +82,7 @@ export default function Header() {
                 className="w-full h-full object-cover rounded-full"
               />
             ) : user?.email ? (
-              <div className="w-full h-full rounded-full bg-[#1a73e8] text-white flex items-center justify-center font-medium text-lg md:text-xl uppercase">
+              <div className="w-full h-full rounded-full bg-[#042954] text-white flex items-center justify-center font-medium text-lg md:text-xl uppercase">
                 {user.email.charAt(0)}
               </div>
             ) : (

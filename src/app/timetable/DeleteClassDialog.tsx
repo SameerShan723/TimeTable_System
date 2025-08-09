@@ -53,7 +53,7 @@ const DeleteClassDialog: React.FC<DeleteClassDialogProps> = ({
                 e.preventDefault();
                 onConfirm();
               }}
-              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
+              className="px-4 py-2 bg-[#042954] hover:brightness-110 text-white rounded-lg transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
               disabled={isLoading}
             >
               Delete

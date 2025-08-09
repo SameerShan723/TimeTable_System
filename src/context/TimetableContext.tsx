@@ -249,15 +249,10 @@ export const TimetableVersionProvider: React.FC<
     async (version: number) => {
       setLoading(true);
       try {
-        const {
-          data: { user },
-        } = await supabaseClient.auth.getUser();
-        if (!user) {
-          throw new Error("User not authenticated");
-        }
-
-        // Just fetch the timetable data for the selected version without setting it as global
-        const response = await fetch(`/api/timetable?version=${version}&fetch_only=true`);
+        // Fetch the timetable data for the selected version without changing the global version
+        const response = await fetch(
+          `/api/timetable?version=${version}&fetch_only=true`
+        );
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || "Failed to fetch version data");
@@ -269,7 +264,9 @@ export const TimetableVersionProvider: React.FC<
         checkConflicts(data);
         toast.success(`Successfully loaded Version ${version}`);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to set version");
+        setError(
+          err instanceof Error ? err.message : "Failed to set version"
+        );
         toast.error(
           err instanceof Error ? err.message : "Failed to set version"
         );

@@ -237,7 +237,7 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
                   }}
                 />
               ) : (
-                <div className="w-24 h-24 rounded-full bg-blue-600 text-white flex items-center justify-center text-4xl font-bold mb-2">
+                <div className="w-24 h-24 rounded-full bg-[#042954] text-white flex items-center justify-center text-4xl font-bold mb-2">
                   {getInitial(userDetails.email)}
                 </div>
               )}
@@ -255,8 +255,8 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
               <button
                 className={`flex-1 py-2 text-center font-semibold ${
                   activeTab === "email"
-                    ? "border-b-2 border-blue-600 text-blue-600"
-                    : "text-gray-500 hover:text-blue-600"
+                    ? "border-b-2 border-[#042954] text-[#042954]"
+                    : "text-gray-500 hover:text-[#042954]"
                 }`}
                 onClick={() => setActiveTab("email")}
               >
@@ -265,8 +265,8 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
               <button
                 className={`flex-1 py-2 text-center font-semibold ${
                   activeTab === "password"
-                    ? "border-b-2 border-blue-600 text-blue-600"
-                    : "text-gray-500 hover:text-blue-600"
+                    ? "border-b-2 border-[#042954] text-[#042954]"
+                    : "text-gray-500 hover:text-[#042954]"
                 }`}
                 onClick={() => setActiveTab("password")}
               >
@@ -305,7 +305,7 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
                     />
                     <button
                       type="button"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#042954]"
                       onClick={() =>
                         setShowCurrentPassword(!showCurrentPassword)
                       }
@@ -322,7 +322,7 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
                   </div>
                   <button
                     type="submit"
-                    className={`bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 flex items-center justify-center gap-2 ${
+                  className={`bg-[#042954] text-white py-2 rounded-lg font-semibold hover:brightness-110 flex items-center justify-center gap-2 ${
                       isLoading ? "opacity-70 cursor-not-allowed" : ""
                     }`}
                     disabled={isLoading}
@@ -375,7 +375,7 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
                       />
                       <button
                         type="button"
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#042954]"
                         onClick={() =>
                           setShowCurrentPassword(!showCurrentPassword)
                         }
@@ -405,7 +405,7 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
                     />
                     <button
                       type="button"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#042954]"
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={
                         showPassword ? "Hide password" : "Show password"
@@ -427,7 +427,7 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
                     />
                     <button
                       type="button"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#042954]"
                       onClick={() =>
                         setShowConfirmPassword(!showConfirmPassword)
                       }
@@ -446,7 +446,7 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
                   </div>
                   <button
                     type="submit"
-                    className={`bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 flex items-center justify-center gap-2 ${
+                  className={`bg-[#042954] text-white py-2 rounded-lg font-semibold hover:brightness-110 flex items-center justify-center gap-2 ${
                       isLoading ? "opacity-70 cursor-not-allowed" : ""
                     }`}
                     disabled={isLoading}

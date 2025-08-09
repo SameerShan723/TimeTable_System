@@ -67,7 +67,7 @@ export default function UpdatePasswordPage() {
           <p className="text-red-600 text-sm text-center">{error}</p>
           <button
             type="button"
-            className="text-blue-600 text-sm font-medium hover:text-blue-800 text-center w-full mt-4 transition"
+            className="text-[#042954] text-sm font-medium hover:brightness-110 text-center w-full mt-4 transition"
             onClick={handleBackToLogin}
           >
             Back to Login
@@ -123,7 +123,7 @@ export default function UpdatePasswordPage() {
           <button
             type="submit"
             disabled={updating}
-            className={`bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 flex items-center justify-center gap-2 transition ${
+            className={`bg-[#042954] text-white py-3 rounded-lg font-semibold hover:brightness-110 flex items-center justify-center gap-2 transition ${
               updating ? "opacity-70 cursor-not-allowed" : ""
             }`}
           >
@@ -151,7 +151,7 @@ export default function UpdatePasswordPage() {
           </button>
           <button
             type="button"
-            className="text-blue-600 text-sm font-medium hover:text-blue-800 text-center transition"
+            className="text-[#042954] text-sm font-medium hover:brightness-110 text-center transition"
             onClick={handleBackToLogin}
             disabled={updating}
           >

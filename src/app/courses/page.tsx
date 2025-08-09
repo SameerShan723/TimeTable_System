@@ -414,7 +414,7 @@ export default function FacultyData() {
                       setSelectedTeachers([]);
                       setSelectedSubjects([]);
                     }}
-                    className="px-4 py-2 bg-gradient-to-r mt-5 from-gray-500 to-gray-600 text-white rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all duration-200 hover:scale-105 text-sm font-medium"
+                    className="px-4 py-2 mt-5 transition-all duration-200 hover:scale-105 text-sm font-medium"
                     disabled={selectedTeachers.length === 0 && selectedSubjects.length === 0}
                   >
                     Clear Filters
@@ -442,7 +442,7 @@ export default function FacultyData() {
             <div className="flex flex-col gap-2 justify-center">
               <Button
                 onClick={handleDeleteAll}
-                className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase shadow-lg"
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase shadow-lg"
                 disabled={isUpdating || isDeleting || isDeletingAll}
               >
                 Delete All Courses
@@ -552,14 +552,14 @@ export default function FacultyData() {
                     <td className="p-8 text-sm text-gray-600 border-1 border-gray-300 flex space-x-2">
                       <button
                         onClick={() => handleEdit(course)}
-                        className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-indigo-600 text-[#9ea8b5] rounded-lg hover:from-indigo-600 hover:to-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium "
+                        className="px-4 py-2 transition-all duration-200 hover:scale-105 text-sm font-medium bg-[#042954] text-white rounded-lg"
                         disabled={isUpdating || isDeleting}
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(course.id)}
-                        className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-[#9ea8b5] rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 hover:scale-105 text-sm font-medium "
+                        className="px-4 py-2 transition-all duration-200 hover:scale-105 text-sm font-medium bg-red-600 hover:bg-red-700 text-white rounded-lg"
                         disabled={isUpdating || isDeleting}
                       >
                         Delete
@@ -1008,7 +1008,7 @@ export default function FacultyData() {
                       <AlertDialogAction asChild disabled={isUpdating}>
                         <Button
                           type="submit"
-                          className="px-4 py-2 bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
+                          className="px-4 py-2 text-white rounded-lg transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
                           disabled={isUpdating}
                         >
                           Save Changes
@@ -1069,7 +1069,7 @@ export default function FacultyData() {
                   </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={confirmDelete}
-                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
+                    className="px-4 py-2 bg-[#042954] hover:brightness-110 text-white rounded-lg transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
                     disabled={isDeleting}
                   >
                     Delete
@@ -1127,7 +1127,7 @@ export default function FacultyData() {
                   </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={confirmDeleteAll}
-                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
+                    className="px-4 py-2 bg-[#042954] hover:brightness-110 text-white rounded-lg transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
                     disabled={isDeletingAll}
                   >
                     Delete All
