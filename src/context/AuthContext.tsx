@@ -58,7 +58,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
       try {
         const {
           data: { session },
-          error: sessionError,
         } = await supabaseClient.auth.getSession();
 
         if (!isMounted.current) return;

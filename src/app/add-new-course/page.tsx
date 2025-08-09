@@ -181,7 +181,6 @@ export default function CourseForm() {
 
   const validateAndMap = (
     row: Record<string, unknown>,
-    idx: number
   ): { errors: string[]; insertable?: CourseInsert } => {
     const errors: string[] = [];
     const subject_code = String(normalize(row["Subject Code"])) || null;
@@ -242,7 +241,7 @@ export default function CourseForm() {
       });
 
       const previews = rows.map((r, i) => {
-        const mapped = validateAndMap(r, i + 2);
+        const mapped = validateAndMap(r,);
         return {
           rowNumber: i + 2,
           data: r,
