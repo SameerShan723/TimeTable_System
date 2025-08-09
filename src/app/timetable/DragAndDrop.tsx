@@ -94,7 +94,7 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
     } ${
       !isMobile && isDraggingOver && isEmpty ? "bg-gray-100 opacity-50" : ""
     } ${
-      !isLoading && conflicts && conflicts.length > 0
+      isSuperadmin && !isLoading && conflicts && conflicts.length > 0
         ? "border-2 border-red-500"
         : ""
     }`;
@@ -156,7 +156,7 @@ export const DroppableCell: React.FC<DroppableCellProps> = React.memo(
                 )}
               </div>
             )}
-            {!isLoading && conflicts && conflicts.length > 0 && (
+            {isSuperadmin && !isLoading && conflicts && conflicts.length > 0 && (
               <div
                 className="absolute top-1 right-6"
                 onMouseEnter={() => setShowConflict(true)}
@@ -271,7 +271,7 @@ export const DroppableDiv: React.FC<DroppableDivProps> = React.memo(
     } ${
       !isMobile && isDraggingOver && isEmpty ? "bg-gray-100 opacity-50" : ""
     } ${
-      !isLoading && conflicts && conflicts.length > 0
+      isSuperadmin && !isLoading && conflicts && conflicts.length > 0
         ? "border-2 border-red-500"
         : ""
     }`;
@@ -333,7 +333,7 @@ export const DroppableDiv: React.FC<DroppableDivProps> = React.memo(
                 )}
               </div>
             )}
-            {!isLoading && conflicts && conflicts.length > 0 && (
+            {isSuperadmin && !isLoading && conflicts && conflicts.length > 0 && (
               <div className="absolute top-1 right-6 group">
                 <FaInfoCircle className="w-4 h-4 text-red-500 cursor-pointer" />
                 <div className="hidden group-hover:block absolute z-20 bg-gray-800 text-white text-xs p-2 rounded shadow-lg right-0 top-5 w-64">

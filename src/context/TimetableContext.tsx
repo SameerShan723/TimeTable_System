@@ -14,6 +14,7 @@ import {
   RoomSchedule,
 } from "@/app/timetable/types";
 import { supabaseClient } from "@/lib/supabase/supabase";
+import { useAuth } from "@/context/AuthContext";
 interface Conflict {
   day: keyof TimetableData;
   time: string;
@@ -52,6 +53,7 @@ const TimetableVersionContext = createContext<
 export const TimetableVersionProvider: React.FC<
   TimetableVersionProviderProps
 > = ({ children, initialData }) => {
+  const { isSuperadmin } = useAuth();
   const [versions, setVersions] = useState<number[]>(
     initialData.versions || []
   );
@@ -166,9 +168,11 @@ export const TimetableVersionProvider: React.FC<
     setConflicts(newConflicts);
 
     if (newConflicts.length > 0) {
-      toast.error("Conflicts detected in the timetable. Please resolve them.");
+      if (isSuperadmin) {
+        toast.error("Conflicts detected in the timetable. Please resolve them.");
+      }
     }
-  }, []);
+  }, [isSuperadmin]);
 
   const fetchTimetableData = useCallback(
     async (version: number) => {

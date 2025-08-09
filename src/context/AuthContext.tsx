@@ -57,13 +57,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     const syncAuthState = async () => {
       try {
         const {
-          data: { user: authUser },
-        } = await supabaseClient.auth.getUser();
+          data: { session },
+          error: sessionError,
+        } = await supabaseClient.auth.getSession();
+
         if (!isMounted.current) return;
 
+        // If there's no session, this is a normal unauthenticated state.
+        // Avoid noisy "Auth session missing!" logs.
+        if (!session) {
+          setIsAuthenticated(false);
+          setIsSuperadmin(false);
+          setCanEdit(false);
+          setUser(null);
+          return;
+        }
+
+        const authUser = session.user;
         if (authUser) {
           // Set user data directly from auth response
-          setUser({
+          const userData = {
             id: authUser.id,
             email: authUser.email || '',
             name: authUser.user_metadata?.full_name || authUser.user_metadata?.name,
@@ -72,7 +85,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
               authUser.user_metadata?.profile_picture ||
               authUser.user_metadata?.picture ||
               "",
-          });
+          };
+          setUser(userData);
+          setIsAuthenticated(true);
 
           // Check role from user_roles
           const { data: roleData, error: roleError } = await supabaseClient
@@ -81,6 +96,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
             .eq("id", authUser.id)
             .eq("role", "superadmin")
             .maybeSingle();
+          
           if (!isMounted.current) return;
 
           if (roleError) {
@@ -88,9 +104,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
             setIsSuperadmin(false);
             setCanEdit(false);
           } else {
-            setIsSuperadmin(!!roleData);
-            setCanEdit(!!roleData);
-            setIsAuthenticated(true);
+            const isSuperadminUser = !!roleData;
+            setIsSuperadmin(isSuperadminUser);
+            setCanEdit(isSuperadminUser);
           }
         } else {
           setIsAuthenticated(false);
@@ -99,7 +115,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
           setUser(null);
         }
       } catch (error) {
-        console.error("Error syncing auth state:", error);
+        // Ignore expected missing-session errors; log others
+        if (
+          !(error instanceof Error &&
+            (error.name === 'AuthSessionMissingError' ||
+              /Auth session missing/i.test(error.message)))
+        ) {
+          console.error("Error syncing auth state:", error);
+        }
         if (!isMounted.current) return;
         setIsAuthenticated(false);
         setIsSuperadmin(false);
@@ -108,18 +131,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
       }
     };
 
+    // Initial sync
     syncAuthState();
 
     // Subscribe to auth state changes for real-time updates
     const { data: authListener } = supabaseClient.auth.onAuthStateChange(
       async (event, session) => {
+        console.log("Auth state change:", event, session?.user?.email);
+        
         if (!isMounted.current) return;
 
         if (event === "SIGNED_IN" && session?.user) {
           setIsAuthenticated(true);
 
           // Set user data directly from session
-          setUser({
+          const userData = {
             id: session.user.id,
             email: session.user.email || '',
             name: session.user.user_metadata?.full_name || session.user.user_metadata?.name,
@@ -128,21 +154,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
               session.user.user_metadata?.profile_picture ||
               session.user.user_metadata?.picture ||
               "",
-          });
+          };
+          setUser(userData);
 
           // Check role from user_roles
-          const { data: roleData, error: roleError } = await supabaseClient
-            .from("user_roles")
-            .select("role")
-            .eq("id", session.user.id)
-            .eq("role", "superadmin")
-            .maybeSingle();
-          if (!isMounted.current) return;
+          try {
+            const { data: roleData, error: roleError } = await supabaseClient
+              .from("user_roles")
+              .select("role")
+              .eq("id", session.user.id)
+              .eq("role", "superadmin")
+              .maybeSingle();
+            
+            if (!isMounted.current) return;
 
-          if (!roleError && roleData) {
-            setIsSuperadmin(true);
-            setCanEdit(true);
-          } else {
+            if (roleError) {
+              console.error("Error checking role on auth change:", roleError);
+              setIsSuperadmin(false);
+              setCanEdit(false);
+            } else {
+              const isSuperadminUser = !!roleData;
+              setIsSuperadmin(isSuperadminUser);
+              setCanEdit(isSuperadminUser);
+            }
+          } catch (error) {
+            console.error("Error checking role:", error);
             setIsSuperadmin(false);
             setCanEdit(false);
           }
@@ -151,6 +187,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
           setIsSuperadmin(false);
           setCanEdit(false);
           setUser(null);
+        } else if (event === "TOKEN_REFRESHED") {
+          // Re-sync on token refresh regardless; session may have changed
+          syncAuthState();
         }
       }
     );
@@ -166,8 +205,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
   const logout = async () => {
     try {
+      // Clear client session first
       await supabaseClient.auth.signOut();
-      // State will be updated by the auth state change listener
+      // Clear server cookies/session
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      // Local state will also be updated by the auth state change listener
     } catch (error) {
       console.error("Error logging out:", error);
       throw error;

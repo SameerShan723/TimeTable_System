@@ -7,11 +7,12 @@ export async function middleware(request: NextRequest) {
   const supabase = createMiddlewareClient({ req: request, res });
   const { data: { session } } = await supabase.auth.getSession();
 
-  // Bypass auth checks for /update-password, /login, and /reset-password
+  // Bypass auth checks for auth-related routes
   if (
-    request.nextUrl.pathname === "/update-password" ||
-    request.nextUrl.pathname === "/login" ||
-    request.nextUrl.pathname === "/reset-password"
+    request.nextUrl.pathname === "/auth/update-password" ||
+    request.nextUrl.pathname === "/auth/login" ||
+    request.nextUrl.pathname === "/auth/reset-password" ||
+    request.nextUrl.pathname === "/auth/otp"
   ) {
     return res;
   }
@@ -21,11 +22,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // Protect /course, /AddNewCourse, /generateTimetable for superadmin only
+  // Protect /course, /add-new-course, /generate-timetable for superadmin only
   if (
-    request.nextUrl.pathname.startsWith("/course") ||
-    request.nextUrl.pathname.startsWith("/AddNewCourse") ||
-    request.nextUrl.pathname.startsWith("/generateTimetable")
+    request.nextUrl.pathname.startsWith("/courses") ||
+    request.nextUrl.pathname.startsWith("/add-new-course") ||
+    request.nextUrl.pathname.startsWith("/generate-timetable")
   ) {
     if (!session) {
       return NextResponse.redirect(new URL("/", request.url));
@@ -39,13 +40,13 @@ export async function middleware(request: NextRequest) {
       .maybeSingle();
 
     if (roleError || !roleData) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.redirect(new URL("/auth/login", request.url));
     }
   }
 
-  // Redirect logged-in users from /login to /dashboard
-  if (session && request.nextUrl.pathname === "/login") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  // Redirect logged-in users from /auth/login to /
+  if (session && request.nextUrl.pathname === "/auth/login") {
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   return res;
@@ -54,12 +55,10 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/",
-    "/login",
-    "/reset-password",
-    "/update-password",
+    "/auth/:path*",
     "/protected/:path*",
-    "/course/:path*",
-    "/AddNewCourse/:path*",
-    "/generateTimetable/:path*",
+    "/courses/:path*",
+    "/add-new-course/:path*",
+    "/generate-timetable/:path*",
   ],
 };

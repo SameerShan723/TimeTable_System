@@ -15,8 +15,15 @@ export default function LoginPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const { closeAuthModal } = useAuth();
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
+
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/");
+    }
+  }, [isAuthenticated, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +50,14 @@ export default function LoginPage() {
         return;
       }
 
+      if (!data.user) {
+        setErrorMsg("Login failed. Please try again.");
+        toast.error("Login failed. Please try again.");
+        setIsLoading(false);
+        return;
+      }
+
+      // Check if user is superadmin
       const { data: roleData, error: roleError } = await supabaseClient
         .from("user_roles")
         .select("role")
@@ -50,7 +65,16 @@ export default function LoginPage() {
         .eq("role", "superadmin")
         .maybeSingle();
 
-      if (roleError || !roleData) {
+      if (roleError) {
+        console.error("Error checking user role:", roleError);
+        setErrorMsg("Error verifying user permissions. Please try again.");
+        toast.error("Error verifying user permissions. Please try again.");
+        await supabaseClient.auth.signOut();
+        setIsLoading(false);
+        return;
+      }
+
+      if (!roleData) {
         setErrorMsg("You are not authorized as a superadmin.");
         toast.error("You are not authorized as a superadmin.");
         await supabaseClient.auth.signOut();
@@ -58,18 +82,19 @@ export default function LoginPage() {
         return;
       }
 
-      closeAuthModal();
-      
-      router.push("/");
-      router.refresh();
+      // Success - redirect
       toast.success("Login successful!");
+      
+
+        router.push("/");
+    
   
     } catch (err) {
-      if (err instanceof Error) {
-        setErrorMsg("An unexpected error occurred. Please try again.");
-        toast.error("An unexpected error occurred.");
-        setIsLoading(false);
-      }
+      console.error("Login error:", err);
+      setErrorMsg("An unexpected error occurred. Please try again.");
+      toast.error("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 

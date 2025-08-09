@@ -93,18 +93,18 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
     <AlertDialog open={isOpen}>
       <AlertDialogPortal>
         <AlertDialogOverlay className="bg-black bg-opacity-50" />
-        <AlertDialogContent className="bg-gradient-to-br from-gray-800 to-gray-900 text-gray-300 border border-gray-700 shadow-lg rounded-xl max-w-3xl mx-auto">
+        <AlertDialogContent className="bg-white text-gray-800 border border-gray-200 shadow-lg rounded-2xl max-w-3xl mx-auto">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-2xl font-bold text-indigo-300">
+            <AlertDialogTitle className="text-2xl font-bold text-gray-800">
               Add New Class
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-400 text-sm">
+            <AlertDialogDescription className="text-gray-500 text-sm">
               Select the subject, teacher, and section for the new class.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="space-y-4 p-6">
             <div>
-              <label className="text-gray-300 text-sm font-medium">
+              <label className="text-sm font-semibold text-gray-700">
                 Subject:
               </label>
               <Select
@@ -118,32 +118,31 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                   control: (base, state) => ({
                     ...base,
                     width: "100%",
-                    backgroundColor: "#374151",
+                    backgroundColor: "#f9fafb",
                     border: state.isFocused
-                      ? "2px solid #818cf8"
-                      : "1px solid #4b5563",
+                      ? "2px solid #3b82f6"
+                      : "1px solid #e5e7eb",
                     borderRadius: "0.5rem",
-                    padding: "0.5rem",
+                    minHeight: "48px",
                     boxShadow: state.isFocused
-                      ? "0 0 0 2px rgba(129, 140, 248, 0.5)"
+                      ? "0 0 0 2px rgba(59, 130, 246, 0.1)"
                       : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
                     "&:hover": {
-                      borderColor: state.isFocused ? "#818cf8" : "#6b7280",
+                      borderColor: "#3b82f6",
                     },
-                    color: "#ffffff",
+                    color: "#111827",
                     transition: "all 0.2s",
-                    minHeight: "32px",
                     fontSize: "0.875rem",
                   }),
                   singleValue: (base) => ({
                     ...base,
-                    color: "#ffffff",
+                    color: "#111827",
                     fontSize: "0.875rem",
                   }),
                   menu: (base) => ({
                     ...base,
-                    backgroundColor: "#374151",
-                    color: "#ffffff",
+                    backgroundColor: "#ffffff",
+                    color: "#111827",
                     fontSize: "0.875rem",
                     borderRadius: "0.5rem",
                     boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
@@ -152,26 +151,26 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                   option: (base, state) => ({
                     ...base,
                     backgroundColor: state.isSelected
-                      ? "#818cf8"
+                      ? "#3b82f6"
                       : state.isFocused
-                      ? "#4b5563"
-                      : "#374151",
-                    color: "#ffffff",
+                      ? "#eff6ff"
+                      : "#ffffff",
+                    color: state.isSelected ? "#ffffff" : "#374151",
                     "&:hover": {
-                      backgroundColor: "#4b5563",
+                      backgroundColor: "#eff6ff",
                     },
                     transition: "all 0.2s",
                   }),
                   placeholder: (base) => ({
                     ...base,
-                    color: "#9ca3af",
+                    color: "#6b7280",
                     fontSize: "0.875rem",
                   }),
                 }}
               />
             </div>
             <div>
-              <label className="text-gray-300 text-sm font-medium">
+              <label className="text-sm font-semibold text-gray-700">
                 Teacher:
               </label>
               <Select
@@ -185,32 +184,31 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                   control: (base, state) => ({
                     ...base,
                     width: "100%",
-                    backgroundColor: "#374151",
+                    backgroundColor: "#f9fafb",
                     border: state.isFocused
-                      ? "2px solid #818cf8"
-                      : "1px solid #4b5563",
+                      ? "2px solid #3b82f6"
+                      : "1px solid #e5e7eb",
                     borderRadius: "0.5rem",
-                    padding: "0.5rem",
+                    minHeight: "48px",
                     boxShadow: state.isFocused
-                      ? "0 0 0 2px rgba(129, 140, 248, 0.5)"
+                      ? "0 0 0 2px rgba(59, 130, 246, 0.1)"
                       : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
                     "&:hover": {
-                      borderColor: state.isFocused ? "#818cf8" : "#6b7280",
+                      borderColor: "#3b82f6",
                     },
-                    color: "#ffffff",
+                    color: "#111827",
                     transition: "all 0.2s",
-                    minHeight: "32px",
                     fontSize: "0.875rem",
                   }),
                   singleValue: (base) => ({
                     ...base,
-                    color: "#ffffff",
+                    color: "#111827",
                     fontSize: "0.875rem",
                   }),
                   menu: (base) => ({
                     ...base,
-                    backgroundColor: "#374151",
-                    color: "#ffffff",
+                    backgroundColor: "#ffffff",
+                    color: "#111827",
                     fontSize: "0.875rem",
                     borderRadius: "0.5rem",
                     boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
@@ -219,26 +217,26 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                   option: (base, state) => ({
                     ...base,
                     backgroundColor: state.isSelected
-                      ? "#818cf8"
+                      ? "#3b82f6"
                       : state.isFocused
-                      ? "#4b5563"
-                      : "#374151",
-                    color: "#ffffff",
+                      ? "#eff6ff"
+                      : "#ffffff",
+                    color: state.isSelected ? "#ffffff" : "#374151",
                     "&:hover": {
-                      backgroundColor: "#4b5563",
+                      backgroundColor: "#eff6ff",
                     },
                     transition: "all 0.2s",
                   }),
                   placeholder: (base) => ({
                     ...base,
-                    color: "#9ca3af",
+                    color: "#6b7280",
                     fontSize: "0.875rem",
                   }),
                 }}
               />
             </div>
             <div>
-              <label className="text-gray-300 text-sm font-medium">
+              <label className="text-sm font-semibold text-gray-700">
                 Section:
               </label>
               <Select
@@ -252,32 +250,31 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                   control: (base, state) => ({
                     ...base,
                     width: "100%",
-                    backgroundColor: "#374151",
+                    backgroundColor: "#f9fafb",
                     border: state.isFocused
-                      ? "2px solid #818cf8"
-                      : "1px solid #4b5563",
+                      ? "2px solid #3b82f6"
+                      : "1px solid #e5e7eb",
                     borderRadius: "0.5rem",
-                    padding: "0.5rem",
+                    minHeight: "48px",
                     boxShadow: state.isFocused
-                      ? "0 0 0 2px rgba(129, 140, 248, 0.5)"
+                      ? "0 0 0 2px rgba(59, 130, 246, 0.1)"
                       : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
                     "&:hover": {
-                      borderColor: state.isFocused ? "#818cf8" : "#6b7280",
+                      borderColor: "#3b82f6",
                     },
-                    color: "#ffffff",
+                    color: "#111827",
                     transition: "all 0.2s",
-                    minHeight: "32px",
                     fontSize: "0.875rem",
                   }),
                   singleValue: (base) => ({
                     ...base,
-                    color: "#ffffff",
+                    color: "#111827",
                     fontSize: "0.875rem",
                   }),
                   menu: (base) => ({
                     ...base,
-                    backgroundColor: "#374151",
-                    color: "#ffffff",
+                    backgroundColor: "#ffffff",
+                    color: "#111827",
                     fontSize: "0.875rem",
                     borderRadius: "0.5rem",
                     boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
@@ -286,19 +283,19 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                   option: (base, state) => ({
                     ...base,
                     backgroundColor: state.isSelected
-                      ? "#818cf8"
+                      ? "#3b82f6"
                       : state.isFocused
-                      ? "#4b5563"
-                      : "#374151",
-                    color: "#ffffff",
+                      ? "#eff6ff"
+                      : "#ffffff",
+                    color: state.isSelected ? "#ffffff" : "#374151",
                     "&:hover": {
-                      backgroundColor: "#4b5563",
+                      backgroundColor: "#eff6ff",
                     },
                     transition: "all 0.2s",
                   }),
                   placeholder: (base) => ({
                     ...base,
-                    color: "#9ca3af",
+                    color: "#6b7280",
                     fontSize: "0.875rem",
                   }),
                 }}
@@ -319,7 +316,7 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleSubmit}
-              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
+              className="px-4 py-2 bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
               disabled={isAddClassLoading}
             >
               Add Class

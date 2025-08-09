@@ -1,5 +1,5 @@
 import { CourseProvider } from "@/context/CourseContext";
-import { supabaseClient } from "../supabase/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type Course = {
   id: string;
@@ -22,7 +22,8 @@ export default async function CourseDataFetcher({
 }: {
   children: React.ReactNode;
 }) {
-  const { data, error } = await supabaseClient.from("courses").select("*");
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.from("courses").select("*");
 
   if (error) {
     console.error("Failed to fetch courses:", error.message);

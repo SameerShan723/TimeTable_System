@@ -577,9 +577,15 @@ export default function FacultyData() {
           <AlertDialog open={isEditDialogOpen}>
             <AlertDialogPortal>
               <AlertDialogOverlay className="bg-black bg-opacity-50" />
-              <AlertDialogContent className="bg-gradient-to-br from-gray-800 to-gray-900 text-gray-300 border border-gray-700 shadow-lg rounded-xl max-w-3xl px-2  min-h-[500px] max-h-[90vh] overflow-y-auto">
+              <AlertDialogContent 
+                className="bg-white text-gray-800 border border-gray-200 shadow-lg rounded-2xl w-full max-w-5xl lg:min-w-2xl px-2  min-h-[500px] max-h-[90vh] overflow-y-auto"
+                style={{
+                  scrollbarWidth: 'thin',
+                  scrollbarColor: '#D1D5DB #F3F4F6'
+                }}            
+              >
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="text-2xl font-bold text-indigo-300">
+                  <AlertDialogTitle className="text-2xl font-bold text-blue-900">
                     Edit Course
                   </AlertDialogTitle>
                   <AlertDialogDescription className="text-gray-400 text-sm">
@@ -600,15 +606,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="subject_code"
                       render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormLabel className="text-gray-300 text-sm font-medium">
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm font-semibold text-gray-700">
                             Subject Code
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., GIS-302"
-                              className={`mt-1 p-2 w-full bg-gray-700 text-white border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 ${
+                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.subject_code
                                   ? "border-red-500"
                                   : ""
@@ -618,7 +624,7 @@ export default function FacultyData() {
                               value={field.value ?? ""}
                             />
                           </FormControl>
-                          <FormMessage className="text-red-400 text-xs mt-1" />
+                      <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -626,15 +632,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="course_details"
                       render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormLabel className="text-gray-300 text-sm font-medium">
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm font-semibold text-gray-700">
                             Course Details
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., Introduction to Remote Sensing"
-                              className={`mt-1 p-2 w-full bg-gray-700 text-white border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 ${
+                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.course_details
                                   ? "border-red-500"
                                   : ""
@@ -643,7 +649,7 @@ export default function FacultyData() {
                               {...field}
                             />
                           </FormControl>
-                          <FormMessage className="text-red-400 text-xs mt-1" />
+                      <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -651,15 +657,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="semester"
                       render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormLabel className="text-gray-300 text-sm font-medium">
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm font-semibold text-gray-700">
                             Semester
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., 4"
-                              className={`mt-1 p-2 w-full bg-gray-700 text-white border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 ${
+                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.semester
                                   ? "border-red-500"
                                   : ""
@@ -674,7 +680,7 @@ export default function FacultyData() {
                               }
                             />
                           </FormControl>
-                          <FormMessage className="text-red-400 text-xs mt-1" />
+                      <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -682,15 +688,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="credit_hour"
                       render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormLabel className="text-gray-300 text-sm font-medium">
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm font-semibold text-gray-700">
                             Credit Hour
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., 3"
-                              className={`mt-1 p-2 w-full bg-gray-700 text-white border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 ${
+                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.credit_hour
                                   ? "border-red-500"
                                   : ""
@@ -705,7 +711,7 @@ export default function FacultyData() {
                               }
                             />
                           </FormControl>
-                          <FormMessage className="text-red-400 text-xs mt-1" />
+                      <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -713,15 +719,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="faculty_assigned"
                       render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormLabel className="text-gray-300 text-sm font-medium">
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm font-semibold text-gray-700">
                             Faculty Assigned
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., Syed Najam Ul Hassan"
-                              className={`mt-1 p-2 w-full bg-gray-700 text-white border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 ${
+                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.faculty_assigned
                                   ? "border-red-500"
                                   : ""
@@ -730,7 +736,7 @@ export default function FacultyData() {
                               {...field}
                             />
                           </FormControl>
-                          <FormMessage className="text-red-400 text-xs mt-1" />
+                      <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -738,15 +744,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="section"
                       render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormLabel className="text-gray-300 text-sm font-medium">
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm font-semibold text-gray-700">
                             Section
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., (BS (GIS &RS (2024-2028)) 2nd"
-                              className={`mt-1 p-2 w-full bg-gray-700 text-white border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 ${
+                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.section
                                   ? "border-red-500"
                                   : ""
@@ -755,7 +761,7 @@ export default function FacultyData() {
                               {...field}
                             />
                           </FormControl>
-                          <FormMessage className="text-red-400 text-xs mt-1" />
+                      <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -763,15 +769,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="domain"
                       render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormLabel className="text-gray-300 text-sm font-medium">
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm font-semibold text-gray-700">
                             Domain
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., Computer Science"
-                              className={`mt-1 p-2 w-full bg-gray-700 text-white border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 ${
+                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.domain
                                   ? "border-red-500"
                                   : ""
@@ -781,7 +787,7 @@ export default function FacultyData() {
                               value={field.value ?? ""}
                             />
                           </FormControl>
-                          <FormMessage className="text-red-400 text-xs mt-1" />
+                      <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -789,15 +795,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="subject_type"
                       render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormLabel className="text-gray-300 text-sm font-medium">
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm font-semibold text-gray-700">
                             Subject Type
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., Core"
-                              className={`mt-1 p-2 w-full bg-gray-700 text-white border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 ${
+                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.subject_type
                                   ? "border-red-500"
                                   : ""
@@ -807,7 +813,7 @@ export default function FacultyData() {
                               value={field.value ?? ""}
                             />
                           </FormControl>
-                          <FormMessage className="text-red-400 text-xs mt-1" />
+                      <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -815,15 +821,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="semester_details"
                       render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormLabel className="text-gray-300 text-sm font-medium">
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm font-semibold text-gray-700">
                             Semester Details
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., Fall 2024"
-                              className={`mt-1 p-2 w-full bg-gray-700 text-white border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 ${
+                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.semester_details
                                   ? "border-red-500"
                                   : ""
@@ -833,7 +839,7 @@ export default function FacultyData() {
                               value={field.value ?? ""}
                             />
                           </FormControl>
-                          <FormMessage className="text-red-400 text-xs mt-1" />
+                      <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -841,8 +847,8 @@ export default function FacultyData() {
                       control={form.control}
                       name="theory_classes_week"
                       render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormLabel className="text-gray-300 text-sm font-medium">
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm font-semibold text-gray-700">
                             Theory Classes per Week
                           </FormLabel>
                           <FormControl>
@@ -850,7 +856,7 @@ export default function FacultyData() {
                               type="number"
                               min="1"
                               placeholder="e.g., 2"
-                              className={`mt-1 p-2 w-full bg-gray-700 text-white border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 ${
+                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.theory_classes_week
                                   ? "border-red-500"
                                   : ""
@@ -861,7 +867,7 @@ export default function FacultyData() {
                               value={field.value}
                             />
                           </FormControl>
-                          <FormMessage className="text-red-400 text-xs mt-1" />
+                      <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -869,8 +875,8 @@ export default function FacultyData() {
                       control={form.control}
                       name="lab_classes_week"
                       render={({ field }) => (
-                        <FormItem className="w-full">
-                          <FormLabel className="text-gray-300 text-sm font-medium">
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm font-semibold text-gray-700">
                             Lab Classes per Week (Optional)
                           </FormLabel>
                           <FormControl>
@@ -878,7 +884,7 @@ export default function FacultyData() {
                               type="number"
                               min="0"
                               placeholder="e.g., 1"
-                              className={`mt-1 p-2 w-full bg-gray-700 text-white border border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 ${
+                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.lab_classes_week
                                   ? "border-red-500"
                                   : ""
@@ -889,7 +895,7 @@ export default function FacultyData() {
                               value={field.value}
                             />
                           </FormControl>
-                          <FormMessage className="text-red-400 text-xs mt-1" />
+                      <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -897,8 +903,8 @@ export default function FacultyData() {
                       control={form.control}
                       name="is_regular_teacher"
                       render={({ field }) => (
-                        <FormItem className="w-full md:col-span-2">
-                          <FormLabel className="text-gray-300 text-sm font-medium">
+                    <FormItem className="w-full md:col-span-2">
+                      <FormLabel className="text-sm font-semibold text-gray-700">
                             Teacher Type
                           </FormLabel>
                           <FormControl>
@@ -914,66 +920,63 @@ export default function FacultyData() {
                               placeholder="Select teacher type"
                               menuPlacement="top"
                               styles={{
-                                control: (base, state) => ({
-                                  ...base,
-                                  width: "100%",
-                                  backgroundColor: "#374151",
-                                  border: form.formState.errors
-                                    .is_regular_teacher
-                                    ? "2px solid #ef4444"
-                                    : state.isFocused
-                                    ? "2px solid #818cf8"
-                                    : "1px solid #4b5563",
-                                  borderRadius: "0.5rem",
-                                  padding: "0.5rem",
-                                  boxShadow: state.isFocused
-                                    ? "0 0 0 2px rgba(129, 140, 248, 0.5)"
-                                    : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                                  "&:hover": {
-                                    borderColor: state.isFocused
-                                      ? "#818cf8"
-                                      : "#6b7280",
-                                  },
-                                  color: "#ffffff",
-                                  transition: "all 0.2s",
-                                }),
-                                singleValue: (base) => ({
-                                  ...base,
-                                  color: "#ffffff",
-                                  fontSize: "0.875rem",
-                                }),
-                                menu: (base) => ({
-                                  ...base,
-                                  backgroundColor: "#374151",
-                                  color: "#ffffff",
-                                  fontSize: "0.875rem",
-                                  borderRadius: "0.5rem",
-                                  boxShadow:
-                                    "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                                  zIndex: 50,
-                                }),
-                                option: (base, state) => ({
-                                  ...base,
-                                  backgroundColor: state.isSelected
-                                    ? "#818cf8"
-                                    : state.isFocused
-                                    ? "#4b5563"
-                                    : "#374151",
-                                  color: "#ffffff",
-                                  "&:hover": {
-                                    backgroundColor: "#4b5563",
-                                  },
-                                  transition: "all 0.2s",
-                                }),
-                                placeholder: (base) => ({
-                                  ...base,
-                                  color: "#9ca3af",
-                                  fontSize: "0.875rem",
-                                }),
+                            control: (base, state) => ({
+                              ...base,
+                              width: "100%",
+                              backgroundColor: "#f9fafb",
+                              border: form.formState.errors.is_regular_teacher
+                                ? "2px solid #ef4444"
+                                : state.isFocused
+                                ? "2px solid #3b82f6"
+                                : "1px solid #e5e7eb",
+                              borderRadius: "0.5rem",
+                              minHeight: "48px",
+                              boxShadow: state.isFocused
+                                ? "0 0 0 2px rgba(59, 130, 246, 0.1)"
+                                : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                              "&:hover": {
+                                borderColor: "#3b82f6",
+                              },
+                              color: "#111827",
+                              transition: "all 0.2s",
+                            }),
+                            singleValue: (base) => ({
+                              ...base,
+                              color: "#111827",
+                              fontSize: "0.875rem",
+                            }),
+                            menu: (base) => ({
+                              ...base,
+                              backgroundColor: "#ffffff",
+                              color: "#111827",
+                              fontSize: "0.875rem",
+                              borderRadius: "0.5rem",
+                              boxShadow:
+                                "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                              zIndex: 50,
+                            }),
+                            option: (base, state) => ({
+                              ...base,
+                              backgroundColor: state.isSelected
+                                ? "#3b82f6"
+                                : state.isFocused
+                                ? "#eff6ff"
+                                : "#ffffff",
+                              color: state.isSelected ? "#ffffff" : "#374151",
+                              "&:hover": {
+                                backgroundColor: "#eff6ff",
+                              },
+                              transition: "all 0.2s",
+                            }),
+                            placeholder: (base) => ({
+                              ...base,
+                              color: "#6b7280",
+                              fontSize: "0.875rem",
+                            }),
                               }}
                             />
                           </FormControl>
-                          <FormMessage className="text-red-400 text-xs mt-1" />
+                      <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -1005,7 +1008,7 @@ export default function FacultyData() {
                       <AlertDialogAction asChild disabled={isUpdating}>
                         <Button
                           type="submit"
-                          className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
+                          className="px-4 py-2 bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
                           disabled={isUpdating}
                         >
                           Save Changes

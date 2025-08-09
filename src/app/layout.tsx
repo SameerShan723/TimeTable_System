@@ -26,7 +26,12 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className="antialiased overflow-hidden">
+      <body
+        className="antialiased overflow-hidden"
+        suppressHydrationWarning
+        data-gramm="false"
+        data-gramm_editor="false"
+      >
         <NextTopLoader showSpinner={false} color="#3b82f6" height={3} />
         <AuthProvider
           initialAuth={{
