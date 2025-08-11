@@ -92,10 +92,10 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
   return (
     <AlertDialog open={isOpen}>
       <AlertDialogPortal>
-        <AlertDialogOverlay className="bg-black bg-opacity-50" />
-        <AlertDialogContent className="bg-white text-gray-800 border border-gray-200 shadow-lg rounded-2xl max-w-3xl mx-auto">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-2xl font-bold text-gray-800">
+        <AlertDialogOverlay className="bg-black bg-opacity-50  " />
+        <AlertDialogContent className="bg-white  text-gray-800 border border-gray-200 shadow-lg rounded-2xl max-w-3xl mx-auto">
+          <AlertDialogHeader className="flex pl-6">
+            <AlertDialogTitle className="text-2xl font-bold text-blue-900 ">
               Add New Class
             </AlertDialogTitle>
             <AlertDialogDescription className="text-gray-500 text-sm">

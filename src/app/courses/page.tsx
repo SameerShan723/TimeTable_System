@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { z } from "zod";
 import { useForm, SubmitHandler, UseFormProps } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -584,7 +585,7 @@ export default function FacultyData() {
                   scrollbarColor: '#D1D5DB #F3F4F6'
                 }}            
               >
-                <AlertDialogHeader>
+                <AlertDialogHeader className="px-5">
                   <AlertDialogTitle className="text-2xl font-bold text-blue-900">
                     Edit Course
                   </AlertDialogTitle>
@@ -1049,9 +1050,9 @@ export default function FacultyData() {
           <AlertDialog open={!!deletingCourseId}>
             <AlertDialogPortal>
               <AlertDialogOverlay className="bg-black bg-opacity-50" />
-              <AlertDialogContent className="bg-gradient-to-br from-gray-800 to-gray-900 text-gray-300 border border-gray-700 shadow-lg rounded-xl max-w-3xl mx-auto">
+              <AlertDialogContent className="bg-white text-gray-800 border border-gray-200 shadow-lg rounded-2xl max-w-3xl mx-auto">
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="text-2xl font-bold text-indigo-300">
+                  <AlertDialogTitle className="text-2xl font-bold text-blue-900">
                     Delete Course
                   </AlertDialogTitle>
                   <AlertDialogDescription className="text-gray-400 text-sm">
@@ -1107,9 +1108,9 @@ export default function FacultyData() {
           <AlertDialog open={isDeleteAllDialogOpen}>
             <AlertDialogPortal>
               <AlertDialogOverlay className="bg-black bg-opacity-50" />
-              <AlertDialogContent className="bg-gradient-to-br from-gray-800 to-gray-900 text-gray-300 border border-gray-700 shadow-lg rounded-xl max-w-3xl mx-auto">
+              <AlertDialogContent className="bg-white text-gray-800 border border-gray-200 shadow-lg rounded-2xl max-w-3xl mx-auto">
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="text-2xl font-bold text-indigo-300">
+                  <AlertDialogTitle className="text-2xl font-bold text-blue-900">
                     Delete All Courses
                   </AlertDialogTitle>
                   <AlertDialogDescription className="text-gray-400 text-sm">
@@ -1160,6 +1161,21 @@ export default function FacultyData() {
           </AlertDialog>
         )}
       </div>
+      
+      {/* Toast Container for this page only */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition={Bounce}
+      />
     </main>
   );
 }

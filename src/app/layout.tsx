@@ -5,7 +5,6 @@ import Header from "@/components/header/page";
 import NextTopLoader from "nextjs-toploader";
 import { TimetableVersionProvider } from "@/context/TimetableContext";
 import { AuthProvider } from "@/context/AuthContext";
-import { Bounce, ToastContainer } from "react-toastify";
 import CourseDataFetcher from "@/lib/serverData/CourseDataFetcher";
 import {
   getTimetableData,
@@ -55,21 +54,7 @@ export default async function RootLayout({
                   }}
                 >
                   {children}
-                  <ToastContainer
-position="top-right"
-autoClose={3000}
-hideProgressBar={false}
-newestOnTop={false}
-closeOnClick={false}
-rtl={false}
-pauseOnFocusLoss
-draggable
-pauseOnHover
-theme="colored"
-transition={Bounce}
-/>
                 </TimetableVersionProvider>
-                
               </CourseDataFetcher>
             </div>
           </div>

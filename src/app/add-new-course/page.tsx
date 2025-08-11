@@ -15,7 +15,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import Select from "react-select";
-import { toast } from "react-toastify";
+import { toast, ToastContainer, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { supabaseClient } from "@/lib/supabase/supabase";
 import { useMemo, useRef, useState } from "react";
 import * as XLSX from "xlsx";
@@ -79,14 +80,15 @@ export default function CourseForm() {
 
   // Semester options for react-select
   const semesterOptions = [
-    { value: "1", label: "Semester 1" },
-    { value: "2", label: "Semester 2" },
-    { value: "3", label: "Semester 3" },
-    { value: "4", label: "Semester 4" },
-    { value: "5", label: "Semester 5" },
-    { value: "6", label: "Semester 6" },
-    { value: "7", label: "Semester 7" },
-    { value: "8", label: "Semester 8" },
+    { value: "1", label: "1" },
+    { value: "2", label: "2" },
+    { value: "3", label: "3" },
+
+    { value: "4", label: " 4" },
+    { value: "5", label: "5" },
+    { value: "6", label: "6" },
+    { value: "7", label: " 7" },
+    { value: "8", label: " 8" },
   ];
 
   // Define form with explicit typing
@@ -404,7 +406,7 @@ export default function CourseForm() {
       </h1>
       {/* Tabs */}
       <div className="flex items-center justify-center">
-        <div className="inline-flex rounded-lg bg-gray-100 p-1">
+        <div className="inline-flex rounded-lg bg-gray-100 py-1 px-4">
           <button
             type="button"
             onClick={() => setActiveTab("manual")}
@@ -414,7 +416,7 @@ export default function CourseForm() {
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            Manual
+            Manual Form
           </button>
           <button
             type="button"
@@ -425,7 +427,7 @@ export default function CourseForm() {
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            Excel
+            Upload Excel file
           </button>
         </div>
       </div>
@@ -434,7 +436,7 @@ export default function CourseForm() {
         <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 space-y-5">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="space-y-1">
-            <p className="text-lg font-semibold text-gray-900">Bulk import (Excel)</p>
+            <p className="text-lg font-semibold text-gray-900">Upload Excel File</p>
             <p className="text-sm text-gray-600">Upload .xlsx/.xls using the official template.</p>
           </div>
           <div className="flex gap-2">
@@ -843,6 +845,21 @@ export default function CourseForm() {
         </form>
       </Form>
       )}
+
+      {/* Toast Container for this page only */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition={Bounce}
+      />
     </div>
   );
 }

@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import { toast } from "react-toastify";
+import { usePathname } from "next/navigation";
 import {
   TimetableData,
   Session,
@@ -54,6 +55,11 @@ export const TimetableVersionProvider: React.FC<
   TimetableVersionProviderProps
 > = ({ children, initialData }) => {
   const { isSuperadmin } = useAuth();
+  const pathname = usePathname();
+  
+  // Only show toasts when on timetable-related pages
+  const isTimetablePage = pathname.startsWith("/timetable") || pathname === "/";
+  
   const [versions, setVersions] = useState<number[]>(
     initialData.versions || []
   );
@@ -72,6 +78,19 @@ export const TimetableVersionProvider: React.FC<
   const [conflicts, setConflicts] = useState<Conflict[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Helper function to show toasts only on timetable pages
+  const showToast = useCallback((type: 'success' | 'error' | 'warning', message: string) => {
+    if (isTimetablePage) {
+      if (type === 'success') {
+        toast.success(message);
+      } else if (type === 'error') {
+        toast.error(message);
+      } else if (type === 'warning') {
+        toast.warning(message);
+      }
+    }
+  }, [isTimetablePage]);
 
   const checkConflicts = useCallback((data: TimetableData) => {
     const newConflicts: Conflict[] = [];
@@ -99,10 +118,8 @@ export const TimetableVersionProvider: React.FC<
               otherSessions.some(
                 (otherSession: Session | EmptySlot) =>
                   "Teacher" in otherSession &&
-                  otherSession.Time === Time &&
                   otherSession.Teacher === Teacher &&
-                  (otherSession.Subject !== Subject ||
-                    otherSession.Section !== Section)
+                  otherSession.Time === Time
               )
             );
           });
@@ -113,11 +130,38 @@ export const TimetableVersionProvider: React.FC<
               time: Time,
               room: roomName,
               classIndex: index,
-              message: `Teacher ${Teacher} is scheduled in multiple rooms at ${Time}`,
+              message: `Teacher ${Teacher} is scheduled for multiple classes at ${Time}`,
             });
           }
 
-          // Check for section conflicts (same section has multiple classes at same time)
+          // Check for subject conflicts (only when same subject AND section at same time)
+          const subjectConflict = dayData.some((otherRoom: RoomSchedule) => {
+            const otherRoomName = Object.keys(otherRoom)[0];
+            const otherSessions = otherRoom[otherRoomName] || [];
+            return (
+              roomName !== otherRoomName &&
+              otherSessions.some(
+                (otherSession: Session | EmptySlot) =>
+                  "Subject" in otherSession &&
+                  "Section" in otherSession &&
+                  otherSession.Subject === Subject &&
+                  otherSession.Section === Section &&
+                  otherSession.Time === Time
+              )
+            );
+          });
+
+          if (subjectConflict) {
+            newConflicts.push({
+              day,
+              time: Time,
+              room: roomName,
+              classIndex: index,
+              message: `Subject ${Subject} Section ${Section} is scheduled in multiple rooms at ${Time}`,
+            });
+          }
+
+          // Check for section conflicts (same section having multiple classes at same time)
           const sectionConflict = dayData.some((otherRoom: RoomSchedule) => {
             const otherRoomName = Object.keys(otherRoom)[0];
             const otherSessions = otherRoom[otherRoomName] || [];
@@ -126,8 +170,8 @@ export const TimetableVersionProvider: React.FC<
               otherSessions.some(
                 (otherSession: Session | EmptySlot) =>
                   "Section" in otherSession &&
-                  otherSession.Time === Time &&
-                  otherSession.Section === Section
+                  otherSession.Section === Section &&
+                  otherSession.Time === Time
               )
             );
           });
@@ -138,25 +182,7 @@ export const TimetableVersionProvider: React.FC<
               time: Time,
               room: roomName,
               classIndex: index,
-              message: `Section ${Section} has multiple classes scheduled at ${Time}`,
-            });
-          }
-
-          // Check for room conflicts
-          const roomConflict = sessions.some(
-            (otherSession: Session | EmptySlot, otherIndex: number) =>
-              otherIndex !== index &&
-              "Teacher" in otherSession &&
-              otherSession.Time === Time
-          );
-
-          if (roomConflict) {
-            newConflicts.push({
-              day,
-              time: Time,
-              room: roomName,
-              classIndex: index,
-              message: `Room ${roomName} is double-booked at ${Time}`,
+              message: `Section ${Section} has multiple classes at ${Time}`,
             });
           }
 
@@ -169,10 +195,10 @@ export const TimetableVersionProvider: React.FC<
 
     if (newConflicts.length > 0) {
       if (isSuperadmin) {
-        toast.error("Conflicts detected in the timetable. Please resolve them.");
+        showToast('error', "Conflicts detected in the timetable. Please resolve them.");
       }
     }
-  }, [isSuperadmin]);
+  }, [isSuperadmin, showToast]);
 
   const fetchTimetableData = useCallback(
     async (version: number) => {
@@ -189,14 +215,12 @@ export const TimetableVersionProvider: React.FC<
         checkConflicts(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
-        toast.error(
-          err instanceof Error ? err.message : "Failed to fetch timetable data"
-        );
+        showToast('error', err instanceof Error ? err.message : "Failed to fetch timetable data");
       } finally {
         setLoading(false);
       }
     },
-    [checkConflicts]
+    [checkConflicts, showToast]
   );
 
   const fetchVersions = useCallback(async () => {
@@ -212,13 +236,11 @@ export const TimetableVersionProvider: React.FC<
       setVersions(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
-      toast.error(
-        err instanceof Error ? err.message : "Failed to fetch versions"
-      );
+      showToast('error', err instanceof Error ? err.message : "Failed to fetch versions");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showToast]);
 
   const fetchGlobalVersion = useCallback(async () => {
     setLoading(true);
@@ -239,11 +261,11 @@ export const TimetableVersionProvider: React.FC<
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
-      toast.error(err instanceof Error ? err.message : "Failed to fetch ");
+      showToast('error', err instanceof Error ? err.message : "Failed to fetch ");
     } finally {
       setLoading(false);
     }
-  }, [fetchTimetableData]);
+  }, [fetchTimetableData, showToast]);
 
   const setSelectedVersion = useCallback(
     async (version: number) => {
@@ -262,19 +284,19 @@ export const TimetableVersionProvider: React.FC<
         setSelectedVersionState(version);
         setTimetableData(data);
         checkConflicts(data);
-        toast.success(`Successfully loaded Version ${version}`);
+        showToast('success', `Successfully loaded Version ${version}`);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Failed to set version"
         );
-        toast.error(
+        showToast('error',
           err instanceof Error ? err.message : "Failed to set version"
         );
       } finally {
         setLoading(false);
       }
     },
-    [checkConflicts]
+    [checkConflicts, showToast]
   );
 
   const finalizeVersion = useCallback(
@@ -300,10 +322,10 @@ export const TimetableVersionProvider: React.FC<
           throw new Error(errorData.error || "Failed to finalize version");
         }
 
-        toast.success(`Version ${version} has been finalized as the global version!`);
+        showToast('success', `Version ${version} has been finalized as the global version!`);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to finalize version");
-        toast.error(
+        showToast('error',
           err instanceof Error ? err.message : "Failed to finalize version"
         );
         throw err;
@@ -311,14 +333,14 @@ export const TimetableVersionProvider: React.FC<
         setLoading(false);
       }
     },
-    []
+    [showToast]
   );
 
   const saveTimetableData = useCallback(
     async (data: TimetableData, version?: number) => {
       checkConflicts(data);
       if (conflicts.length > 0) {
-        toast.error("Cannot save: Conflicts detected in the timetable");
+        showToast('error', "Cannot save: Conflicts detected in the timetable");
         throw new Error("Conflicts detected");
       }
 
@@ -341,17 +363,17 @@ export const TimetableVersionProvider: React.FC<
           [...new Set([...prev, newVersion])].sort((a, b) => a - b)
         );
         setTimetableData(data);
-        toast.success(`Timetable saved as Version ${newVersion}`);
+        showToast('success', `Timetable saved as Version ${newVersion}`);
         return newVersion;
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
-        toast.error("Failed to save timetable data");
+        showToast('error', "Failed to save timetable data");
         throw err;
       } finally {
         setLoading(false);
       }
     },
-    [checkConflicts, conflicts]
+    [checkConflicts, conflicts, showToast]
   );
 
   const saveTimetableDataWithConflicts = useCallback(
@@ -378,13 +400,13 @@ export const TimetableVersionProvider: React.FC<
         return newVersion;
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
-        toast.error("Failed to save timetable data");
+        showToast('error', "Failed to save timetable data");
         throw err;
       } finally {
         setLoading(false);
       }
     },
-    []
+    [showToast]
   );
 
   const deleteVersion = useCallback(
@@ -417,17 +439,17 @@ export const TimetableVersionProvider: React.FC<
         if (selectedVersion === version) {
           await fetchGlobalVersion();
         }
-        toast.success(`Version ${version} deleted successfully`);
+        showToast('success', `Version ${version} deleted successfully`);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
-        toast.error(
+        showToast('error',
           err instanceof Error ? err.message : "Failed to delete version"
         );
       } finally {
         setLoading(false);
       }
     },
-    [selectedVersion, fetchGlobalVersion]
+    [selectedVersion, fetchGlobalVersion, showToast]
   );
 
   // Check conflicts for initial timetable data

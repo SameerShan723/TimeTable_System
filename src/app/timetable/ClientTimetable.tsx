@@ -15,7 +15,8 @@ import {
   DragOverlay,
 } from "@dnd-kit/core";
 import { produce } from "immer";
-import { toast } from "react-toastify";
+import { toast, ToastContainer, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Session, EmptySlot, RoomSchedule, TimetableData } from "./types";
 import { timeSlots, Days } from "@/helpers/page";
 import { useTimetableVersion } from "@/context/TimetableContext";
@@ -949,34 +950,34 @@ export default function ClientTimetable() {
           >
             <AlertDialogPortal>
               <AlertDialogOverlay className="bg-black bg-opacity-50" />
-              <AlertDialogContent className="bg-gradient-to-br from-gray-800 to-gray-900 text-gray-300 border border-gray-700 shadow-lg rounded-xl max-w-3xl mx-auto">
+              <AlertDialogContent className="bg-white text-gray-800 border border-gray-200 shadow-lg rounded-2xl max-w-3xl mx-auto">
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="text-2xl font-bold text-indigo-300">
+                  <AlertDialogTitle className="text-2xl font-bold text-blue-900">
                     Delete Version
                   </AlertDialogTitle>
-                  <AlertDialogDescription className="text-gray-400 text-sm">
+                  <AlertDialogDescription className="text-gray-600 text-sm">
                     Are you sure you want to delete Version {versionToDelete}? This action cannot be
                     undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel
-                    onClick={() => setIsDeleteDialogOpen(false)}
-                    className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none"
-                    disabled={isDeleting}
-                  >
-                    Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (versionToDelete !== null) {
-                        handleDeleteVersion(versionToDelete);
-                      }
-                    }}
-                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
-                    disabled={isDeleting}
-                  >
+                                     <AlertDialogCancel
+                     onClick={() => setIsDeleteDialogOpen(false)}
+                     className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none"
+                     disabled={isDeleting}
+                   >
+                     Cancel
+                   </AlertDialogCancel>
+                   <AlertDialogAction
+                     onClick={(e) => {
+                       e.preventDefault();
+                       if (versionToDelete !== null) {
+                         handleDeleteVersion(versionToDelete);
+                       }
+                     }}
+                     className="px-4 py-2 bg-[#042954] hover:brightness-110 text-white rounded-lg transition-all duration-200 hover:scale-105 text-sm font-medium uppercase border-none flex items-center gap-2"
+                     disabled={isDeleting}
+                   >
                     Delete
                     {isDeleting && (
                       <svg
@@ -1042,6 +1043,21 @@ export default function ClientTimetable() {
 
         </div>
       </DndContext>
+      
+      {/* Toast Container for this page only */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition={Bounce}
+      />
     </main>
   );
 }

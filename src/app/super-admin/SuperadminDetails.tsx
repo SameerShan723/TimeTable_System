@@ -5,7 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { supabaseClient } from "@/lib/supabase/supabase";
 import { useAuth } from "@/context/AuthContext";
-import { toast } from "react-toastify";
+import { toast, ToastContainer, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Eye, EyeOff } from "lucide-react";
 
 interface SuperadminDetailsProps {
@@ -23,7 +24,7 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
   initialUserDetails,
   initialError,
 }) => {
-  const { isAuthenticated, isSuperadmin } = useAuth();
+  const { isAuthenticated, isSuperadmin, refreshUserData } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const isFromReset = searchParams.get('reset') === 'true';
@@ -139,6 +140,7 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
 
       setNewEmail("");
       setCurrentPassword("");
+      refreshUserData(); // Refresh user data in context
     } catch (err) {
       if (err instanceof Error) {
         setErrorMsg(err.message);
@@ -494,6 +496,21 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
           </p>
         )}
       </div>
+      
+      {/* Toast Container for this page only */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition={Bounce}
+      />
     </div>
   );
 };

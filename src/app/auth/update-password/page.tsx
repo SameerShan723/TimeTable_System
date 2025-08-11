@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { supabaseClient } from "@/lib/supabase/supabase";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import { toast, ToastContainer, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function UpdatePasswordPage() {
@@ -162,6 +163,21 @@ export default function UpdatePasswordPage() {
           )}
         </form>
       </div>
+      
+      {/* Toast Container for this page only */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition={Bounce}
+      />
     </div>
   );
 }

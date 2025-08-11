@@ -30,12 +30,12 @@ const DeleteClassDialog: React.FC<DeleteClassDialogProps> = ({
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogPortal>
         <AlertDialogOverlay className="bg-black bg-opacity-50" />
-        <AlertDialogContent className="bg-gradient-to-br from-gray-800 to-gray-900 text-gray-300 border border-gray-700 shadow-lg rounded-xl max-w-3xl mx-auto">
+        <AlertDialogContent className="bg-white text-gray-800 border border-gray-200 shadow-lg rounded-2xl max-w-3xl mx-auto">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-2xl font-bold text-indigo-300">
+            <AlertDialogTitle className="text-2xl font-bold text-blue-900">
               Delete Class
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-400 text-sm">
+            <AlertDialogDescription className="text-gray-600 text-sm">
               Are you sure you want to delete this class? This action cannot be
               undone.
             </AlertDialogDescription>

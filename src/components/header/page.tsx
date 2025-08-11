@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import ProfileModal from "../profile-model/page";
 
+
 export default function Header() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const { user } = useAuth();
