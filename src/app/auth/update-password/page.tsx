@@ -6,6 +6,36 @@ import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Eye, EyeOff } from "lucide-react";
 
+interface PasswordValidation {
+  isValid: boolean;
+  errors: string[];
+}
+
+const validatePassword = (password: string): PasswordValidation => {
+  const errors: string[] = [];
+  
+  if (password.length < 6) {
+    errors.push("At least 6 characters");
+  }
+  if (!/[A-Z]/.test(password)) {
+    errors.push("One uppercase letter");
+  }
+  if (!/[a-z]/.test(password)) {
+    errors.push("One lowercase letter");
+  }
+  if (!/\d/.test(password)) {
+    errors.push("One number");
+  }
+  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+    errors.push("One special character");
+  }
+  
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
+};
+
 export default function UpdatePasswordPage() {
   const router = useRouter();
   const [sessionValid, setSessionValid] = useState(false);
@@ -16,6 +46,8 @@ export default function UpdatePasswordPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState<string>("");
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   useEffect(() => {
     const check = async () => {
@@ -27,11 +59,31 @@ export default function UpdatePasswordPage() {
     check();
   }, []);
 
+  const handlePasswordChange = (password: string) => {
+    const validation = validatePassword(password);
+    setValidationErrors(validation.errors);
+    
+    if (validation.isValid) {
+      setPasswordStrength("Strong");
+    } else if (validation.errors.length <= 2) {
+      setPasswordStrength("Medium");
+    } else {
+      setPasswordStrength("Weak");
+    }
+  };
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (newPwd.length < 6 || newPwd !== confirmPwd) {
-      setError("Passwords must match and be ≥6 characters.");
+    
+    const validation = validatePassword(newPwd);
+    if (!validation.isValid) {
+      setError("Please meet all password requirements");
+      return;
+    }
+    
+    if (newPwd !== confirmPwd) {
+      setError("Passwords do not match");
       return;
     }
     setUpdating(true);
@@ -85,23 +137,64 @@ export default function UpdatePasswordPage() {
           Set New Password
         </h2>
         <form onSubmit={onSubmit} className="flex flex-col gap-5">
-          <div className="relative">
-            <input
-              type={showNewPassword ? "text" : "password"}
-              placeholder="New password"
-              className="w-full p-3 rounded-lg border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-              value={newPwd}
-              onChange={(e) => setNewPwd(e.target.value)}
-              disabled={updating}
-            />
-            <button
-              type="button"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition"
-              onClick={() => setShowNewPassword(!showNewPassword)}
-              disabled={updating}
-            >
-              {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">New Password</label>
+            <div className="relative">
+              <input
+                type={showNewPassword ? "text" : "password"}
+                placeholder="New password"
+                className="w-full p-3 rounded-lg border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                value={newPwd}
+                onChange={(e) => {
+                  setNewPwd(e.target.value);
+                  handlePasswordChange(e.target.value);
+                }}
+                disabled={updating}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition"
+                onClick={() => setShowNewPassword(!showNewPassword)}
+                disabled={updating}
+              >
+                {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+            
+            {/* Password Strength Indicator */}
+            {newPwd && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600">Strength:</span>
+                  <span className={`text-sm font-medium ${
+                    passwordStrength === "Strong" ? "text-green-600" :
+                    passwordStrength === "Medium" ? "text-yellow-600" : "text-red-600"
+                  }`}>
+                    {passwordStrength}
+                  </span>
+                </div>
+                
+                {/* Password Requirements */}
+                <div className="grid grid-cols-2 gap-1 text-xs">
+                  {[
+                    { label: "6+ characters", met: newPwd.length >= 8 },
+                    { label: "Uppercase", met: /[A-Z]/.test(newPwd) },
+                    { label: "Lowercase", met: /[a-z]/.test(newPwd) },
+                    { label: "Number", met: /\d/.test(newPwd) },
+                    { label: "Special char", met: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(newPwd) }
+                  ].map((req, index) => (
+                    <div key={index} className="flex items-center gap-1">
+                      <div className={`w-2 h-2 rounded-full ${
+                        req.met ? "bg-green-500" : "bg-gray-300"
+                      }`} />
+                      <span className={req.met ? "text-green-600" : "text-gray-500"}>
+                        {req.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           <div className="relative">
             <input

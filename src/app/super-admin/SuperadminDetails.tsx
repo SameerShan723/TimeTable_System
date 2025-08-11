@@ -9,6 +9,36 @@ import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Eye, EyeOff } from "lucide-react";
 
+interface PasswordValidation {
+  isValid: boolean;
+  errors: string[];
+}
+
+const validatePassword = (password: string): PasswordValidation => {
+  const errors: string[] = [];
+  
+  if (password.length < 6) {
+    errors.push("At least 6 characters");
+  }
+  if (!/[A-Z]/.test(password)) {
+    errors.push("One uppercase letter");
+  }
+  if (!/[a-z]/.test(password)) {
+    errors.push("One lowercase letter");
+  }
+  if (!/\d/.test(password)) {
+    errors.push("One number");
+  }
+  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+    errors.push("One special character");
+  }
+  
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
+};
+
 interface SuperadminDetailsProps {
   initialUserDetails: {
     id: string;
@@ -46,6 +76,8 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
   const [errorMsg, setErrorMsg] = useState(initialError || "");
   const [successMsg, setSuccessMsg] = useState("");
   const [activeTab, setActiveTab] = useState("email");
+  const [passwordStrength, setPasswordStrength] = useState<string>("");
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   // Check if user came from password reset link and show success message
   useEffect(() => {
@@ -69,6 +101,19 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
       }
     }
   }, [isAuthenticated, isSuperadmin, router, isFromReset]);
+
+  const handlePasswordChange = (password: string) => {
+    const validation = validatePassword(password);
+    setValidationErrors(validation.errors);
+    
+    if (validation.isValid) {
+      setPasswordStrength("Strong");
+    } else if (validation.errors.length <= 2) {
+      setPasswordStrength("Medium");
+    } else {
+      setPasswordStrength("Weak");
+    }
+  };
 
   // Validate current password (only for email updates)
   const validateCurrentPassword = async () => {
@@ -167,9 +212,10 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
         }
       }
 
-      if (newPassword.length < 6) {
-        setErrorMsg("Password must be at least 6 characters long.");
-        toast.error("Password must be at least 6 characters long.");
+      const validation = validatePassword(newPassword);
+      if (!validation.isValid) {
+        setErrorMsg("Please meet all password requirements");
+        toast.error("Please meet all password requirements");
         setIsLoading(false);
         return;
       }
@@ -394,27 +440,68 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
                     </div>
                   )}
                   
-                  <div className="relative">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="New password"
-                      className="w-full p-3 rounded-lg border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      required
-                      disabled={isLoading}
-                      autoComplete="New password"
-                    />
-                    <button
-                      type="button"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#042954]"
-                      onClick={() => setShowPassword(!showPassword)}
-                      aria-label={
-                        showPassword ? "Hide password" : "Show password"
-                      }
-                    >
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </button>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">New Password</label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="New password"
+                        className="w-full p-3 rounded-lg border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        value={newPassword}
+                        onChange={(e) => {
+                          setNewPassword(e.target.value);
+                          handlePasswordChange(e.target.value);
+                        }}
+                        required
+                        disabled={isLoading}
+                        autoComplete="New password"
+                      />
+                      <button
+                        type="button"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#042954]"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
+                      >
+                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
+                    </div>
+                    
+                    {/* Password Strength Indicator */}
+                    {newPassword && (
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-gray-600">Strength:</span>
+                          <span className={`text-sm font-medium ${
+                            passwordStrength === "Strong" ? "text-green-600" :
+                            passwordStrength === "Medium" ? "text-yellow-600" : "text-red-600"
+                          }`}>
+                            {passwordStrength}
+                          </span>
+                        </div>
+                        
+                        {/* Password Requirements */}
+                        <div className="grid grid-cols-2 gap-1 text-xs">
+                          {[
+                            { label: "6+ characters", met: newPassword.length >= 6 },
+                            { label: "Uppercase", met: /[A-Z]/.test(newPassword) },
+                            { label: "Lowercase", met: /[a-z]/.test(newPassword) },
+                            { label: "Number", met: /\d/.test(newPassword) },
+                            { label: "Special char", met: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(newPassword) }
+                          ].map((req, index) => (
+                            <div key={index} className="flex items-center gap-1">
+                              <div className={`w-2 h-2 rounded-full ${
+                                req.met ? "bg-green-500" : "bg-gray-300"
+                              }`} />
+                              <span className={req.met ? "text-green-600" : "text-gray-500"}>
+                                {req.label}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="relative">
                     <input
