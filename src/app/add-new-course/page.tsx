@@ -318,7 +318,7 @@ export default function CourseForm() {
         toast.success("File parsed successfully");
       }
     } catch (e) {
-      console.error(e);
+      console.error("Excel parsing error:", e);
       toast.error("Failed to parse Excel file");
       setBulkPreview([]);
     }
@@ -346,7 +346,7 @@ export default function CourseForm() {
         setUploadedFileName("");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Bulk insert error:", err);
       toast.error("Bulk insert failed");
     } finally {
       setIsBulkSaving(false);

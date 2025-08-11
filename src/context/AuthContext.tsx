@@ -213,7 +213,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     );
 
     // Subscribe to real-time changes in user_roles table
-    let profileSubscription: any = null;
+    let profileSubscription: ReturnType<typeof supabaseClient.channel> | null = null;
     if (user?.id) {
       profileSubscription = supabaseClient
         .channel(`user_roles_${user.id}`)
@@ -225,7 +225,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
             table: 'user_roles',
             filter: `id=eq.${user.id}`,
           },
-          async (payload) => {
+          async () => {
             if (!isMounted.current) return;
             
             try {
@@ -259,7 +259,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         profileSubscription.unsubscribe();
       }
     };
-  }, [user?.id]); // Add user.id as dependency to re-subscribe when user changes
+  }, [user?.id, router]); // Add router as dependency
 
   const openAuthModal = () => setIsAuthModalOpen(true);
   const closeAuthModal = () => setIsAuthModalOpen(false);
