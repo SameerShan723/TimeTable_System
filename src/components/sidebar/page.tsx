@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { Tooltip } from "react-tooltip";
 
 interface SidebarProps {
   isSidebarOpen: boolean;
@@ -128,7 +129,8 @@ export default function Sidebar({
               className={`flex px-3 py-4 w-full gap-3 hover:bg-[#051f3e] hover:text-white border-b border-[#051f3e]/30 items-center transition-all duration-200 group ${
                 !isSidebarOpen && !isMobileSidebarOpen ? "justify-center" : ""
               }`}
-              title={item.label}
+              data-tooltip-id={!isSidebarOpen && !isMobileSidebarOpen ? `nav-tooltip-${index}` : undefined}
+              data-tooltip-content={!isSidebarOpen && !isMobileSidebarOpen ? item.label : undefined}
               onClick={handleNavigation}
             >
               <item.icon
@@ -160,7 +162,8 @@ export default function Sidebar({
                 openSidebar();
               }
             }}
-            title="Advance Filters"
+            data-tooltip-id={!isSidebarOpen && !isMobileSidebarOpen ? "filters-tooltip" : undefined}
+            data-tooltip-content={!isSidebarOpen && !isMobileSidebarOpen ? "Advance Filters" : undefined}
           >
             <div className="flex items-center gap-3">
               <SlidersHorizontal
@@ -229,6 +232,43 @@ export default function Sidebar({
           </div>
         </div>
       </div>
+
+      {/* Tooltips */}
+      {navigationItems.map((_, index) => (
+        <Tooltip
+          key={`tooltip-${index}`}
+          id={`nav-tooltip-${index}`}
+          place="right"
+          offset={5}
+          delayShow={200}
+          positionStrategy="fixed"
+          style={{
+            backgroundColor: "#1f2937",
+            color: "#f9fafb",
+            borderRadius: "8px",
+            fontSize: "14px",
+            padding: "8px 12px",
+            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+            zIndex: 9999,
+          }}
+        />
+      ))}
+      <Tooltip
+        id="filters-tooltip"
+        place="right"
+        offset={5}
+        delayShow={200}
+        positionStrategy="fixed"
+        style={{
+          backgroundColor: "#1f2937",
+          color: "#f9fafb",
+          borderRadius: "8px",
+          fontSize: "14px",
+          padding: "8px 12px",
+          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+          zIndex: 9999,
+        }}
+      />
     </div>
   );
 }

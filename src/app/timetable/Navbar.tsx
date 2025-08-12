@@ -150,88 +150,89 @@ const Navbar: React.FC<NavbarProps> = ({
   return (
     <div className="bg-[#042954] w-full flex flex-col md:flex-row items-center px-4 py-3 sticky top-0 justify-between z-40 min-h-[60px] ">
       <div className="flex flex-col md:flex-row items-center w-full md:w-2/3 gap-3 sm:gap-4">
-        <div className="w-full  md:w-50 lg:w-56 flex flex-col gap-2">
-          <div className="flex items-center text-sm min-w-[160px] md:max-w[200px] ">
-            <label className="text-white mr-2 text-xs sm:text-sm">
-              Select Version:
-            </label>
-            <Select
-              instanceId={versionId}
-              options={
-                versions.length > 0
-                  ? versions.map((version) => ({
-                      value: version,
-                      label: `Version ${version}`,
-                    }))
-                  : []
-              }
-              value={
-                selectedVersion !== null
-                  ? {
-                      value: selectedVersion,
-                      label: `Version ${selectedVersion}`,
-                    }
-                  : null
-              }
-                             onChange={async (selectedOption) => {
-                 const newVersion = selectedOption?.value;
-                 if (newVersion !== undefined) {
-                   await setSelectedVersion(newVersion);
-                   // The checkbox state will be updated by the useEffect when selectedVersion changes
-                 }
-               }}
-              placeholder="Select Version"
-              isDisabled={isSaving !== "none" || isDeleting || !isSuperadmin}
-              components={{
-                Option: ({ innerRef, innerProps, data, isSelected }) => (
-                  <div
-                    ref={innerRef}
-                    {...innerProps}
-                    className={`flex justify-between items-center p-2 text-xs sm:text-sm hover:bg-blue-300 hover:text-white ${
-                      isSelected ? "bg-blue-900 text-white" : ""
-                    }`}
-                  >
-                    <span className="cursor-pointer">{data.label}</span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setVersionToDelete(data.value);
-                        setIsDeleteDialogOpen(true);
-                      }}
-                      className="text-red-500 hover:text-red-700"
+        {isSuperadmin && (
+          <div className="w-full md:w-50 lg:w-56 flex flex-col gap-2">
+            <div className="flex items-center text-sm min-w-[160px] md:max-w[200px]">
+              <label className="text-white mr-2 text-xs sm:text-sm">
+                Select Version:
+              </label>
+              <Select
+                instanceId={versionId}
+                options={
+                  versions.length > 0
+                    ? versions.map((version) => ({
+                        value: version,
+                        label: `Version ${version}`,
+                      }))
+                    : []
+                }
+                value={
+                  selectedVersion !== null
+                    ? {
+                        value: selectedVersion,
+                        label: `Version ${selectedVersion}`,
+                      }
+                    : null
+                }
+                onChange={async (selectedOption) => {
+                  const newVersion = selectedOption?.value;
+                  if (newVersion !== undefined) {
+                    await setSelectedVersion(newVersion);
+                    // The checkbox state will be updated by the useEffect when selectedVersion changes
+                  }
+                }}
+                placeholder="Select Version"
+                isDisabled={isSaving !== "none" || isDeleting || !isSuperadmin}
+                components={{
+                  Option: ({ innerRef, innerProps, data, isSelected }) => (
+                    <div
+                      ref={innerRef}
+                      {...innerProps}
+                      className={`flex justify-between items-center p-2 text-xs sm:text-sm hover:bg-blue-300 hover:text-white ${
+                        isSelected ? "bg-blue-900 text-white" : ""
+                      }`}
                     >
-                      <FaRegTrashAlt className="text-sm sm:text-base" />
-                    </button>
-                  </div>
-                ),
-              }}
-              className="text-black w-full"
-              styles={{
-                control: (provided, state) => ({
-                  ...provided,
-                  border: state.isFocused ? "0px" : provided.border,
-                  outline: state.isFocused ? "none" : provided.outline,
-                  boxShadow: state.isFocused ? "none" : provided.boxShadow,
-                  fontSize: "0.875rem",
-                  minHeight: "32px",
-                  width: "100%",
-                  maxWidth: "100%",
-                }),
-                menu: (provided) => ({
-                  ...provided,
-                  zIndex: 50,
-                  width: "100%",
-                  maxWidth: "100%",
-                }),
-                option: (provided) => ({
-                  ...provided,
-                  padding: "8px",
-                }),
-              }}
-            />
+                      <span className="cursor-pointer">{data.label}</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setVersionToDelete(data.value);
+                          setIsDeleteDialogOpen(true);
+                        }}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <FaRegTrashAlt className="text-sm sm:text-base" />
+                      </button>
+                    </div>
+                  ),
+                }}
+                className="text-black w-full"
+                styles={{
+                  control: (provided, state) => ({
+                    ...provided,
+                    border: state.isFocused ? "0px" : provided.border,
+                    outline: state.isFocused ? "none" : provided.outline,
+                    boxShadow: state.isFocused ? "none" : provided.boxShadow,
+                    fontSize: "0.875rem",
+                    minHeight: "32px",
+                    width: "100%",
+                    maxWidth: "100%",
+                  }),
+                  menu: (provided) => ({
+                    ...provided,
+                    zIndex: 50,
+                    width: "100%",
+                    maxWidth: "100%",
+                  }),
+                  option: (provided) => ({
+                    ...provided,
+                    padding: "8px",
+                  }),
+                }}
+              />
+            </div>
           </div>
-       
-        </div>
+        )}
         <div className=" w-full  md:w-60 lg:w-90 lg:max-w-90  flex items-center text-sm ">
           <label className="text-white mr-2 text-xs sm:text-sm">
             Filter Teachers:
@@ -413,7 +414,7 @@ const Navbar: React.FC<NavbarProps> = ({
         <div className="relative" ref={exportDropdownRef}>
           <button
             onClick={() => setShowExportDropdown(true)}
-            className="bg-[#042954] hover:brightness-110 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#042954] hover:brightness-110  text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isVersionLoading}
           >
             <FaDownload className="text-lg" />

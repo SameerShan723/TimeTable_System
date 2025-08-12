@@ -406,7 +406,7 @@ export default function CourseForm() {
       </h1>
       {/* Tabs */}
       <div className="flex items-center justify-center">
-        <div className="inline-flex rounded-lg bg-gray-100 py-1 px-4">
+        <div className="inline-flex rounded-lg bg-gray-100 py-1 px-1">
           <button
             type="button"
             onClick={() => setActiveTab("manual")}
