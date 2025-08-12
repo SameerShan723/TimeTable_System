@@ -77,7 +77,6 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
   const [successMsg, setSuccessMsg] = useState("");
   const [activeTab, setActiveTab] = useState("email");
   const [passwordStrength, setPasswordStrength] = useState<string>("");
-  const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   // Check if user came from password reset link and show success message
   useEffect(() => {
@@ -104,7 +103,6 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
 
   const handlePasswordChange = (password: string) => {
     const validation = validatePassword(password);
-    setValidationErrors(validation.errors);
     
     if (validation.isValid) {
       setPasswordStrength("Strong");

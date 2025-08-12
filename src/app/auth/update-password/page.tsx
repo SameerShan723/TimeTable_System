@@ -47,7 +47,6 @@ export default function UpdatePasswordPage() {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState("");
   const [passwordStrength, setPasswordStrength] = useState<string>("");
-  const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   useEffect(() => {
     const check = async () => {
@@ -61,7 +60,6 @@ export default function UpdatePasswordPage() {
 
   const handlePasswordChange = (password: string) => {
     const validation = validatePassword(password);
-    setValidationErrors(validation.errors);
     
     if (validation.isValid) {
       setPasswordStrength("Strong");
@@ -177,7 +175,7 @@ export default function UpdatePasswordPage() {
                 {/* Password Requirements */}
                 <div className="grid grid-cols-2 gap-1 text-xs">
                   {[
-                    { label: "6+ characters", met: newPwd.length >= 8 },
+                    { label: "6+ characters", met: newPwd.length >= 6 },
                     { label: "Uppercase", met: /[A-Z]/.test(newPwd) },
                     { label: "Lowercase", met: /[a-z]/.test(newPwd) },
                     { label: "Number", met: /\d/.test(newPwd) },
