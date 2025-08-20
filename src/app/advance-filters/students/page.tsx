@@ -200,6 +200,7 @@ export default function StudentTimetable(): JSX.Element {
           </label>
           <Select<SelectOption, false>
             instanceId={sectionSelectedId}
+            inputId={`${sectionSelectedId}-input`}
             options={sections.map((section: string) => ({
               value: section,
               label: section,
@@ -232,6 +233,7 @@ export default function StudentTimetable(): JSX.Element {
           </label>
           <Select<SelectOption, true>
             instanceId={daySelectedId}
+            inputId={`${daySelectedId}-input`}
             isMulti
             options={filteredOptions}
             onChange={handleDayOptions}

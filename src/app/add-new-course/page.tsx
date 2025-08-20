@@ -612,7 +612,9 @@ export default function CourseForm() {
                      Semester
                    </FormLabel>
                    <FormControl>
-                     <Select
+                        <Select
+                        instanceId="semester-select"
+                        inputId="semester-select-input"
                        options={semesterOptions}
                        value={semesterOptions.find(option => option.value === field.value) || null}
                        onChange={(selectedOption) => field.onChange(selectedOption?.value || "")}

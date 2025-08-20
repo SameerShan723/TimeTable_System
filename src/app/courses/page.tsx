@@ -309,8 +309,9 @@ export default function FacultyData() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Filter by Teacher
                   </label>
-                                   {isClient && (
+                   {isClient && (
                      <Select
+                       instanceId="courses-filter-teachers"
                        isMulti
                        options={uniqueTeachers.map(teacher => ({ value: teacher || "", label: teacher || "" }))}
                        value={selectedTeachers.map(teacher => ({ value: teacher, label: teacher }))}
@@ -363,6 +364,7 @@ export default function FacultyData() {
                   </label>
                   {isClient && (
                     <Select
+                      instanceId="courses-filter-subjects"
                      isMulti
                      options={uniqueSubjects.map(subject => ({ value: subject || "", label: subject || "" }))}
                      value={selectedSubjects.map(subject => ({ value: subject, label: subject }))}
@@ -910,6 +912,7 @@ export default function FacultyData() {
                           </FormLabel>
                           <FormControl>
                             <Select
+                              instanceId="courses-teacher-type"
                               options={teacherTypeOptions}
                               value={teacherTypeOptions.find(
                                 (option) => option.value === field.value
