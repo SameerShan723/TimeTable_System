@@ -39,7 +39,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({
   versionId,
-  versions = [], 
+  versions = [],
   selectedVersion,
   setSelectedVersion,
   isSaving,
@@ -57,10 +57,10 @@ const Navbar: React.FC<NavbarProps> = ({
   versionPendingData,
   handleSaveAction,
 }) => {
-  const { timetableData, finalizeVersion: contextFinalizeVersion } = useTimetableVersion();
+  const { timetableData, finalizeVersion: contextFinalizeVersion } =
+    useTimetableVersion();
   const { isSuperadmin } = useAuth();
   const [finalizeVersion, setFinalizeVersion] = useState(false);
-  const [isFinalizing, setIsFinalizing] = useState(false);
   // Extract unique teachers and subjects from timetableData
   const teacherOptions = useMemo(() => {
     const teachers = new Set<string>();
@@ -113,7 +113,7 @@ const Navbar: React.FC<NavbarProps> = ({
       if (response.ok) {
         const data = await response.json();
         const globalVersionNumber = data.version_number;
-        
+
         // Check if selected version matches global version
         if (selectedVersion === globalVersionNumber) {
           setFinalizeVersion(true);
@@ -135,8 +135,8 @@ const Navbar: React.FC<NavbarProps> = ({
 
   const handleFinalizeVersion = async () => {
     if (!isSuperadmin || !selectedVersion) return;
-    
-    setIsFinalizing(true);
+
+    setFinalizeVersion(true);
     try {
       await contextFinalizeVersion(selectedVersion);
       // Keep checkbox checked to show it's finalized
@@ -144,7 +144,7 @@ const Navbar: React.FC<NavbarProps> = ({
       // Error is already handled by the context
       setFinalizeVersion(false); // Uncheck if error occurs
     } finally {
-      setIsFinalizing(false);
+      setFinalizeVersion(false);
     }
   };
 
@@ -318,31 +318,29 @@ const Navbar: React.FC<NavbarProps> = ({
             }}
           />
         </div>
-      <div>
-
-        {isSuperadmin && selectedVersion && (
+        <div>
+          {isSuperadmin && selectedVersion && (
             <div className="flex items-center  gap-x-2 ">
-         
-                      <label htmlFor="finalize-version" className="text-white text-xs sm:text-sm ">
-            Finalized Version 
-                </label>
-                <Checkbox
-    id="finalize-version"
-    checked={finalizeVersion}
-    onCheckedChange={async (checked) => {
-      if (checked) {
-        setFinalizeVersion(true);
-        await handleFinalizeVersion();
-      }
-    }}
-   className="w-6 h-6 rounded-2xl border-none bg-white data-[state=checked]:bg-blue-900 text-white"
-
-  />
-             
-                       
+              <label
+                htmlFor="finalize-version"
+                className="text-white text-xs sm:text-sm "
+              >
+                Finalized Version
+              </label>
+              <Checkbox
+                id="finalize-version"
+                checked={finalizeVersion}
+                onCheckedChange={async (checked) => {
+                  if (checked) {
+                    setFinalizeVersion(true);
+                    await handleFinalizeVersion();
+                  }
+                }}
+                className="w-6 h-6 rounded-2xl border-none bg-white data-[state=checked]:bg-blue-900 text-white"
+              />
             </div>
           )}
-          </div>
+        </div>
       </div>
 
       <div className="flex items-center gap-2 mt-3 md:mt-0">
