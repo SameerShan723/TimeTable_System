@@ -69,8 +69,8 @@ export default function Sidebar({
       } md:h-[calc(100vh-4rem)] overflow-hidden shadow-lg`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-4 border-b border-[#051f3e] h-16">
-        <span
+      <div className="flex items-center justify-end px-3 py-4 border-b border-[#051f3e] h-16">
+        {/* <span
           className={`text-[#9ea8b5] font-serif text-lg transition-all duration-300 ${
             isSidebarOpen
               ? "opacity-100 translate-x-0"
@@ -78,7 +78,7 @@ export default function Sidebar({
           } ${isSidebarOpen ? "block" : "hidden"}`}
         >
           Menu
-        </span>
+        </span> */}
 
         <div className="flex items-center gap-2">
           {/* Desktop Toggle */}

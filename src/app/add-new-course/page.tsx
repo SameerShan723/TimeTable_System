@@ -77,6 +77,19 @@ export default function CourseForm() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { courses, setCourses } = useCourses(); // Access CourseContext
   const [activeTab, setActiveTab] = useState<"manual" | "excel">("manual");
+  const [filteredPreview, setFilteredPreview] = useState<
+    Array<{
+      rowNumber: number;
+      data: Record<string, unknown>;
+      errors: string[];
+      insertable?: CourseInsert;
+    }>
+  >([]);
+
+  // Initialize filteredPreview when bulkPreview changes
+  useMemo(() => {
+    setFilteredPreview(bulkPreview);
+  }, [bulkPreview]);
 
   // Semester options for react-select
   const semesterOptions = [
@@ -195,7 +208,8 @@ export default function CourseForm() {
   const validateAndMap = (
     row: Record<string, unknown>,
   ): { errors: string[]; insertable?: CourseInsert } => {
-    // Remove validation: always try to map and provide sensible defaults
+    const errors: string[] = [];
+    
     const subject_code = String(
       normalize(
         getCell(row, "subject_code", "Subject Code")
@@ -207,18 +221,25 @@ export default function CourseForm() {
         getCell(row, "course_details", "Course Details")
       )
     );
+    if (!course_details || course_details.trim() === "") {
+      errors.push("Course details cannot be empty");
+    }
 
     const section = String(
       normalize(
         getCell(row, "section", "Section")
       )
     );
+    if (!section || section.trim() === "") {
+      errors.push("Section cannot be empty");
+    }
 
     const semesterRaw = toInt(
       normalize(
         getCell(row, "semester", "Semester")
       )
     ) as number;
+
     const creditHourRaw = toInt(
       normalize(
         getCell(row, "credit_hour", "Credit Hour")
@@ -230,6 +251,9 @@ export default function CourseForm() {
         getCell(row, "faculty_assigned", "Faculty Assigned")
       )
     );
+    if (!faculty_assigned || faculty_assigned.trim() === "") {
+      errors.push("Faculty assigned cannot be empty");
+    }
 
     const is_regular_teacher = parseTeacherType(
       normalize(
@@ -260,33 +284,38 @@ export default function CourseForm() {
         getCell(row, "theory_classes_week", "Theory Classes/Week")
       )
     ) as number;
+
     const labClassesRaw = toInt(
       normalize(
         getCell(row, "lab_classes_week", "Lab Classes/Week")
       )
     ) as number;
 
-    const semester = Number.isFinite(semesterRaw) && semesterRaw >= 1 ? semesterRaw : 1;
-    const credit_hour = Number.isFinite(creditHourRaw) && creditHourRaw >= 1 ? creditHourRaw : 1;
-    const theory_classes_week = Number.isFinite(theoryClassesRaw) && theoryClassesRaw >= 1 ? theoryClassesRaw : 1;
-    const lab_classes_week = Number.isFinite(labClassesRaw) && labClassesRaw >= 0 ? labClassesRaw : 0;
+    // Use default values for numeric fields
+    const semester = Number.isFinite(semesterRaw) ? semesterRaw : 1;
+    const credit_hour = Number.isFinite(creditHourRaw) ? creditHourRaw : 3;
+    const theory_classes_week = Number.isFinite(theoryClassesRaw) ? theoryClassesRaw : 2;
+    const lab_classes_week = Number.isFinite(labClassesRaw) ? labClassesRaw : 0;
+
+    // Only return insertable if there are no validation errors
+    const insertable = errors.length === 0 ? {
+      subject_code: subject_code || null,
+      course_details,
+      section,
+      semester,
+      credit_hour,
+      faculty_assigned,
+      is_regular_teacher,
+      domain: domainRaw ? domainRaw : null,
+      subject_type: subject_typeRaw ? subject_typeRaw : null,
+      semester_details: semester_detailsRaw ? semester_detailsRaw : null,
+      theory_classes_week,
+      lab_classes_week,
+    } : undefined;
 
     return {
-      errors: [],
-      insertable: {
-        subject_code: subject_code || null,
-        course_details,
-        section,
-        semester,
-        credit_hour,
-        faculty_assigned,
-        is_regular_teacher,
-        domain: domainRaw ? domainRaw : null,
-        subject_type: subject_typeRaw ? subject_typeRaw : null,
-        semester_details: semester_detailsRaw ? semester_detailsRaw : null,
-        theory_classes_week,
-        lab_classes_week,
-      },
+      errors,
+      insertable,
     };
   };
 
@@ -302,7 +331,7 @@ export default function CourseForm() {
       });
 
       const previews = rows.map((r, i) => {
-        const mapped = validateAndMap(r,);
+        const mapped = validateAndMap(r);
         return {
           rowNumber: i + 2,
           data: r,
@@ -437,134 +466,251 @@ export default function CourseForm() {
 
       {activeTab === "excel" && (
         <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 space-y-5">
-        <div className="flex items-center justify-between gap-3 flex-wrap">
-          <div className="space-y-1">
-            <p className="text-lg font-semibold text-gray-900">Upload Excel File</p>
-            <p className="text-sm text-gray-600">Upload .xlsx/.xls using the official template.</p>
-          </div>
-          <div className="flex gap-2">
-            <Button type="button" onClick={downloadTemplate}>
-              Download Template
-            </Button>
-            {bulkPreview.length > 0 && (
-              <Button type="button" variant="secondary" onClick={() => setIsPreviewOpen((s) => !s)}>
-                {isPreviewOpen ? "Hide Preview" : "Review Parsed Rows"}
-              </Button>
-            )}
-          </div>
-        </div>
-
-        <div
-          onClick={() => fileInputRef.current?.click()}
-          onDragOver={(e) => {
-            e.preventDefault();
-            setIsDragOver(true);
-          }}
-          onDragLeave={(e) => {
-            e.preventDefault();
-            setIsDragOver(false);
-          }}
-          onDrop={(e) => {
-            e.preventDefault();
-            setIsDragOver(false);
-            const f = e.dataTransfer.files?.[0];
-            if (f) handleExcelFile(f);
-          }}
-          className={`w-full rounded-xl border-2 border-dashed p-6 cursor-pointer transition ${
-            isDragOver ? "border-blue-400 bg-blue-50/50" : "border-gray-300 hover:border-gray-400"
-          }`}
-        >
-          <div className="flex flex-col items-center justify-center gap-2 text-center">
-            <div className="h-10 w-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-lg">⬆</div>
-            <div className="text-sm text-gray-700">
-              <span className="font-medium text-blue-900">Click to upload</span> or drag & drop
-            </div>
-            <div className="text-xs text-gray-500">Only .xlsx or .xls from the template</div>
-            {uploadedFileName && (
-              <div className="text-xs text-gray-600 mt-1">Selected: {uploadedFileName}</div>
-            )}
-          </div>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".xlsx,.xls"
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) handleExcelFile(f);
-              e.currentTarget.value = "";
-            }}
-          />
-        </div>
-
-        {bulkPreview.length > 0 && (
           <div className="flex items-center justify-between gap-3 flex-wrap">
-            <div className="text-sm">
-              <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700 mr-2">Total: {bulkPreview.length}</span>
-              <span className="px-2 py-1 rounded-full bg-green-100 text-green-700 mr-2">
-                Valid: {bulkPreview.filter((p) => p.errors.length === 0).length}
-              </span>
-              <span className="px-2 py-1 rounded-full bg-red-100 text-red-700">
-                Invalid: {bulkPreview.filter((p) => p.errors.length > 0).length}
-              </span>
+            <div className="space-y-1">
+              <p className="text-lg font-semibold text-gray-900">Upload Excel File</p>
+              <p className="text-sm text-gray-600">Upload .xlsx/.xls using the official template.</p>
             </div>
             <div className="flex gap-2">
-              <Button
-                type="button"
-                disabled={isBulkSaving || bulkPreview.every((p) => p.errors.length > 0)}
-                onClick={handleBulkInsert}
-              >
-                {isBulkSaving ? "Saving..." : "Insert valid rows"}
+              <Button type="button" onClick={downloadTemplate}>
+                Download Template
               </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => {
-                  setBulkPreview([]);
-                  setUploadedFileName("");
-                }}
-              >
-                Clear
-              </Button>
+              {bulkPreview.length > 0 && (
+                <Button type="button" variant="secondary" onClick={() => setIsPreviewOpen((s) => !s)}>
+                  {isPreviewOpen ? "Hide Preview" : "Review Parsed Rows"}
+                </Button>
+              )}
             </div>
           </div>
-        )}
 
-        {bulkPreview.length > 0 && isPreviewOpen && (
-          <div className="max-h-60 overflow-auto border rounded-md">
-            <table className="min-w-full text-left text-xs">
-              <thead className="bg-gray-100 sticky top-0">
-                <tr>
-                  <th className="px-3 py-2">Row</th>
-                  <th className="px-3 py-2">Course Details</th>
-                  <th className="px-3 py-2">Faculty</th>
-                  <th className="px-3 py-2">Semester</th>
-                  <th className="px-3 py-2">Errors</th>
-                </tr>
-              </thead>
-              <tbody>
-                {bulkPreview.slice(0, 100).map((p) => (
-                  <tr key={p.rowNumber} className="border-t">
-                    <td className="px-3 py-2">{p.rowNumber}</td>
-                    <td className="px-3 py-2">{String(p.data["Course Details"] ?? "")}</td>
-                    <td className="px-3 py-2">{String(p.data["Faculty Assigned"] ?? "")}</td>
-                    <td className="px-3 py-2">{String(p.data["Semester"] ?? "")}</td>
-                    <td className="px-3 py-2 text-red-600">{p.errors.join(", ")}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDragOver(true);
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault();
+              setIsDragOver(false);
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              setIsDragOver(false);
+              const f = e.dataTransfer.files?.[0];
+              if (f) handleExcelFile(f);
+            }}
+            className={`w-full rounded-xl border-2 border-dashed p-6 cursor-pointer transition ${
+              isDragOver ? "border-blue-400 bg-blue-50/50" : "border-gray-300 hover:border-gray-400"
+            }`}
+          >
+            <div className="flex flex-col items-center justify-center gap-2 text-center">
+              <div className="h-10 w-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-lg">⬆</div>
+              <div className="text-sm text-gray-700">
+                <span className="font-medium text-blue-900">Click to upload</span> or drag & drop
+              </div>
+              <div className="text-xs text-gray-500">Only .xlsx or .xls from the template</div>
+              {uploadedFileName && (
+                <div className="text-xs text-gray-600 mt-1">Selected: {uploadedFileName}</div>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".xlsx,.xls"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleExcelFile(f);
+                e.currentTarget.value = "";
+              }}
+            />
           </div>
-        )}
+
+          {bulkPreview.length > 0 && (
+            <div className="space-y-4">
+              {/* Summary Statistics */}
+              <div className="bg-gray-50 p-4 rounded-lg border">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">File Analysis Summary</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-gray-900">{bulkPreview.length}</div>
+                    <div className="text-sm text-gray-600">Total Rows</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">
+                      {bulkPreview.filter((p) => p.errors.length === 0).length}
+                    </div>
+                    <div className="text-sm text-green-600">Valid Rows</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-red-600">
+                      {bulkPreview.filter((p) => p.errors.length > 0).length}
+                    </div>
+                    <div className="text-sm text-red-600">Invalid Rows</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">
+                      {bulkPreview.length > 0 
+                        ? Math.round((bulkPreview.filter((p) => p.errors.length === 0).length / bulkPreview.length) * 100)
+                        : 0}%
+                    </div>
+                    <div className="text-sm text-blue-600">Success Rate</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div className="text-sm">
+                  <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700 mr-2">Total: {bulkPreview.length}</span>
+                  <span className="px-2 py-1 rounded-full bg-green-100 text-green-700 mr-2">
+                    Valid: {bulkPreview.filter((p) => p.errors.length === 0).length}
+                  </span>
+                  <span className="px-2 py-1 rounded-full bg-red-100 text-red-700">
+                    Invalid: {bulkPreview.filter((p) => p.errors.length > 0).length}
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    disabled={isBulkSaving || bulkPreview.every((p) => p.errors.length > 0)}
+                    onClick={handleBulkInsert}
+                    className="bg-[#042954] hover:bg-[#042954]/90"
+                  >
+                    {isBulkSaving ? "Saving..." : "Insert Valid Rows"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => {
+                      setBulkPreview([]);
+                      setUploadedFileName("");
+                    }}
+                  >
+                    Clear
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {bulkPreview.length > 0 && isPreviewOpen && (
+            <div className="space-y-4">
+              {/* Filter Options */}
+              <div className="flex items-center gap-3">
+                <label className="text-sm font-medium text-gray-700">Filter:</label>
+                <Select
+                  instanceId="filter-select"
+                  options={[
+                    { value: "all", label: "All Rows" },
+                    { value: "valid", label: "Valid Rows Only" },
+                    { value: "invalid", label: "Invalid Rows Only" }
+                  ]}
+                  defaultValue={{ value: "all", label: "All Rows" }}
+                  onChange={(option) => {
+                    const filterValue = option?.value || "all";
+                    const filteredPreview = filterValue === "all" 
+                      ? bulkPreview 
+                      : bulkPreview.filter(p => 
+                          filterValue === "valid" ? p.errors.length === 0 : p.errors.length > 0
+                        );
+                    setFilteredPreview(filteredPreview);
+                  }}
+                  className="w-48"
+                  classNamePrefix="react-select"
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      height: '36px',
+                      backgroundColor: '#f9fafb',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '6px',
+                      '&:hover': {
+                        borderColor: '#3b82f6'
+                      }
+                    })
+                  }}
+                />
+              </div>
+
+              <div className="max-h-96 overflow-auto border rounded-md">
+                <table className="min-w-full text-left text-xs">
+                  <thead className="bg-gray-100 sticky top-0">
+                    <tr>
+                      <th className="px-3 py-2">Row</th>
+                      <th className="px-3 py-2">Status</th>
+                      <th className="px-3 py-2">Subject Code</th>
+                      <th className="px-3 py-2">Course Details</th>
+                      <th className="px-3 py-2">Section</th>
+                      <th className="px-3 py-2">Semester</th>
+                      <th className="px-3 py-2">Credit Hour</th>
+                      <th className="px-3 py-2">Faculty</th>
+                      <th className="px-3 py-2">Theory/Week</th>
+                      <th className="px-3 py-2">Lab/Week</th>
+                      <th className="px-3 py-2">Errors</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredPreview.slice(0, 100).map((p) => (
+                      <tr key={p.rowNumber} className={`border-t ${p.errors.length === 0 ? 'bg-green-50' : 'bg-red-50'}`}>
+                        <td className="px-3 py-2 font-medium">{p.rowNumber}</td>
+                        <td className="px-3 py-2">
+                          {p.errors.length === 0 ? (
+                            <span className="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs">✓ Valid</span>
+                          ) : (
+                            <span className="px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs">✗ Invalid</span>
+                          )}
+                        </td>
+                        <td className="px-3 py-2">{String(p.data["Subject Code"] ?? "")}</td>
+                        <td className="px-3 py-2 max-w-32 truncate" title={String(p.data["Course Details"] ?? "")}>
+                          {String(p.data["Course Details"] ?? "")}
+                        </td>
+                        <td className="px-3 py-2 max-w-32 truncate" title={String(p.data["Section"] ?? "")}>
+                          {String(p.data["Section"] ?? "")}
+                        </td>
+                        <td className="px-3 py-2">{String(p.data["Semester"] ?? "")}</td>
+                        <td className="px-3 py-2">{String(p.data["Credit Hour"] ?? "")}</td>
+                        <td className="px-3 py-2 max-w-24 truncate" title={String(p.data["Faculty Assigned"] ?? "")}>
+                          {String(p.data["Faculty Assigned"] ?? "")}
+                        </td>
+                        <td className="px-3 py-2">{String(p.data["Theory Classes/Week"] ?? "")}</td>
+                        <td className="px-3 py-2">{String(p.data["Lab Classes/Week"] ?? "")}</td>
+                        <td className="px-3 py-2 text-red-600 max-w-48">
+                          {p.errors.length > 0 ? (
+                            <div className="space-y-1">
+                              {p.errors.map((error, idx) => (
+                                <div key={idx} className="text-xs bg-red-100 p-1 rounded">
+                                  {error}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="text-green-600 text-xs">No errors</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                    {filteredPreview.length > 100 && (
+                      <tr className="bg-gray-50">
+                        <td colSpan={11} className="px-3 py-2 text-center text-gray-500 text-xs">
+                          Showing first 100 rows. Total rows: {filteredPreview.length}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
       {activeTab === "manual" && (
         <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 bg-white p-8 rounded-2xl shadow-lg border border-gray-100  overflow-y-auto"
-        >
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8 bg-white p-8 rounded-2xl shadow-lg border border-gray-100 overflow-y-auto"
+          >
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <FormField
               control={form.control}
@@ -606,46 +752,46 @@ export default function CourseForm() {
             />
           </div>
                      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-             <FormField
-               control={form.control}
-               name="semester"
-               render={({ field }) => (
-                 <FormItem>
-                   <FormLabel className="text-sm font-semibold text-gray-700">
-                     Semester
-                   </FormLabel>
-                   <FormControl>
-                        <Select
-                        instanceId="semester-select"
-                        inputId="semester-select-input"
-                       options={semesterOptions}
-                       value={semesterOptions.find(option => option.value === field.value) || null}
-                       onChange={(selectedOption) => field.onChange(selectedOption?.value || "")}
-                       placeholder="Select Semester"
-                       className="w-full"
-                       classNamePrefix="react-select"
-                       styles={{
-                         control: (provided) => ({
-                           ...provided,
-                           height: '48px',
-                           backgroundColor: '#f9fafb',
-                           border: '1px solid #e5e7eb',
-                           borderRadius: '8px',
-                           '&:hover': {
-                             borderColor: '#3b82f6'
-                           },
-                           '&:focus-within': {
-                             borderColor: '#3b82f6',
-                             boxShadow: '0 0 0 2px rgba(59, 130, 246, 0.1)'
-                           }
-                         }),
-                         option: (provided, state) => ({
-                           ...provided,
-                           backgroundColor: state.isSelected ? '#3b82f6' : state.isFocused ? '#eff6ff' : 'white',
-                           color: state.isSelected ? 'white' : '#374151'
-                         })
-                       }}
-                     />
+                       <FormField
+                         control={form.control}
+                         name="semester"
+                         render={({ field }) => (
+                           <FormItem>
+                             <FormLabel className="text-sm font-semibold text-gray-700">
+                               Semester
+                             </FormLabel>
+                             <FormControl>
+                               <Select
+                                 instanceId="semester-select"
+                                 inputId="semester-select-input"
+                                 options={semesterOptions}
+                                 value={semesterOptions.find(option => option.value === field.value) || null}
+                                 onChange={(selectedOption) => field.onChange(selectedOption?.value || "")}
+                                 placeholder="Select Semester"
+                                 className="w-full"
+                                 classNamePrefix="react-select"
+                                 styles={{
+                                   control: (provided) => ({
+                                     ...provided,
+                                     height: '48px',
+                                     backgroundColor: '#f9fafb',
+                                     border: '1px solid #e5e7eb',
+                                     borderRadius: '8px',
+                                     '&:hover': {
+                                       borderColor: '#3b82f6'
+                                     },
+                                     '&:focus-within': {
+                                       borderColor: '#3b82f6',
+                                       boxShadow: '0 0 0 2px rgba(59, 130, 246, 0.1)'
+                                     }
+                                   }),
+                                   option: (provided, state) => ({
+                                     ...provided,
+                                     backgroundColor: state.isSelected ? '#3b82f6' : state.isFocused ? '#eff6ff' : 'white',
+                                     color: state.isSelected ? 'white' : '#374151'
+                                   })
+                                 }}
+                               />
                    </FormControl>
                    <FormMessage className="text-sm text-red-500 mt-1" />
                  </FormItem>

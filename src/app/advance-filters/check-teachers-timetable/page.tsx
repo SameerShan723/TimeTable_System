@@ -35,7 +35,7 @@ export default function TeacherTimetable(): JSX.Element {
     error: hookError,
   } = useTimetableVersion();
 
-  const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
+  const [selectedTeacher, setSelectedTeacher] = useState<string|null>("");
   const [selectedDay, setSelectedDay] = useState<DayType[]>(Days);
   const [results, setResults] = useState<EnhancedClassItem[]>([]);
   const [error, setError] = useState<string>("");
@@ -100,55 +100,55 @@ export default function TeacherTimetable(): JSX.Element {
 
   // Handle teacher selection changes
   const handleTeacherSelection = useCallback(
-    (selected: MultiValue<SelectOption>) => {
+    (selected:SelectOption|null) => {
       if (!selected) {
-        setSelectedTeachers([]);
+        setSelectedTeacher(null);
         return;
       }
-      setSelectedTeachers(selected.map((opt) => opt.value));
-    },
-    []
+      setSelectedTeacher(selected.value);
+},
+[]
   );
 
   // Search for classes for selected teachers
-  const handleSearch = useCallback(() => {
-    setError("");
-    if (selectedTeachers.length === 0) {
-      setError("Please select at least one teacher!");
-      setResults([]);
-      return;
-    }
+const handleSearch = useCallback(() => {
+  setError("");
+  if (!selectedTeacher) {
+    setError("Please select a teacher!");
+    setResults([]);
+    return;
+  }
 
-    const foundClasses: EnhancedClassItem[] = [];
+  const foundClasses: EnhancedClassItem[] = [];
 
-    selectedDay.forEach((day) => {
-      const dayData = timetableData[day] || [];
-      dayData.forEach((roomObj) => {
-        const roomName = Object.keys(roomObj)[0];
-        const classes = roomObj[roomName] as ClassItem[];
+  selectedDay.forEach((day) => {
+    const dayData = timetableData[day] || [];
+    dayData.forEach((roomObj) => {
+      const roomName = Object.keys(roomObj)[0];
+      const classes = roomObj[roomName] as ClassItem[];
 
-        classes.forEach((cls) => {
-          if (selectedTeachers.includes(cls.Teacher)) {
-            const normalizedTime =
-              timeSlots.find((time) => cls.Time.includes(time.split("-")[0])) ||
-              cls.Time;
-            foundClasses.push({
-              ...cls,
-              Room: roomName,
-              Day: day,
-              Time: normalizedTime,
-            });
-          }
-        });
+      classes.forEach((cls) => {
+        if (cls.Teacher === selectedTeacher) {
+          const normalizedTime =
+            timeSlots.find((time) => cls.Time.includes(time.split("-")[0])) ||
+            cls.Time;
+          foundClasses.push({
+            ...cls,
+            Room: roomName,
+            Day: day,
+            Time: normalizedTime,
+          });
+        }
       });
     });
+  });
 
-    if (foundClasses.length === 0) {
-      setError("No classes found for the selected teachers on selected days.");
-    }
+  if (foundClasses.length === 0) {
+    setError("No classes found for the selected teacher on selected days.");
+  }
 
-    setResults(foundClasses);
-  }, [selectedTeachers, selectedDay, timetableData]);
+  setResults(foundClasses);
+}, [selectedTeacher, selectedDay, timetableData]);
 
   // Create class lookup for efficient rendering
   const classLookup = useMemo(() => {
@@ -164,7 +164,7 @@ export default function TeacherTimetable(): JSX.Element {
   useEffect(() => {
     setResults([]);
     setError("");
-    setSelectedTeachers([]);
+    setSelectedTeacher("");
     setSelectedDay(Days);
   }, [selectedVersion]);
 
@@ -188,34 +188,29 @@ export default function TeacherTimetable(): JSX.Element {
         <h1 className="font-bold text-3xl mt-6 mb-6">
           Check Teachers Timetable
         </h1>
-        <div className="mb-4 flex flex-col w-full max-w-md">
-          <label className="text-xl mb-2">Teacher:</label>
-          <Select<SelectOption, true>
-            instanceId={teacherSelectedId}
-            inputId={`${teacherSelectedId}-input`}
-            isMulti
-            options={teachers.map((teacher) => ({
-              value: teacher,
-              label: teacher,
-            }))}
-            value={selectedTeachers.map((teacher) => ({
-              value: teacher,
-              label: teacher,
-            }))}
-            onChange={handleTeacherSelection}
-            className="text-black"
-            placeholder="Select teachers"
-            isDisabled={loading || teachers.length === 0}
-            isClearable
-            menuPortalTarget={portalTarget}
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-          />
-          {teachers.length === 0 && !loading && (
-            <p className="text-sm text-gray-500 mt-1">
-              No teachers available. Please check timetable data.
-            </p>
-          )}
-        </div>
+       <div className="mb-4 flex flex-col w-full max-w-md">
+  <label className="text-xl mb-2">Teacher:</label>
+  <Select<SelectOption, false>   
+    instanceId={teacherSelectedId}
+    inputId={`${teacherSelectedId}-input`}
+    options={teachers.map((teacher) => ({
+      value: teacher,
+      label: teacher,
+    }))}
+    value={
+      selectedTeacher
+        ? { value: selectedTeacher, label: selectedTeacher }
+        : null
+    }
+    onChange={handleTeacherSelection}
+    className="text-black"
+    placeholder="Select a teacher"
+    isDisabled={loading || teachers.length === 0}
+    isClearable
+    menuPortalTarget={portalTarget}
+    styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+  />
+</div>
         <div className="mb-4 flex flex-col w-full max-w-md">
           <label className="text-xl mb-2">Days:</label>
           <Select<SelectOption, true>
@@ -234,9 +229,9 @@ export default function TeacherTimetable(): JSX.Element {
             styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           />
         </div>
-        <div className="flex gap-3 flex-col lg:flex-row md:flex-row">
+        <div className="flex gap-3 flex-col  lg:flex-row md:flex-row mt-3 w-full max-w-md">
           <button
-            className="bg-[#042954] py-2 lg:px-20 px-12 md:px-16 rounded-md cursor-pointer text-white disabled:opacity-50 hover:brightness-110 transition-colors"
+            className="bg-[#042954] py-3 md:py-2 px-14 rounded-md cursor-pointer text-white disabled:opacity-50 hover:brightness-110 transition-colors w-full"
             onClick={handleSearch}
             disabled={loading}
           >
@@ -245,7 +240,7 @@ export default function TeacherTimetable(): JSX.Element {
           {results.length > 0 && (
             <ExportTimetable
               results={results}
-              selectedSection={selectedTeachers.join(", ")}
+              selectedSection={selectedTeacher || "" }
               selectedDays={selectedDay}
               selectedVersion={selectedVersion}
               isLoading={loading}
@@ -261,7 +256,7 @@ export default function TeacherTimetable(): JSX.Element {
         {results.length > 0 && (
           <div className="mt-4 text-lg text-green-600">
             Found {results.length} class{results.length !== 1 ? "es" : ""} for{" "}
-            {selectedTeachers.join(", ")}
+            {selectedTeacher}
           </div>
         )}
       </div>

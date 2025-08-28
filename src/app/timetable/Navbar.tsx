@@ -12,6 +12,7 @@ import { TimetableData, Session, EmptySlot, RoomSchedule } from "./types";
 import { Days } from "@/helpers/page";
 import { useTimetableVersion } from "@/context/TimetableContext";
 import { useAuth } from "@/context/AuthContext";
+import { Checkbox } from "@/components/ui/checkbox";
 interface NavbarProps {
   versionId: string;
   versions: number[];
@@ -38,7 +39,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({
   versionId,
-  versions = [], // Default to empty array to prevent undefined
+  versions = [], 
   selectedVersion,
   setSelectedVersion,
   isSaving,
@@ -233,7 +234,7 @@ const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
         )}
-        <div className=" w-full  md:w-60 lg:w-90 lg:max-w-90  flex items-center text-sm ">
+        <div className=" w-full  md:w-60 lg:w-70 lg:max-w-70  flex items-center text-sm ">
           <label className="text-white mr-2 text-xs sm:text-sm">
             Filter Teachers:
           </label>
@@ -249,7 +250,6 @@ const Navbar: React.FC<NavbarProps> = ({
             }}
             placeholder="Select Teachers"
             isDisabled={isSaving !== "none" || isDeleting}
-            menuIsOpen={false}
             className="text-black w-full"
             styles={{
               control: (provided, state) => ({
@@ -276,7 +276,7 @@ const Navbar: React.FC<NavbarProps> = ({
             }}
           />
         </div>
-        <div className=" w-full  md:w-60 lg:w-90 lg:max-w-90  flex items-center text-sm ">
+        <div className=" w-full  md:w-60 lg:w-70 lg:max-w-70 flex items-center text-sm ">
           <label className="text-white mr-2 text-xs sm:text-sm">
             Filter Subjects:
           </label>
@@ -292,7 +292,6 @@ const Navbar: React.FC<NavbarProps> = ({
             }}
             placeholder="Select Subjects"
             isDisabled={isSaving !== "none" || isDeleting}
-            menuIsOpen={false}
             className="text-black w-full"
             styles={{
               control: (provided, state) => ({
@@ -319,28 +318,31 @@ const Navbar: React.FC<NavbarProps> = ({
             }}
           />
         </div>
+      <div>
+
         {isSuperadmin && selectedVersion && (
-            <div className="flex items-center ">
-                      <label htmlFor="finalize-version" className="text-white text-xs sm:text-sm">
-            Finalized Version
+            <div className="flex items-center  gap-x-2 ">
+         
+                      <label htmlFor="finalize-version" className="text-white text-xs sm:text-sm ">
+            Finalized Version 
                 </label>
-                             <input
-                 type="checkbox"
-                 id="finalize-version"
-                 checked={finalizeVersion}
-                 onChange={async (e) => {
-                   if (e.target.checked) {
-                     setFinalizeVersion(true);
-                     await handleFinalizeVersion();
-                   }
-                   // Don't allow unchecking - once finalized, it stays checked
-                 }}
-                 className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 "
-                 disabled={isFinalizing}
-               />
+                <Checkbox
+    id="finalize-version"
+    checked={finalizeVersion}
+    onCheckedChange={async (checked) => {
+      if (checked) {
+        setFinalizeVersion(true);
+        await handleFinalizeVersion();
+      }
+    }}
+   className="w-6 h-6 rounded-2xl border-none bg-white data-[state=checked]:bg-blue-900 text-white"
+
+  />
+             
                        
             </div>
           )}
+          </div>
       </div>
 
       <div className="flex items-center gap-2 mt-3 md:mt-0">

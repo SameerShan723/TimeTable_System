@@ -73,162 +73,164 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
         <div
           ref={timetableRef}
           id="timetable-container"
-          className="relative w-full max-w-full overflow-x-auto"
+          className="relative w-full max-w-full overflow-x-auto "
         >
           {/* Mobile View */}
-          <div className="block md:hidden space-y-2 p-2">
-            {Days.map((day) => {
-              const rooms =
-                ((selectedTeachers && selectedTeachers.length > 0) || (selectedSubjects && selectedSubjects.length > 0)
-                  ? filteredData
-                  : data)[day] || [];
-              return (
-                <div key={day} className="mb-2">
-                  <h2 className="text-lg font-semibold text-black mb-2">
-                    {day}
-                  </h2>
-                  {allRooms.map((roomName) => {
-                    const roomData = Array.isArray(rooms)
-                      ? rooms.find(
-                          (room: RoomSchedule) =>
-                            Object.keys(room)[0] === roomName
-                        )
-                      : null;
-                    const sessions = roomData
-                      ? roomData[roomName] ||
-                        timeSlots.map((time) => ({ Time: time }))
-                      : timeSlots.map((time) => ({ Time: time }));
-                    const isExpanded =
-                      expandedRooms[`${day}-${roomName}`] || false;
+          <div className="block md:hidden lg:hidden w-full overflow-y-auto h-[calc(100vh-25rem)] scrollbar-hide">
+            <div className="space-y-4 p-4">
+              {Days.map((day) => {
+                const rooms =
+                  ((selectedTeachers && selectedTeachers.length > 0) || (selectedSubjects && selectedSubjects.length > 0)
+                    ? filteredData
+                    : data)[day] || [];
+                return (
+                  <div key={day} className="mb-4">
+                    <h2 className="text-lg font-semibold text-black mb-3">
+                      {day}
+                    </h2>
+                    {allRooms.map((roomName) => {
+                      const roomData = Array.isArray(rooms)
+                        ? rooms.find(
+                            (room: RoomSchedule) =>
+                              Object.keys(room)[0] === roomName
+                          )
+                        : null;
+                      const sessions = roomData
+                        ? roomData[roomName] ||
+                          timeSlots.map((time) => ({ Time: time }))
+                        : timeSlots.map((time) => ({ Time: time }));
+                      const isExpanded =
+                        expandedRooms[`${day}-${roomName}`] || false;
 
-                    return (
-                      <div
-                        key={`${day}-${roomName}`}
-                        className="border rounded-lg shadow-sm bg-white mb-2 box-border"
-                      >
+                      return (
                         <div
-                          className="flex justify-between items-center p-3 cursor-pointer bg-gray-100"
-                          onClick={() => toggleRoom(day, roomName)}
+                          key={`${day}-${roomName}`}
+                          className="border rounded-lg shadow-sm bg-white mb-3 box-border overflow-hidden"
                         >
-                          <h3 className="text-sm font-medium">{roomName}</h3>
-                          {isExpanded ? (
-                            <IoIosArrowUp size={16} />
-                          ) : (
-                            <IoIosArrowDown size={16} />
+                          <div
+                            className="flex justify-between items-center p-3 cursor-pointer bg-gray-100"
+                            onClick={() => toggleRoom(day, roomName)}
+                          >
+                            <h3 className="text-sm font-medium">{roomName}</h3>
+                            {isExpanded ? (
+                              <IoIosArrowUp size={16} />
+                            ) : (
+                              <IoIosArrowDown size={16} />
+                            )}
+                          </div>
+                          {isExpanded && (
+                            <div className="p-3 space-y-2">
+                              {timeSlots.map((timeSlot) => {
+                                const session = sessions.find(
+                                  (s: Session | EmptySlot) => s.Time === timeSlot
+                                ) as Session | EmptySlot | undefined;
+                                const isEmpty =
+                                  !session || !("Teacher" in session);
+                                const cellId = `${day}-${roomName}-${timeSlot}`;
+                                const isDraggingThisSession =
+                                  activeSession &&
+                                  session &&
+                                  "Teacher" in session &&
+                                  session.Subject === activeSession.Subject &&
+                                  session.Time === activeSession.Time;
+                                const cellConflicts = getCellConflicts(
+                                  day,
+                                  roomName,
+                                  timeSlot
+                                );
+
+                                return (
+                                  <div
+                                    key={cellId}
+                                    className="flex items-center border-b border-gray-500 py-2 box-border last:border-b-0"
+                                  >
+                                    <div className="w-1/3 text-sm font-medium text-gray-700">
+                                      {timeSlot}
+                                    </div>
+                                    <div className="w-2/3">
+                                      <DroppableDiv
+                                        id={cellId}
+                                        isEmpty={isEmpty}
+                                        isDraggingOver={!!isDraggingThisSession}
+                                        isMobile={isMobile}
+                                        conflicts={cellConflicts}
+                                        isLoading={
+                                          isOperationLoading || isVersionLoading
+                                        }
+                                        onAddClass={() => {
+                                          if (!isSuperadmin) {
+                                            openAuthModal();
+                                            return;
+                                          }
+                                          setAddClassCell({
+                                            day,
+                                            room: roomName,
+                                            time: timeSlot,
+                                          });
+                                          setIsAddClassDialogOpen(true);
+                                        }}
+                                        onDeleteClass={() => {
+                                          if (!isSuperadmin) {
+                                            openAuthModal();
+                                            return;
+                                          }
+                                          setDeleteClassCell({
+                                            day,
+                                            room: roomName,
+                                            time: timeSlot,
+                                          });
+                                          setIsDeleteClassDialogOpen(true);
+                                        }}
+                                      >
+                                        {!isVersionLoading &&
+                                          !isEmpty &&
+                                          !isDraggingThisSession &&
+                                          session &&
+                                          "Teacher" in session && (
+                                            <DraggableSession
+                                              id={`${cellId}-${(
+                                                session.Subject || "session"
+                                              ).replace(/[^a-zA-Z0-9]/g, "_")}`}
+                                              session={session as Session}
+                                              isDisabled={
+                                                isSaving !== "none" ||
+                                                isMobile ||
+                                                !isSuperadmin
+                                              }
+                                            />
+                                          )}
+                                        {!isVersionLoading &&
+                                          isDraggingThisSession &&
+                                          session &&
+                                          "Teacher" in session && (
+                                            <SessionDetails
+                                              session={session as Session}
+                                              isPlaceholder
+                                            />
+                                          )}
+                                        {!isVersionLoading && isEmpty && (
+                                          <div className="text-center text-gray-600 text-sm h-full flex items-center justify-center">
+                                            Free
+                                          </div>
+                                        )}
+                                      </DroppableDiv>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
                           )}
                         </div>
-                        {isExpanded && (
-                          <div className="p-3 space-y-1">
-                            {timeSlots.map((timeSlot) => {
-                              const session = sessions.find(
-                                (s: Session | EmptySlot) => s.Time === timeSlot
-                              ) as Session | EmptySlot | undefined;
-                              const isEmpty =
-                                !session || !("Teacher" in session);
-                              const cellId = `${day}-${roomName}-${timeSlot}`;
-                              const isDraggingThisSession =
-                                activeSession &&
-                                session &&
-                                "Teacher" in session &&
-                                session.Subject === activeSession.Subject &&
-                                session.Time === activeSession.Time;
-                              const cellConflicts = getCellConflicts(
-                                day,
-                                roomName,
-                                timeSlot
-                              );
-
-                              return (
-                                <div
-                                  key={cellId}
-                                  className="flex items-center border-b py-1 box-border"
-                                >
-                                  <div className="w-1/3 text-sm font-medium">
-                                    {timeSlot}
-                                  </div>
-                                  <div className="w-2/3">
-                                    <DroppableDiv
-                                      id={cellId}
-                                      isEmpty={isEmpty}
-                                      isDraggingOver={!!isDraggingThisSession}
-                                      isMobile={isMobile}
-                                      conflicts={cellConflicts}
-                                      isLoading={
-                                        isOperationLoading || isVersionLoading
-                                      }
-                                      onAddClass={() => {
-                                        if (!isSuperadmin) {
-                                          openAuthModal();
-                                          return;
-                                        }
-                                        setAddClassCell({
-                                          day,
-                                          room: roomName,
-                                          time: timeSlot,
-                                        });
-                                        setIsAddClassDialogOpen(true);
-                                      }}
-                                      onDeleteClass={() => {
-                                        if (!isSuperadmin) {
-                                          openAuthModal();
-                                          return;
-                                        }
-                                        setDeleteClassCell({
-                                          day,
-                                          room: roomName,
-                                          time: timeSlot,
-                                        });
-                                        setIsDeleteClassDialogOpen(true);
-                                      }}
-                                    >
-                                      {!isVersionLoading &&
-                                        !isEmpty &&
-                                        !isDraggingThisSession &&
-                                        session &&
-                                        "Teacher" in session && (
-                                          <DraggableSession
-                                            id={`${cellId}-${(
-                                              session.Subject || "session"
-                                            ).replace(/[^a-zA-Z0-9]/g, "_")}`}
-                                            session={session as Session}
-                                            isDisabled={
-                                              isSaving !== "none" ||
-                                              isMobile ||
-                                              !isSuperadmin
-                                            }
-                                          />
-                                        )}
-                                      {!isVersionLoading &&
-                                        isDraggingThisSession &&
-                                        session &&
-                                        "Teacher" in session && (
-                                          <SessionDetails
-                                            session={session as Session}
-                                            isPlaceholder
-                                          />
-                                        )}
-                                      {!isVersionLoading && isEmpty && (
-                                        <div className="text-center text-gray-600 text-sm h-full flex items-center justify-center">
-                                          Free
-                                        </div>
-                                      )}
-                                    </DroppableDiv>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })}
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Desktop View (Unchanged) */}
-          <div className="hidden md:block max-h-[calc(100vh-137px)] overflow-y-auto overflow-x-auto w-full">
+          {/* Desktop View  */}
+          <div className="hidden md:block w-full  ">
             <table
               id="timetable-table"
               className="border-collapse bg-gray-50 w-full"

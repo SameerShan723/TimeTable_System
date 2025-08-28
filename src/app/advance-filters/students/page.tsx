@@ -248,9 +248,9 @@ export default function StudentTimetable(): JSX.Element {
           />
         </div>
 
-        <div className="flex gap-3 flex-col lg:flex-row md:flex-row">
+        <div className="flex gap-3 flex-col  lg:flex-row md:flex-row mt-3 w-full max-w-md">
           <button
-            className="bg-[#042954] py-2 lg:px-20 px-12 md:px-16 rounded-md cursor-pointer text-white hover:brightness-110 transition-colors"
+            className="bg-[#042954] py-3 md:py-2 px-14 rounded-md cursor-pointer text-white hover:brightness-110 transition-colors w-full"
             onClick={handleSearch}
             disabled={loading}
           >

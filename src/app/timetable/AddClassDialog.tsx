@@ -155,10 +155,10 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                       : state.isFocused
                       ? "#eff6ff"
                       : "#ffffff",
-                    color: state.isSelected ? "#ffffff" : "#374151",
-                    "&:hover": {
-                      backgroundColor: "#eff6ff",
-                    },
+                    // color: state.isSelected ? "#ffffff" : "#374151",
+                    // "&:hover": {
+                    //   backgroundColor: "#eff6ff",
+                    // },
                     transition: "all 0.2s",
                   }),
                   placeholder: (base) => ({
@@ -221,10 +221,10 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                       : state.isFocused
                       ? "#eff6ff"
                       : "#ffffff",
-                    color: state.isSelected ? "#ffffff" : "#374151",
-                    "&:hover": {
-                      backgroundColor: "#eff6ff",
-                    },
+                    // color: state.isSelected ? "#ffffff" : "#374151",
+                    // "&:hover": {
+                    //   backgroundColor: "#eff6ff",
+                    // },
                     transition: "all 0.2s",
                   }),
                   placeholder: (base) => ({
@@ -287,10 +287,10 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                       : state.isFocused
                       ? "#eff6ff"
                       : "#ffffff",
-                    color: state.isSelected ? "#ffffff" : "#374151",
-                    "&:hover": {
-                      backgroundColor: "#eff6ff",
-                    },
+                    // color: state.isSelected ? "#ffffff" : "#374151",
+                    // "&:hover": {
+                    //   backgroundColor: "#eff6ff",
+                    // },
                     transition: "all 0.2s",
                   }),
                   placeholder: (base) => ({
@@ -302,7 +302,7 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
               />
             </div>
           </div>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="mr-5">
             <AlertDialogCancel
               onClick={() => {
                 if (!isAddClassLoading) {
