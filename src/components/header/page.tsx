@@ -59,20 +59,9 @@ export default function Header() {
             height={52}
             priority
             className="object-contain w-[115px] md:w-[232px] h-auto"
-            onError={(e) => {
-              console.error("Logo failed to load:", e);
-            }}
-            onLoad={() => {
-              console.log("Logo loaded successfully");
-            }}
+          
           />
-          {/* Fallback for testing */}
-          <img 
-            src="/logo.png" 
-            alt="University Logo Fallback" 
-            className="object-contain w-[115px] md:w-[232px] h-auto"
-            style={{ display: 'none' }}
-          />
+       
         </div>
 
         <div className="flex-1 flex justify-center px-2">
