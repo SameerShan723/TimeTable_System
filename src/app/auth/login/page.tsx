@@ -117,7 +117,7 @@ export default function LoginPage() {
         ) : (
           <div className="rounded-2xl shadow-2xl bg-white p-8">
             <h2 className="text-3xl font-bold text-center text-blue-900 mb-6">
-              Superadmin Login
+              Login
             </h2>
 
             <form onSubmit={handleLogin} className="flex flex-col gap-5">

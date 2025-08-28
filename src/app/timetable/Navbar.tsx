@@ -249,6 +249,7 @@ const Navbar: React.FC<NavbarProps> = ({
             }}
             placeholder="Select Teachers"
             isDisabled={isSaving !== "none" || isDeleting}
+            menuIsOpen={false}
             className="text-black w-full"
             styles={{
               control: (provided, state) => ({
@@ -291,6 +292,7 @@ const Navbar: React.FC<NavbarProps> = ({
             }}
             placeholder="Select Subjects"
             isDisabled={isSaving !== "none" || isDeleting}
+            menuIsOpen={false}
             className="text-black w-full"
             styles={{
               control: (provided, state) => ({

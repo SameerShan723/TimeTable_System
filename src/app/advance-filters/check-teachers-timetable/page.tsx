@@ -192,6 +192,7 @@ export default function TeacherTimetable(): JSX.Element {
           <label className="text-xl mb-2">Teacher:</label>
           <Select<SelectOption, true>
             instanceId={teacherSelectedId}
+            inputId={`${teacherSelectedId}-input`}
             isMulti
             options={teachers.map((teacher) => ({
               value: teacher,
@@ -219,6 +220,7 @@ export default function TeacherTimetable(): JSX.Element {
           <label className="text-xl mb-2">Days:</label>
           <Select<SelectOption, true>
             instanceId={daySelectedId}
+            inputId={`${daySelectedId}-input`}
             isMulti
             options={daySelectOptions}
             onChange={handleDaySelection}
