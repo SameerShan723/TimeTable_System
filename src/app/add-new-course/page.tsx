@@ -344,6 +344,9 @@ export default function CourseForm() {
         toast.success(`Inserted ${data.length} course(s)`);
         setBulkPreview([]);
         setUploadedFileName("");
+        setIsPreviewOpen(false);
+      } else {
+        toast.error("No data returned from insert operation");
       }
     } catch (err) {
       console.error("Bulk insert error:", err);
