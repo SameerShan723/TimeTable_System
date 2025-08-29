@@ -50,6 +50,21 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
     }
   }, [isOpen]);
 
+  // Clear teacher and section when subject changes
+  useEffect(() => {
+    if (subject) {
+      setTeacher(null);
+      setSection(null);
+    }
+  }, [subject]);
+
+  // Clear section when teacher changes (since it affects section options)
+  useEffect(() => {
+    if (teacher) {
+      setSection(null);
+    }
+  }, [teacher]);
+
   // Derive select options from courses
   const subjectOptions = useMemo(
     () =>
@@ -62,28 +77,52 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
     [courses]
   );
 
+  // Filter teachers based on selected subject and section
   const teacherOptions = useMemo(
-    () =>
-      Array.from(
-        new Set(
-          courses.map((course) => course.faculty_assigned).filter(Boolean)
-        )
-      ).map((teacher) => ({
+    () => {
+      if (!subject) return [];
+      
+      let filteredCourses = courses.filter((course) => course.course_details === subject);
+      
+      // If section is also selected, filter by both subject and section
+      if (section) {
+        filteredCourses = filteredCourses.filter((course) => course.section === section);
+      }
+      
+      const teachersForSubject = filteredCourses
+        .map((course) => course.faculty_assigned)
+        .filter(Boolean);
+
+      return Array.from(new Set(teachersForSubject)).map((teacher) => ({
         value: teacher!,
         label: teacher!,
-      })),
-    [courses]
+      }));
+    },
+    [courses, subject, section]
   );
 
+  // Filter sections based on selected subject and teacher
   const sectionOptions = useMemo(
-    () =>
-      Array.from(
-        new Set(courses.map((course) => course.section).filter(Boolean))
-      ).map((section) => ({
+    () => {
+      if (!subject) return [];
+      
+      let filteredCourses = courses.filter((course) => course.course_details === subject);
+      
+      // If teacher is also selected, filter by both subject and teacher
+      if (teacher) {
+        filteredCourses = filteredCourses.filter((course) => course.faculty_assigned === teacher);
+      }
+      
+      const sectionsForSubject = filteredCourses
+        .map((course) => course.section)
+        .filter(Boolean);
+
+      return Array.from(new Set(sectionsForSubject)).map((section) => ({
         value: section!,
         label: section!,
-      })),
-    [courses]
+      }));
+    },
+    [courses, subject, teacher]
   );
 
   const handleSubmit = () => {
@@ -182,7 +221,7 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                 value={teacher ? { value: teacher, label: teacher } : null}
                 onChange={(option) => setTeacher(option ? option.value : null)}
                 placeholder="Select Teacher"
-                isDisabled={isAddClassLoading}
+                isDisabled={isAddClassLoading || !subject || teacherOptions.length === 0}
                 styles={{
                   control: (base, state) => ({
                     ...base,
@@ -202,6 +241,7 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                     color: "#111827",
                     transition: "all 0.2s",
                     fontSize: "0.875rem",
+                    cursor: (!subject || teacherOptions.length === 0) ? "not-allowed" : "pointer",
                   }),
                   singleValue: (base) => ({
                     ...base,
@@ -244,7 +284,7 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                 value={section ? { value: section, label: section } : null}
                 onChange={(option) => setSection(option ? option.value : null)}
                 placeholder="Select Section"
-                isDisabled={isAddClassLoading}
+                isDisabled={isAddClassLoading || !subject || sectionOptions.length === 0}
                 styles={{
                   control: (base, state) => ({
                     ...base,
@@ -264,6 +304,7 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                     color: "#111827",
                     transition: "all 0.2s",
                     fontSize: "0.875rem",
+                    cursor: (!subject || sectionOptions.length === 0) ? "not-allowed" : "pointer",
                   }),
                   singleValue: (base) => ({
                     ...base,

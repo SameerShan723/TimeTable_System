@@ -1,65 +1,22 @@
-import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
+// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
-  const res = NextResponse.next();
-  const supabase = createMiddlewareClient({ req: request, res });
-  const { data: { session } } = await supabase.auth.getSession();
+export function middleware(req: NextRequest) {
+  console.log("⚡ Middleware triggered:", req.nextUrl.pathname);
 
-  // Redirect logged-in users from /auth/login to / FIRST
-  if (session && request.nextUrl.pathname === "/auth/login") {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
+  if (req.nextUrl.pathname.startsWith("/courses")) {
+    const token = req.cookies.get("auth_token");
 
-  // Bypass auth checks for auth-related routes
-  if (
-    request.nextUrl.pathname === "/auth/update-password" ||
-    request.nextUrl.pathname === "/auth/login" ||
-    request.nextUrl.pathname === "/auth/reset-password" ||
-    request.nextUrl.pathname === "/auth/otp"
-  ) {
-    return res;
-  }
-
-  // Protect /protected routes
-  if (!session && request.nextUrl.pathname.startsWith("/protected")) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
-  // Protect /course, /add-new-course, /generate-timetable for superadmin only
-  if (
-    request.nextUrl.pathname.startsWith("/auth/login") ||
-    request.nextUrl.pathname.startsWith("/courses") ||
-    request.nextUrl.pathname.startsWith("/add-new-course") ||
-    request.nextUrl.pathname.startsWith("/generate-timetable")
-  ) {
-    if (!session) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-
-    const { data: roleData, error: roleError } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("id", session.user.id)
-      .eq("role", "superadmin")
-      .maybeSingle();
-
-    if (roleError || !roleData) {
-      return NextResponse.redirect(new URL("/auth/login", request.url));
+    if (!token) {
+      console.log("🚫 No token, redirecting...");
+      return NextResponse.redirect(new URL("/", req.url));
     }
   }
 
-  return res;
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    "/",
-    "/auth/:path*",
-    "/protected/:path*",
-    "/courses/:path*",
-    "/add-new-course/:path*",
-    "/generate-timetable/:path*",
-  ],
+  matcher: ["/courses/:path*"],
 };

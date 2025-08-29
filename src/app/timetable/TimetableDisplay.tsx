@@ -76,7 +76,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
           className="relative w-full max-w-full overflow-x-auto "
         >
           {/* Mobile View */}
-          <div className="block md:hidden lg:hidden w-full overflow-y-auto h-[calc(100vh-25rem)] scrollbar-hide">
+          <div className={`block md:hidden lg:hidden w-full overflow-y-auto ${isSuperadmin? " h-[calc(100vh-24rem)]" : "h-[calc(100vh-20rem)]" } scrollbar-hide`}>
             <div className="space-y-4 p-4">
               {Days.map((day) => {
                 const rooms =

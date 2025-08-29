@@ -662,30 +662,41 @@ export default function FacultyData() {
                       control={form.control}
                       name="semester"
                       render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
+                        <FormItem className="w-full">
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Semester
                           </FormLabel>
                           <FormControl>
-                            <Input
-                              type="text"
-                              placeholder="e.g., 4"
-                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
-                                form.formState.errors.semester
-                                  ? "border-red-500"
-                                  : ""
-                              }`}
-                              disabled={isUpdating}
-                              {...field}
-                              value={field.value ?? ""}
-                              onChange={(e) =>
-                                field.onChange(
-                                  e.target.value ? e.target.value : ""
-                                )
-                              }
+                            <Select
+                              instanceId="semester-select-edit"
+                              options={[
+                                { value: "1", label: "1" },
+                                { value: "2", label: "2" },
+                                { value: "3", label: "3" },
+                                { value: "4", label: "4" },
+                                { value: "5", label: "5" },
+                                { value: "6", label: "6" },
+                                { value: "7", label: "7" },
+                                { value: "8", label: "8" },
+                              ]}
+                              value={[
+                                { value: "1", label: "1" },
+                                { value: "2", label: "2" },
+                                { value: "3", label: "3" },
+                                { value: "4", label: "4" },
+                                { value: "5", label: "5" },
+                                { value: "6", label: "6" },
+                                { value: "7", label: "7" },
+                                { value: "8", label: "8" },
+                              ].find(option => option.value === field.value) || null}
+                              onChange={(selectedOption) => field.onChange(selectedOption?.value || "")}
+                              placeholder="Select Semester"
+                              className="w-full"
+                              classNamePrefix="react-select"
+                              isDisabled={isUpdating}
                             />
                           </FormControl>
-                      <FormMessage className="text-sm text-red-500 mt-1" />
+                          <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -693,15 +704,16 @@ export default function FacultyData() {
                       control={form.control}
                       name="credit_hour"
                       render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
+                        <FormItem className="w-full">
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Credit Hour
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., 3"
-                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                              maxLength={1}
+                              className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.credit_hour
                                   ? "border-red-500"
                                   : ""
@@ -709,14 +721,13 @@ export default function FacultyData() {
                               disabled={isUpdating}
                               {...field}
                               value={field.value ?? ""}
-                              onChange={(e) =>
-                                field.onChange(
-                                  e.target.value ? e.target.value : ""
-                                )
-                              }
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/[^1-9]/g, '').slice(0, 1);
+                                field.onChange(value);
+                              }}
                             />
                           </FormControl>
-                      <FormMessage className="text-sm text-red-500 mt-1" />
+                          <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
