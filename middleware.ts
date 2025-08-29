@@ -7,6 +7,11 @@ export async function middleware(request: NextRequest) {
   const supabase = createMiddlewareClient({ req: request, res });
   const { data: { session } } = await supabase.auth.getSession();
 
+  // Redirect logged-in users from /auth/login to / FIRST
+  if (session && request.nextUrl.pathname === "/auth/login") {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
   // Bypass auth checks for auth-related routes
   if (
     request.nextUrl.pathname === "/auth/update-password" ||
@@ -24,6 +29,7 @@ export async function middleware(request: NextRequest) {
 
   // Protect /course, /add-new-course, /generate-timetable for superadmin only
   if (
+    request.nextUrl.pathname.startsWith("/auth/login") ||
     request.nextUrl.pathname.startsWith("/courses") ||
     request.nextUrl.pathname.startsWith("/add-new-course") ||
     request.nextUrl.pathname.startsWith("/generate-timetable")
@@ -42,11 +48,6 @@ export async function middleware(request: NextRequest) {
     if (roleError || !roleData) {
       return NextResponse.redirect(new URL("/auth/login", request.url));
     }
-  }
-
-  // Redirect logged-in users from /auth/login to /
-  if (session && request.nextUrl.pathname === "/auth/login") {
-    return NextResponse.redirect(new URL("/", request.url));
   }
 
   return res;

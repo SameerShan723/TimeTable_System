@@ -136,15 +136,12 @@ const Navbar: React.FC<NavbarProps> = ({
   const handleFinalizeVersion = async () => {
     if (!isSuperadmin || !selectedVersion) return;
 
-    setFinalizeVersion(true);
     try {
       await contextFinalizeVersion(selectedVersion);
-      // Keep checkbox checked to show it's finalized
+      // Keep checkbox checked to show it's finalized - don't uncheck on success
     } catch {
       // Error is already handled by the context
-      setFinalizeVersion(false); // Uncheck if error occurs
-    } finally {
-      setFinalizeVersion(false);
+      setFinalizeVersion(false); // Only uncheck if error occurs
     }
   };
 

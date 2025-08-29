@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useId, useMemo } from "react";
+import React, { useState, useId, useMemo, useEffect } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,6 +41,15 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
   const teacherId = useId();
   const sectionId = useId();
 
+  // Clear form when dialog closes
+  useEffect(() => {
+    if (!isOpen) {
+      setSubject(null);
+      setTeacher(null);
+      setSection(null);
+    }
+  }, [isOpen]);
+
   // Derive select options from courses
   const subjectOptions = useMemo(
     () =>
@@ -80,31 +89,29 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
   const handleSubmit = () => {
     if (subject && teacher && section) {
       onSubmit({ subject, teacher, section });
-      setSubject(null);
-      setTeacher(null);
-      setSection(null);
+      // Don't clear values here - let the parent component handle closing
+      // The useEffect will clear them when the dialog actually closes
     } else {
       toast.error("Please fill all fields");
-      onClose(); // Close only if validation fails
     }
   };
 
   return (
     <AlertDialog open={isOpen}>
       <AlertDialogPortal>
-        <AlertDialogOverlay className="bg-black bg-opacity-50  " />
-        <AlertDialogContent className="bg-white  text-gray-800 border border-gray-200 shadow-lg rounded-2xl max-w-3xl mx-auto">
-          <AlertDialogHeader className="flex pl-6">
-            <AlertDialogTitle className="text-2xl font-bold text-blue-900 ">
+        <AlertDialogOverlay className="bg-black bg-opacity-50" />
+        <AlertDialogContent className="bg-white text-gray-800 border border-gray-200 shadow-lg rounded-2xl max-w-2xl p-6">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-2xl font-bold text-blue-900">
               Add New Class
             </AlertDialogTitle>
             <AlertDialogDescription className="text-gray-500 text-sm">
               Select the subject, teacher, and section for the new class.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="space-y-4 p-6">
+          <div className="space-y-4">
             <div>
-              <label className="text-sm font-semibold text-gray-700">
+              <label className="text-sm font-semibold text-gray-700 mb-2 block">
                 Subject:
               </label>
               <Select
@@ -155,10 +162,6 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                       : state.isFocused
                       ? "#eff6ff"
                       : "#ffffff",
-                    // color: state.isSelected ? "#ffffff" : "#374151",
-                    // "&:hover": {
-                    //   backgroundColor: "#eff6ff",
-                    // },
                     transition: "all 0.2s",
                   }),
                   placeholder: (base) => ({
@@ -170,7 +173,7 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-gray-700">
+              <label className="text-sm font-semibold text-gray-700 mb-2 block">
                 Teacher:
               </label>
               <Select
@@ -221,10 +224,6 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                       : state.isFocused
                       ? "#eff6ff"
                       : "#ffffff",
-                    // color: state.isSelected ? "#ffffff" : "#374151",
-                    // "&:hover": {
-                    //   backgroundColor: "#eff6ff",
-                    // },
                     transition: "all 0.2s",
                   }),
                   placeholder: (base) => ({
@@ -236,7 +235,7 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-gray-700">
+              <label className="text-sm font-semibold text-gray-700 mb-2 block">
                 Section:
               </label>
               <Select
@@ -287,10 +286,6 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                       : state.isFocused
                       ? "#eff6ff"
                       : "#ffffff",
-                    // color: state.isSelected ? "#ffffff" : "#374151",
-                    // "&:hover": {
-                    //   backgroundColor: "#eff6ff",
-                    // },
                     transition: "all 0.2s",
                   }),
                   placeholder: (base) => ({
@@ -302,7 +297,7 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
               />
             </div>
           </div>
-          <AlertDialogFooter className="mr-5">
+          <AlertDialogFooter>
             <AlertDialogCancel
               onClick={() => {
                 if (!isAddClassLoading) {

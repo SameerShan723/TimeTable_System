@@ -552,22 +552,24 @@ export default function FacultyData() {
                     <td className="p-3 text-sm text-gray-600 border-2 border-gray-300">
                       {course.lab_classes_week || "N/A"}
                     </td>
-                    <td className="p-8 text-sm text-gray-600 border-1 border-gray-300 flex space-x-2">
-                      <button
-                        onClick={() => handleEdit(course)}
-                        className="px-4 py-2 transition-all duration-200 hover:scale-105 text-sm font-medium bg-[#042954] text-white rounded-lg"
-                        disabled={isUpdating || isDeleting}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(course.id)}
-                        className="px-4 py-2 transition-all duration-200 hover:scale-105 text-sm font-medium bg-red-600 hover:bg-red-700 text-white rounded-lg"
-                        disabled={isUpdating || isDeleting}
-                      >
-                        Delete
-                      </button>
-                    </td>
+                                                              <td className="p-3 text-sm text-gray-600 border-2 border-gray-300">
+                       <div className="flex space-x-2 items-center h-full">
+                         <button
+                           onClick={() => handleEdit(course)}
+                           className="px-4 py-2 transition-all duration-200 hover:scale-105 text-sm font-medium bg-[#042954] text-white rounded-lg"
+                           disabled={isUpdating || isDeleting}
+                         >
+                           Edit
+                         </button>
+                         <button
+                           onClick={() => handleDelete(course.id)}
+                           className="px-4 py-2 transition-all duration-200 hover:scale-105 text-sm font-medium bg-red-600 hover:bg-red-700 text-white rounded-lg"
+                           disabled={isUpdating || isDeleting}
+                         >
+                           Delete
+                         </button>
+                       </div>
+                     </td>
                   </tr>
                 ))}
               </tbody>
@@ -581,13 +583,13 @@ export default function FacultyData() {
             <AlertDialogPortal>
               <AlertDialogOverlay className="bg-black bg-opacity-50" />
               <AlertDialogContent 
-                className="bg-white text-gray-800 border border-gray-200 shadow-lg rounded-2xl w-full max-w-5xl lg:min-w-2xl px-2  min-h-[500px] max-h-[90vh] overflow-y-auto"
+                className="bg-white text-gray-800 border border-gray-200 shadow-lg rounded-2xl w-full max-w-5xl lg:min-w-2xl min-h-[500px] max-h-[90vh] overflow-y-auto p-6"
                 style={{
                   scrollbarWidth: 'thin',
                   scrollbarColor: '#D1D5DB #F3F4F6'
                 }}            
               >
-                <AlertDialogHeader className="px-5">
+                <AlertDialogHeader>
                   <AlertDialogTitle className="text-2xl font-bold text-blue-900">
                     Edit Course
                   </AlertDialogTitle>
@@ -598,7 +600,7 @@ export default function FacultyData() {
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6"
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6"
                   >
                     {form.formState.errors.root && (
                       <div className="col-span-1 md:col-span-2 text-red-400 text-sm font-medium">
@@ -610,14 +612,14 @@ export default function FacultyData() {
                       name="subject_code"
                       render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700">
+                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Subject Code
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., GIS-302"
-                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.subject_code
                                   ? "border-red-500"
                                   : ""
@@ -636,14 +638,14 @@ export default function FacultyData() {
                       name="course_details"
                       render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700">
+                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Course Details
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., Introduction to Remote Sensing"
-                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.course_details
                                   ? "border-red-500"
                                   : ""
@@ -661,14 +663,14 @@ export default function FacultyData() {
                       name="semester"
                       render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700">
+                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Semester
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., 4"
-                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.semester
                                   ? "border-red-500"
                                   : ""
@@ -692,14 +694,14 @@ export default function FacultyData() {
                       name="credit_hour"
                       render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700">
+                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Credit Hour
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., 3"
-                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.credit_hour
                                   ? "border-red-500"
                                   : ""
@@ -723,14 +725,14 @@ export default function FacultyData() {
                       name="faculty_assigned"
                       render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700">
+                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Faculty Assigned
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., Syed Najam Ul Hassan"
-                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.faculty_assigned
                                   ? "border-red-500"
                                   : ""
@@ -748,14 +750,14 @@ export default function FacultyData() {
                       name="section"
                       render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700">
+                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Section
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., (BS (GIS &RS (2024-2028)) 2nd"
-                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.section
                                   ? "border-red-500"
                                   : ""
@@ -773,14 +775,14 @@ export default function FacultyData() {
                       name="domain"
                       render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700">
+                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Domain
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., Computer Science"
-                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.domain
                                   ? "border-red-500"
                                   : ""
@@ -799,14 +801,14 @@ export default function FacultyData() {
                       name="subject_type"
                       render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700">
+                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Subject Type
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., Core"
-                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.subject_type
                                   ? "border-red-500"
                                   : ""
@@ -825,14 +827,14 @@ export default function FacultyData() {
                       name="semester_details"
                       render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700">
+                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Semester Details
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., Fall 2024"
-                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.semester_details
                                   ? "border-red-500"
                                   : ""
@@ -851,7 +853,7 @@ export default function FacultyData() {
                       name="theory_classes_week"
                       render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700">
+                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Theory Classes per Week
                           </FormLabel>
                           <FormControl>
@@ -859,7 +861,7 @@ export default function FacultyData() {
                               type="number"
                               min="1"
                               placeholder="e.g., 2"
-                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.theory_classes_week
                                   ? "border-red-500"
                                   : ""
@@ -879,7 +881,7 @@ export default function FacultyData() {
                       name="lab_classes_week"
                       render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700">
+                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Lab Classes per Week (Optional)
                           </FormLabel>
                           <FormControl>
@@ -887,7 +889,7 @@ export default function FacultyData() {
                               type="number"
                               min="0"
                               placeholder="e.g., 1"
-                          className={`mt-1 h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.lab_classes_week
                                   ? "border-red-500"
                                   : ""
@@ -906,8 +908,8 @@ export default function FacultyData() {
                       control={form.control}
                       name="is_regular_teacher"
                       render={({ field }) => (
-                    <FormItem className="w-full md:col-span-2">
-                      <FormLabel className="text-sm font-semibold text-gray-700">
+                    <FormItem className="w-full">
+                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Teacher Type
                           </FormLabel>
                           <FormControl>

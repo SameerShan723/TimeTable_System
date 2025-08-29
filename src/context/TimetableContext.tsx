@@ -36,6 +36,7 @@ interface TimetableVersionContextType {
   saveTimetableDataWithConflicts: (data: TimetableData, version?: number) => Promise<number>;
   deleteVersion: (version: number) => Promise<void>;
   checkConflicts: (data: TimetableData) => void;
+  setTimetableData: (data: TimetableData) => void;
 }
 
 interface TimetableVersionProviderProps {
@@ -202,7 +203,7 @@ export const TimetableVersionProvider: React.FC<
 
   const fetchTimetableData = useCallback(
     async (version: number) => {
-      setLoading(true);
+      // setLoading(true);
       setError(null);
       try {
         const response = await fetch(`/api/timetable?version=${version}`);
@@ -301,7 +302,7 @@ export const TimetableVersionProvider: React.FC<
 
   const finalizeVersion = useCallback(
     async (version: number) => {
-      setLoading(true);
+      // setLoading(true);
       try {
         const {
           data: { user },
@@ -329,8 +330,6 @@ export const TimetableVersionProvider: React.FC<
           err instanceof Error ? err.message : "Failed to finalize version"
         );
         throw err;
-      } finally {
-        setLoading(false);
       }
     },
     [showToast]
@@ -344,7 +343,7 @@ export const TimetableVersionProvider: React.FC<
         throw new Error("Conflicts detected");
       }
 
-      setLoading(true);
+      // setLoading(true);
       try {
         const response = await fetch("/api/timetable", {
           method: "POST",
@@ -369,8 +368,6 @@ export const TimetableVersionProvider: React.FC<
         setError(err instanceof Error ? err.message : "Unknown error");
         showToast('error', "Failed to save timetable data");
         throw err;
-      } finally {
-        setLoading(false);
       }
     },
     [checkConflicts, conflicts, showToast]
@@ -378,7 +375,7 @@ export const TimetableVersionProvider: React.FC<
 
   const saveTimetableDataWithConflicts = useCallback(
     async (data: TimetableData, version?: number) => {
-      setLoading(true);
+      // setLoading(true);
       try {
         const response = await fetch("/api/timetable", {
           method: "POST",
@@ -402,16 +399,14 @@ export const TimetableVersionProvider: React.FC<
         setError(err instanceof Error ? err.message : "Unknown error");
         showToast('error', "Failed to save timetable data");
         throw err;
-      } finally {
-        setLoading(false);
-      }
+      } 
     },
     [showToast]
   );
 
   const deleteVersion = useCallback(
     async (version: number) => {
-      setLoading(true);
+      // setLoading(true);
       try {
         const {
           data: { user },
@@ -445,9 +440,7 @@ export const TimetableVersionProvider: React.FC<
         showToast('error',
           err instanceof Error ? err.message : "Failed to delete version"
         );
-      } finally {
-        setLoading(false);
-      }
+      } 
     },
     [selectedVersion, fetchGlobalVersion, showToast]
   );
@@ -484,6 +477,7 @@ export const TimetableVersionProvider: React.FC<
         saveTimetableDataWithConflicts,
         deleteVersion,
         checkConflicts,
+        setTimetableData,
       }}
     >
       {children}

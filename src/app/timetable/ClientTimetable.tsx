@@ -54,9 +54,9 @@ export default function ClientTimetable() {
     error: hookError,
     setSelectedVersion,
     saveTimetableData,
-    saveTimetableDataWithConflicts,
     deleteVersion: contextDeleteVersion,
     checkConflicts,
+    setTimetableData: contextSetTimetableData,
   } = useTimetableVersion();
   const { isSuperadmin, openAuthModal, } =
     useAuth();
@@ -407,43 +407,37 @@ export default function ClientTimetable() {
       }
       if (selectedVersion === null) return;
       setIsAddClassLoading(true);
-      setIsOperationLoading(true);
-      const updatedData = produce(timetableData, (draft) => {
-        const roomData = draft[day]?.find(
-          (r: RoomSchedule) => Object.keys(r)[0] === room
-        );
-        if (!roomData) return;
-        const sessions = roomData[room] || [];
-        const sessionIndex = sessions.findIndex(
-          (s: Session | EmptySlot) => s.Time === time
-        );
-        if (sessionIndex === -1) return;
-        sessions[sessionIndex] = {
-          Time: time,
-          Room: room,
-          Subject: classData.subject,
-          Teacher: classData.teacher,
-          Section: classData.section,
-        };
-      });
+
       try {
-        const newVersion = await saveTimetableData(
-          updatedData,
-          selectedVersion
-        );
-        await setSelectedVersion(newVersion);
+        const response = await fetch(`/api/timetable?operation=add_class&version=${selectedVersion}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ day, room, time, classData }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to add class");
+        }
+
+        const result = await response.json();
+        
+        // Update local state directly with the response data
+        contextSetTimetableData(result.data);
         setVersionPendingData((prev) => ({
           ...prev,
           [selectedVersion]: null,
         }));
-        toast.success(
-          `Class added and saved successfully as Version ${newVersion}`
-        );
+
+        toast.success("Class added successfully!");
         setIsAddClassDialogOpen(false);
         setAddClassCell(null);
+        
+        // Check conflicts with updated data
+        debouncedCheckConflicts(result.data);
       } catch (error) {
         toast.error(
-          `Failed to save class${
+          `Failed to add class: ${
             error instanceof Error ? error.message : "Unknown error"
           }`
         );
@@ -452,16 +446,13 @@ export default function ClientTimetable() {
         setIsAddClassLoading(false);
         setIsOperationLoading(false);
       }
-      debouncedCheckConflicts(updatedData);
     },
     [
-      timetableData,
-      saveTimetableData,
       selectedVersion,
       debouncedCheckConflicts,
-      setSelectedVersion,
       isSuperadmin,
       openAuthModal,
+      contextSetTimetableData,
     ]
   );
 
@@ -473,32 +464,34 @@ export default function ClientTimetable() {
       }
       if (selectedVersion === null) return;
       setIsDeleteClassLoading(true);
-      setIsOperationLoading(true);
-      const updatedData = produce(timetableData, (draft) => {
-        const roomData = draft[day]?.find(
-          (r: RoomSchedule) => Object.keys(r)[0] === room
-        );
-        if (!roomData) return;
-        const sessions = roomData[room] || [];
-        const sessionIndex = sessions.findIndex(
-          (s: Session | EmptySlot) => s.Time === time
-        );
-        if (sessionIndex === -1) return;
-        sessions[sessionIndex] = { Time: time };
-      });
+
       try {
-        const newVersion = await saveTimetableDataWithConflicts(
-          updatedData,
-          selectedVersion
-        );
-        await setSelectedVersion(newVersion);
+        const response = await fetch(`/api/timetable?operation=delete_class&version=${selectedVersion}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ day, room, time }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to delete class");
+        }
+
+        const result = await response.json();
+        
+        // Update local state directly with the response data
+        contextSetTimetableData(result.data);
         setVersionPendingData((prev) => ({
           ...prev,
           [selectedVersion]: null,
         }));
+
         toast.success("Class deleted successfully!");
         setIsDeleteClassDialogOpen(false);
         setDeleteClassCell(null);
+        
+        // Check conflicts with updated data
+        debouncedCheckConflicts(result.data);
       } catch (error) {
         toast.error(
           `Failed to delete class: ${
@@ -510,16 +503,13 @@ export default function ClientTimetable() {
         setIsDeleteClassLoading(false);
         setIsOperationLoading(false);
       }
-      debouncedCheckConflicts(updatedData);
     },
     [
-      timetableData,
-      saveTimetableDataWithConflicts,
       selectedVersion,
       debouncedCheckConflicts,
-      setSelectedVersion,
       isSuperadmin,
       openAuthModal,
+      contextSetTimetableData,
     ]
   );
 
@@ -867,6 +857,7 @@ export default function ClientTimetable() {
 
   if (versions.length === 0) {
     const handleTryAgain = () => {
+      
       window.location.reload();
     };
     return (

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { TimetableData, Session, EmptySlot, RoomSchedule } from "@/app/timetable/types";
 
 interface PostRequestBody {
   version_number?: number;
@@ -280,6 +281,175 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Update failed" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  const supabase = await createSupabaseServerClient();
+  try {
+    const { searchParams } = new URL(request.url);
+    const operation = searchParams.get("operation");
+    const version = searchParams.get("version");
+
+    if (!operation || !version) {
+      return NextResponse.json(
+        { error: "Operation and version parameters are required" },
+        { status: 400 }
+      );
+    }
+
+    const versionNumber = parseInt(version);
+    if (isNaN(versionNumber) || versionNumber <= 0) {
+      return NextResponse.json(
+        { error: "Invalid version number" },
+        { status: 400 }
+      );
+    }
+
+    // Get user from Supabase auth
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: "Unauthorized: User not authenticated" },
+        { status: 401 }
+      );
+    }
+
+    // Verify superadmin status
+    const { data: roleData, error: roleError } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("id", user.id)
+      .eq("role", "superadmin")
+      .maybeSingle();
+
+    if (roleError || !roleData) {
+      return NextResponse.json(
+        { error: "Unauthorized: Superadmin access required" },
+        { status: 403 }
+      );
+    }
+
+    const body = await request.json();
+    
+    if (operation === "add_class") {
+      const { day, room, time, classData } = body;
+      
+      // Get current timetable data
+      const { data: currentData, error: fetchError } = await supabase
+        .from("timetable_data")
+        .select("data")
+        .eq("version_number", versionNumber)
+        .single();
+
+      if (fetchError || !currentData) {
+        return NextResponse.json(
+          { error: "Timetable data not found" },
+          { status: 404 }
+        );
+      }
+
+      // Update the data locally
+      const updatedData = { ...currentData.data } as TimetableData;
+      if (!updatedData[day]) {
+        updatedData[day] = [];
+      }
+
+      // Find or create room data
+      let roomData = updatedData[day].find((r: RoomSchedule) => Object.keys(r)[0] === room);
+      if (!roomData) {
+        roomData = { [room]: [] };
+        updatedData[day].push(roomData);
+      }
+
+      // Find time slot and update
+      const sessions = roomData[room] || [];
+      const sessionIndex = sessions.findIndex((s: Session | EmptySlot) => s.Time === time);
+      if (sessionIndex !== -1) {
+        sessions[sessionIndex] = {
+          Time: time,
+          Room: room,
+          Subject: classData.subject,
+          Teacher: classData.teacher,
+          Section: classData.section,
+        };
+      }
+
+      // Save updated data
+      const { error: saveError } = await supabase
+        .from("timetable_data")
+        .update({ data: updatedData })
+        .eq("version_number", versionNumber);
+
+      if (saveError) {
+        throw new Error(saveError.message);
+      }
+
+      return NextResponse.json({ 
+        success: true, 
+        data: updatedData,
+        message: "Class added successfully" 
+      });
+
+    } else if (operation === "delete_class") {
+      const { day, room, time } = body;
+      
+      // Get current timetable data
+      const { data: currentData, error: fetchError } = await supabase
+        .from("timetable_data")
+        .select("data")
+        .eq("version_number", versionNumber)
+        .single();
+
+      if (fetchError || !currentData) {
+        return NextResponse.json(
+          { error: "Timetable data not found" },
+          { status: 404 }
+        );
+      }
+
+      // Update the data locally
+      const updatedData = { ...currentData.data } as TimetableData;
+      const roomData = updatedData[day]?.find((r: RoomSchedule) => Object.keys(r)[0] === room);
+      
+      if (roomData) {
+        const sessions = roomData[room] || [];
+        const sessionIndex = sessions.findIndex((s: Session | EmptySlot) => s.Time === time);
+        if (sessionIndex !== -1) {
+          sessions[sessionIndex] = { Time: time };
+        }
+      }
+
+      // Save updated data
+      const { error: saveError } = await supabase
+        .from("timetable_data")
+        .update({ data: updatedData })
+        .eq("version_number", versionNumber);
+
+      if (saveError) {
+        throw new Error(saveError.message);
+      }
+
+      return NextResponse.json({ 
+        success: true, 
+        data: updatedData,
+        message: "Class deleted successfully" 
+      });
+    }
+
+    return NextResponse.json(
+      { error: "Invalid operation" },
+      { status: 400 }
+    );
+
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Operation failed" },
       { status: 500 }
     );
   }

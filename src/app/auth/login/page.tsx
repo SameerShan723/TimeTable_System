@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabaseClient } from "@/lib/supabase/supabase";
 import { Eye, EyeOff } from "lucide-react";
@@ -16,15 +16,42 @@ export default function LoginPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const { isAuthenticated } = useAuth();
   const router = useRouter();
 
-  // Redirect if already authenticated
-  React.useEffect(() => {
-    if (isAuthenticated) {
+  // Immediate session check to prevent flash
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) {
+        router.replace("/");
+        return;
+      }
+      setIsCheckingAuth(false);
+    };
+    
+    checkSession();
+  }, [router]);
+
+  // Redirect if already authenticated (context-based)
+  useEffect(() => {
+    if (isAuthenticated && !isCheckingAuth) {
       router.push("/");
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, isCheckingAuth]);
+
+  // Show loading while checking authentication
+  if (isCheckingAuth) {
+    return (
+      <div className="h-[calc(100vh-8rem)] bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#042954] mx-auto mb-4"></div>
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,7 +137,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-4rem)] bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="h-[calc(100vh-8rem)] bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="  w-full max-w-md">
         {isForgotPassword ? (
           <ResetPassword onBackToLogin={handleBackToLogin} />

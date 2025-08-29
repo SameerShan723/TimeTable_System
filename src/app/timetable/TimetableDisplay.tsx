@@ -319,9 +319,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
                                   isDraggingOver={!!isDraggingThisSession}
                                   isMobile={isMobile}
                                   conflicts={cellConflicts}
-                                  isLoading={
-                                    isOperationLoading || isVersionLoading
-                                  }
+                                  isLoading={isVersionLoading}
                                   onAddClass={() => {
                                     if (!isSuperadmin) {
                                       openAuthModal();
