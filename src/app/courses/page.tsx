@@ -32,6 +32,7 @@ import Select from "react-select";
 import { useCourses } from "@/context/CourseContext";
 import { supabaseClient } from "@/lib/supabase/supabase";
 import { Course } from "@/lib/serverData/CourseDataFetcher";
+ import { useRouter } from "next/navigation";
 
 // Options for react-select
 const teacherTypeOptions = [
@@ -79,7 +80,11 @@ const formSchema = z.object({
   domain: z.string().trim().optional(),
   subject_type: z.string().trim().optional(),
   semester_details: z.string().trim().optional(),
-  theory_classes_week: z.number().min(1, { message: "Theory classes per week is required and must be at least 1." }),
+  theory_classes_week: z
+    .number()
+    .min(1, {
+      message: "Theory classes per week is required and must be at least 1.",
+    }),
   lab_classes_week: z.number().min(0).default(0),
 });
 
@@ -93,11 +98,13 @@ export default function FacultyData() {
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
-  const [isDeleteAllDialogOpen, setIsDeleteAllDialogOpen] = useState<boolean>(false);
+  const [isDeleteAllDialogOpen, setIsDeleteAllDialogOpen] =
+    useState<boolean>(false);
   const [isDeletingAll, setIsDeletingAll] = useState<boolean>(false);
   const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
 
   // Fix hydration issues with react-select
   useEffect(() => {
@@ -211,13 +218,21 @@ export default function FacultyData() {
   };
 
   // Get unique teachers and subjects for filter dropdowns
-  const uniqueTeachers = Array.from(new Set(courses.map(course => course.faculty_assigned).filter(Boolean)));
-  const uniqueSubjects = Array.from(new Set(courses.map(course => course.course_details).filter(Boolean)));
+  const uniqueTeachers = Array.from(
+    new Set(courses.map((course) => course.faculty_assigned).filter(Boolean))
+  );
+  const uniqueSubjects = Array.from(
+    new Set(courses.map((course) => course.course_details).filter(Boolean))
+  );
 
   // Filter courses based on selected filters
-  const filteredCourses = courses.filter(course => {
-    const teacherMatch = selectedTeachers.length === 0 || selectedTeachers.includes(course.faculty_assigned || "");
-    const subjectMatch = selectedSubjects.length === 0 || selectedSubjects.includes(course.course_details || "");
+  const filteredCourses = courses.filter((course) => {
+    const teacherMatch =
+      selectedTeachers.length === 0 ||
+      selectedTeachers.includes(course.faculty_assigned || "");
+    const subjectMatch =
+      selectedSubjects.length === 0 ||
+      selectedSubjects.includes(course.course_details || "");
     return teacherMatch && subjectMatch;
   });
 
@@ -303,131 +318,155 @@ export default function FacultyData() {
         {courses.length > 0 && (
           <div className="mb-6 flex flex-col lg:flex-row gap-4">
             {/* Filter Container */}
-                         <div className="flex-1 p-4 bg-gray-50 rounded-lg border border-gray-200 ">
-               <div className="flex flex-col md:flex-row gap-4 items-center ">
-                <div className="flex-1">
+            <div className="flex-1 p-4 bg-gray-50 rounded-lg border border-gray-200 ">
+              <div className="flex flex-col md:flex-row gap-4 items-center justify-center ">
+                <div className="flex-1 w-full">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Filter by Teacher
                   </label>
-                   {isClient && (
-                     <Select
-                       instanceId="courses-filter-teachers"
-                       isMulti
-                       options={uniqueTeachers.map(teacher => ({ value: teacher || "", label: teacher || "" }))}
-                       value={selectedTeachers.map(teacher => ({ value: teacher, label: teacher }))}
-                       onChange={(options) => setSelectedTeachers(options ? options.map(option => option.value) : [])}
-                       placeholder="Select teachers"
-                       isClearable
-                       className="w-full"
-                    styles={{
-                      control: (base) => ({
-                        ...base,
-                        width: "100%",
-                        minWidth: "100%",
-                        backgroundColor: "#ffffff",
-                        border: "1px solid #d1d5db",
-                        borderRadius: "0.5rem",
-                        padding: "0.5rem",
-                        boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                        "&:hover": {
-                          borderColor: "#9ca3af",
-                        },
-                        transition: "all 0.2s",
-                      }),
-                      menu: (base) => ({
-                        ...base,
-                        backgroundColor: "#ffffff",
-                        borderRadius: "0.5rem",
-                        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                        zIndex: 50,
-                      }),
-                      option: (base, state) => ({
-                        ...base,
-                        backgroundColor: state.isSelected
-                          ? "#3b82f6"
-                          : state.isFocused
-                          ? "#f3f4f6"
-                          : "#ffffff",
-                        color: state.isSelected ? "#ffffff" : "#374151",
-                        "&:hover": {
-                          backgroundColor: "#f3f4f6",
-                        },
-                        transition: "all 0.2s",
-                      }),
-                    }}
-                  />
+                  {isClient && (
+                    <Select
+                      instanceId="courses-filter-teachers"
+                      isMulti
+                      options={uniqueTeachers.map((teacher) => ({
+                        value: teacher || "",
+                        label: teacher || "",
+                      }))}
+                      value={selectedTeachers.map((teacher) => ({
+                        value: teacher,
+                        label: teacher,
+                      }))}
+                      onChange={(options) =>
+                        setSelectedTeachers(
+                          options ? options.map((option) => option.value) : []
+                        )
+                      }
+                      placeholder="Select teachers"
+                      isClearable
+                      className="w-full"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          width: "100%",
+                          minWidth: "100%",
+                          backgroundColor: "#ffffff",
+                          border: "1px solid #d1d5db",
+                          borderRadius: "0.5rem",
+                          padding: "0.5rem",
+                          boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                          "&:hover": {
+                            borderColor: "#9ca3af",
+                          },
+                          transition: "all 0.2s",
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          backgroundColor: "#ffffff",
+                          borderRadius: "0.5rem",
+                          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                          zIndex: 50,
+                        }),
+                        option: (base, state) => ({
+                          ...base,
+                          backgroundColor: state.isSelected
+                            ? "#3b82f6"
+                            : state.isFocused
+                            ? "#f3f4f6"
+                            : "#ffffff",
+                          color: state.isSelected ? "#ffffff" : "#374151",
+                          "&:hover": {
+                            backgroundColor: "#f3f4f6",
+                          },
+                          transition: "all 0.2s",
+                        }),
+                      }}
+                    />
                   )}
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 w-full">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Filter by Subject
                   </label>
                   {isClient && (
                     <Select
                       instanceId="courses-filter-subjects"
-                     isMulti
-                     options={uniqueSubjects.map(subject => ({ value: subject || "", label: subject || "" }))}
-                     value={selectedSubjects.map(subject => ({ value: subject, label: subject }))}
-                     onChange={(options) => setSelectedSubjects(options ? options.map(option => option.value) : [])}
-                     placeholder="Select subjects"
-                     isClearable
-                     className="w-full"
-                    styles={{
-                      control: (base) => ({
-                        ...base,
-                        width: "100%",
-                        minWidth: "100%",
-                        backgroundColor: "#ffffff",
-                        border: "1px solid #d1d5db",
-                        borderRadius: "0.5rem",
-                        padding: "0.5rem",
-                        boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                        "&:hover": {
-                          borderColor: "#9ca3af",
-                        },
-                        transition: "all 0.2s",
-                      }),
-                      menu: (base) => ({
-                        ...base,
-                        backgroundColor: "#ffffff",
-                        borderRadius: "0.5rem",
-                        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                        zIndex: 50,
-                      }),
-                      option: (base, state) => ({
-                        ...base,
-                        backgroundColor: state.isSelected
-                          ? "#3b82f6"
-                          : state.isFocused
-                          ? "#f3f4f6"
-                          : "#ffffff",
-                        color: state.isSelected ? "#ffffff" : "#374151",
-                        "&:hover": {
-                          backgroundColor: "#f3f4f6",
-                        },
-                        transition: "all 0.2s",
-                      }),
-                    }}
-                  />
+                      isMulti
+                      options={uniqueSubjects.map((subject) => ({
+                        value: subject || "",
+                        label: subject || "",
+                      }))}
+                      value={selectedSubjects.map((subject) => ({
+                        value: subject,
+                        label: subject,
+                      }))}
+                      onChange={(options) =>
+                        setSelectedSubjects(
+                          options ? options.map((option) => option.value) : []
+                        )
+                      }
+                      placeholder="Select subjects"
+                      isClearable
+                      className="w-full"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          width: "100%",
+                          minWidth: "100%",
+                          backgroundColor: "#ffffff",
+                          border: "1px solid #d1d5db",
+                          borderRadius: "0.5rem",
+                          padding: "0.5rem",
+                          boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                          "&:hover": {
+                            borderColor: "#9ca3af",
+                          },
+                          transition: "all 0.2s",
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          backgroundColor: "#ffffff",
+                          borderRadius: "0.5rem",
+                          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                          zIndex: 50,
+                        }),
+                        option: (base, state) => ({
+                          ...base,
+                          backgroundColor: state.isSelected
+                            ? "#3b82f6"
+                            : state.isFocused
+                            ? "#f3f4f6"
+                            : "#ffffff",
+                          color: state.isSelected ? "#ffffff" : "#374151",
+                          "&:hover": {
+                            backgroundColor: "#f3f4f6",
+                          },
+                          transition: "all 0.2s",
+                        }),
+                      }}
+                    />
                   )}
                 </div>
-                <div className="flex items-end">
-                  <Button
-                    onClick={() => {
-                      setSelectedTeachers([]);
-                      setSelectedSubjects([]);
-                    }}
-                    className="px-4 py-2 mt-5 transition-all duration-200 hover:scale-105 text-sm font-medium"
-                    disabled={selectedTeachers.length === 0 && selectedSubjects.length === 0}
-                  >
-                    Clear Filters
-                  </Button>
-                </div>
+                <div >
+  <label className="block text-sm font-medium text-gray-700 mb-2 invisible">
+    Clear
+  </label>
+  <Button
+    onClick={() => {
+      setSelectedTeachers([]);
+      setSelectedSubjects([]);
+    }}
+    className="px-4 py-2 transition-all duration-200 hover:scale-105 text-sm font-medium w-full"
+    disabled={selectedTeachers.length === 0 && selectedSubjects.length === 0}
+  >
+    Clear Filters
+  </Button>
+</div>
+
               </div>
-                           {(selectedTeachers.length > 0 || selectedSubjects.length > 0) && (
-                 <div className="mt-3 text-sm text-gray-600">
-                   Showing {filteredCourses.length} of {courses.length} courses
-                   {/* {selectedTeachers.length > 0 && (
+              {(selectedTeachers.length > 0 || selectedSubjects.length > 0) && (
+                <div className="mt-3 text-sm text-gray-600">
+                  Showing {filteredCourses.length} of {courses.length} courses
+                  {/* {selectedTeachers.length > 0 && (
                      <span className="ml-2">
                        • Teachers: {selectedTeachers.join(", ")}
                      </span>
@@ -437,12 +476,13 @@ export default function FacultyData() {
                        • Subjects: {selectedSubjects.join(", ")}
                      </span>
                    )} */}
-                 </div>
-               )}
+                </div>
+              )}
             </div>
 
             {/* Delete All Courses Container */}
-            <div className="flex flex-col gap-2 justify-center">
+            <div className="flex lg:flex-col
+             gap-2 justify-center">
               <Button
                 onClick={handleDeleteAll}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase shadow-lg"
@@ -450,13 +490,23 @@ export default function FacultyData() {
               >
                 Delete All Courses
               </Button>
+
+                 <Button
+                onClick={()=> router.push('/add-new-course')} 
+                className="px-4 py-2transition-all duration-200 hover:scale-105 text-sm font-medium bg-[#042954]  uppercase shadow-lg"
+                disabled={isUpdating || isDeleting || isDeletingAll}
+              >
+                Add new Course
+              </Button>
             </div>
           </div>
         )}
-        
+
         {filteredCourses.length === 0 ? (
           <div className="text-center text-gray-600">
-            {courses.length === 0 ? "No courses available." : "No courses match the selected filters."}
+            {courses.length === 0
+              ? "No courses available."
+              : "No courses match the selected filters."}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -552,24 +602,24 @@ export default function FacultyData() {
                     <td className="p-3 text-sm text-gray-600 border-2 border-gray-300">
                       {course.lab_classes_week || "N/A"}
                     </td>
-                                                              <td className="p-3 text-sm text-gray-600 border-2 border-gray-300">
-                       <div className="flex space-x-2 items-center h-full">
-                         <button
-                           onClick={() => handleEdit(course)}
-                           className="px-4 py-2 transition-all duration-200 hover:scale-105 text-sm font-medium bg-[#042954] text-white rounded-lg"
-                           disabled={isUpdating || isDeleting}
-                         >
-                           Edit
-                         </button>
-                         <button
-                           onClick={() => handleDelete(course.id)}
-                           className="px-4 py-2 transition-all duration-200 hover:scale-105 text-sm font-medium bg-red-600 hover:bg-red-700 text-white rounded-lg"
-                           disabled={isUpdating || isDeleting}
-                         >
-                           Delete
-                         </button>
-                       </div>
-                     </td>
+                    <td className="p-3 text-sm text-gray-600 border-2 border-gray-300">
+                      <div className="flex space-x-2 items-center h-full">
+                        <button
+                          onClick={() => handleEdit(course)}
+                          className="px-4 py-2 transition-all duration-200 hover:scale-105 text-sm font-medium bg-[#042954] text-white rounded-lg"
+                          disabled={isUpdating || isDeleting}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(course.id)}
+                          className="px-4 py-2 transition-all duration-200 hover:scale-105 text-sm font-medium bg-red-600 hover:bg-red-700 text-white rounded-lg"
+                          disabled={isUpdating || isDeleting}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -582,12 +632,12 @@ export default function FacultyData() {
           <AlertDialog open={isEditDialogOpen}>
             <AlertDialogPortal>
               <AlertDialogOverlay className="bg-black bg-opacity-50" />
-              <AlertDialogContent 
+              <AlertDialogContent
                 className="bg-white text-gray-800 border border-gray-200 shadow-lg rounded-2xl w-full max-w-5xl lg:min-w-2xl min-h-[500px] max-h-[90vh] overflow-y-auto p-6"
                 style={{
-                  scrollbarWidth: 'thin',
-                  scrollbarColor: '#D1D5DB #F3F4F6'
-                }}            
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "#D1D5DB #F3F4F6",
+                }}
               >
                 <AlertDialogHeader>
                   <AlertDialogTitle className="text-2xl font-bold text-blue-900">
@@ -611,15 +661,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="subject_code"
                       render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
+                        <FormItem className="w-full">
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Subject Code
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., GIS-302"
-                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                              className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.subject_code
                                   ? "border-red-500"
                                   : ""
@@ -629,7 +679,7 @@ export default function FacultyData() {
                               value={field.value ?? ""}
                             />
                           </FormControl>
-                      <FormMessage className="text-sm text-red-500 mt-1" />
+                          <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -637,15 +687,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="course_details"
                       render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
+                        <FormItem className="w-full">
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Course Details
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., Introduction to Remote Sensing"
-                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                              className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.course_details
                                   ? "border-red-500"
                                   : ""
@@ -654,7 +704,7 @@ export default function FacultyData() {
                               {...field}
                             />
                           </FormControl>
-                      <FormMessage className="text-sm text-red-500 mt-1" />
+                          <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -679,17 +729,23 @@ export default function FacultyData() {
                                 { value: "7", label: "7" },
                                 { value: "8", label: "8" },
                               ]}
-                              value={[
-                                { value: "1", label: "1" },
-                                { value: "2", label: "2" },
-                                { value: "3", label: "3" },
-                                { value: "4", label: "4" },
-                                { value: "5", label: "5" },
-                                { value: "6", label: "6" },
-                                { value: "7", label: "7" },
-                                { value: "8", label: "8" },
-                              ].find(option => option.value === field.value) || null}
-                              onChange={(selectedOption) => field.onChange(selectedOption?.value || "")}
+                              value={
+                                [
+                                  { value: "1", label: "1" },
+                                  { value: "2", label: "2" },
+                                  { value: "3", label: "3" },
+                                  { value: "4", label: "4" },
+                                  { value: "5", label: "5" },
+                                  { value: "6", label: "6" },
+                                  { value: "7", label: "7" },
+                                  { value: "8", label: "8" },
+                                ].find(
+                                  (option) => option.value === field.value
+                                ) || null
+                              }
+                              onChange={(selectedOption) =>
+                                field.onChange(selectedOption?.value || "")
+                              }
                               placeholder="Select Semester"
                               className="w-full"
                               classNamePrefix="react-select"
@@ -722,7 +778,9 @@ export default function FacultyData() {
                               {...field}
                               value={field.value ?? ""}
                               onChange={(e) => {
-                                const value = e.target.value.replace(/[^1-9]/g, '').slice(0, 1);
+                                const value = e.target.value
+                                  .replace(/[^1-9]/g, "")
+                                  .slice(0, 1);
                                 field.onChange(value);
                               }}
                             />
@@ -735,15 +793,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="faculty_assigned"
                       render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
+                        <FormItem className="w-full">
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Faculty Assigned
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., Syed Najam Ul Hassan"
-                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                              className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.faculty_assigned
                                   ? "border-red-500"
                                   : ""
@@ -752,7 +810,7 @@ export default function FacultyData() {
                               {...field}
                             />
                           </FormControl>
-                      <FormMessage className="text-sm text-red-500 mt-1" />
+                          <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -760,15 +818,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="section"
                       render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
+                        <FormItem className="w-full">
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Section
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., (BS (GIS &RS (2024-2028)) 2nd"
-                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                              className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.section
                                   ? "border-red-500"
                                   : ""
@@ -777,7 +835,7 @@ export default function FacultyData() {
                               {...field}
                             />
                           </FormControl>
-                      <FormMessage className="text-sm text-red-500 mt-1" />
+                          <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -785,15 +843,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="domain"
                       render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
+                        <FormItem className="w-full">
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Domain
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., Computer Science"
-                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                              className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.domain
                                   ? "border-red-500"
                                   : ""
@@ -803,7 +861,7 @@ export default function FacultyData() {
                               value={field.value ?? ""}
                             />
                           </FormControl>
-                      <FormMessage className="text-sm text-red-500 mt-1" />
+                          <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -811,15 +869,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="subject_type"
                       render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
+                        <FormItem className="w-full">
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Subject Type
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., Core"
-                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                              className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.subject_type
                                   ? "border-red-500"
                                   : ""
@@ -829,7 +887,7 @@ export default function FacultyData() {
                               value={field.value ?? ""}
                             />
                           </FormControl>
-                      <FormMessage className="text-sm text-red-500 mt-1" />
+                          <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -837,15 +895,15 @@ export default function FacultyData() {
                       control={form.control}
                       name="semester_details"
                       render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
+                        <FormItem className="w-full">
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Semester Details
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="text"
                               placeholder="e.g., Fall 2024"
-                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                              className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.semester_details
                                   ? "border-red-500"
                                   : ""
@@ -855,7 +913,7 @@ export default function FacultyData() {
                               value={field.value ?? ""}
                             />
                           </FormControl>
-                      <FormMessage className="text-sm text-red-500 mt-1" />
+                          <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -863,8 +921,8 @@ export default function FacultyData() {
                       control={form.control}
                       name="theory_classes_week"
                       render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
+                        <FormItem className="w-full">
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Theory Classes per Week
                           </FormLabel>
                           <FormControl>
@@ -872,18 +930,20 @@ export default function FacultyData() {
                               type="number"
                               min="1"
                               placeholder="e.g., 2"
-                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                              className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.theory_classes_week
                                   ? "border-red-500"
                                   : ""
                               }`}
                               disabled={isUpdating}
                               {...field}
-                              onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                              onChange={(e) =>
+                                field.onChange(parseInt(e.target.value) || 1)
+                              }
                               value={field.value}
                             />
                           </FormControl>
-                      <FormMessage className="text-sm text-red-500 mt-1" />
+                          <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -891,8 +951,8 @@ export default function FacultyData() {
                       control={form.control}
                       name="lab_classes_week"
                       render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
+                        <FormItem className="w-full">
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Lab Classes per Week (Optional)
                           </FormLabel>
                           <FormControl>
@@ -900,18 +960,20 @@ export default function FacultyData() {
                               type="number"
                               min="0"
                               placeholder="e.g., 1"
-                          className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                              className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
                                 form.formState.errors.lab_classes_week
                                   ? "border-red-500"
                                   : ""
                               }`}
                               disabled={isUpdating}
                               {...field}
-                              onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                              onChange={(e) =>
+                                field.onChange(parseInt(e.target.value) || 0)
+                              }
                               value={field.value}
                             />
                           </FormControl>
-                      <FormMessage className="text-sm text-red-500 mt-1" />
+                          <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -919,8 +981,8 @@ export default function FacultyData() {
                       control={form.control}
                       name="is_regular_teacher"
                       render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
+                        <FormItem className="w-full">
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">
                             Teacher Type
                           </FormLabel>
                           <FormControl>
@@ -937,63 +999,66 @@ export default function FacultyData() {
                               placeholder="Select teacher type"
                               menuPlacement="top"
                               styles={{
-                            control: (base, state) => ({
-                              ...base,
-                              width: "100%",
-                              backgroundColor: "#f9fafb",
-                              border: form.formState.errors.is_regular_teacher
-                                ? "2px solid #ef4444"
-                                : state.isFocused
-                                ? "2px solid #3b82f6"
-                                : "1px solid #e5e7eb",
-                              borderRadius: "0.5rem",
-                              minHeight: "48px",
-                              boxShadow: state.isFocused
-                                ? "0 0 0 2px rgba(59, 130, 246, 0.1)"
-                                : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                              "&:hover": {
-                                borderColor: "#3b82f6",
-                              },
-                              color: "#111827",
-                              transition: "all 0.2s",
-                            }),
-                            singleValue: (base) => ({
-                              ...base,
-                              color: "#111827",
-                              fontSize: "0.875rem",
-                            }),
-                            menu: (base) => ({
-                              ...base,
-                              backgroundColor: "#ffffff",
-                              color: "#111827",
-                              fontSize: "0.875rem",
-                              borderRadius: "0.5rem",
-                              boxShadow:
-                                "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                              zIndex: 50,
-                            }),
-                            option: (base, state) => ({
-                              ...base,
-                              backgroundColor: state.isSelected
-                                ? "#3b82f6"
-                                : state.isFocused
-                                ? "#eff6ff"
-                                : "#ffffff",
-                              color: state.isSelected ? "#ffffff" : "#374151",
-                              "&:hover": {
-                                backgroundColor: "#eff6ff",
-                              },
-                              transition: "all 0.2s",
-                            }),
-                            placeholder: (base) => ({
-                              ...base,
-                              color: "#6b7280",
-                              fontSize: "0.875rem",
-                            }),
+                                control: (base, state) => ({
+                                  ...base,
+                                  width: "100%",
+                                  backgroundColor: "#f9fafb",
+                                  border: form.formState.errors
+                                    .is_regular_teacher
+                                    ? "2px solid #ef4444"
+                                    : state.isFocused
+                                    ? "2px solid #3b82f6"
+                                    : "1px solid #e5e7eb",
+                                  borderRadius: "0.5rem",
+                                  minHeight: "48px",
+                                  boxShadow: state.isFocused
+                                    ? "0 0 0 2px rgba(59, 130, 246, 0.1)"
+                                    : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                                  "&:hover": {
+                                    borderColor: "#3b82f6",
+                                  },
+                                  color: "#111827",
+                                  transition: "all 0.2s",
+                                }),
+                                singleValue: (base) => ({
+                                  ...base,
+                                  color: "#111827",
+                                  fontSize: "0.875rem",
+                                }),
+                                menu: (base) => ({
+                                  ...base,
+                                  backgroundColor: "#ffffff",
+                                  color: "#111827",
+                                  fontSize: "0.875rem",
+                                  borderRadius: "0.5rem",
+                                  boxShadow:
+                                    "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                                  zIndex: 50,
+                                }),
+                                option: (base, state) => ({
+                                  ...base,
+                                  backgroundColor: state.isSelected
+                                    ? "#3b82f6"
+                                    : state.isFocused
+                                    ? "#eff6ff"
+                                    : "#ffffff",
+                                  color: state.isSelected
+                                    ? "#ffffff"
+                                    : "#374151",
+                                  "&:hover": {
+                                    backgroundColor: "#eff6ff",
+                                  },
+                                  transition: "all 0.2s",
+                                }),
+                                placeholder: (base) => ({
+                                  ...base,
+                                  color: "#6b7280",
+                                  fontSize: "0.875rem",
+                                }),
                               }}
                             />
                           </FormControl>
-                      <FormMessage className="text-sm text-red-500 mt-1" />
+                          <FormMessage className="text-sm text-red-500 mt-1" />
                         </FormItem>
                       )}
                     />
@@ -1177,7 +1242,7 @@ export default function FacultyData() {
           </AlertDialog>
         )}
       </div>
-      
+
       {/* Toast Container for this page only */}
       <ToastContainer
         position="top-right"

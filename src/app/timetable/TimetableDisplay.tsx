@@ -79,6 +79,7 @@ const TimetableDisplay: React.FC<TimetableDisplayProps> = ({
           <div className={`block md:hidden lg:hidden w-full overflow-y-auto ${isSuperadmin? " h-[calc(100vh-24rem)]" : "h-[calc(100vh-20rem)]" } scrollbar-hide`}>
             <div className="space-y-4 p-4">
               {Days.map((day) => {
+                
                 const rooms =
                   ((selectedTeachers && selectedTeachers.length > 0) || (selectedSubjects && selectedSubjects.length > 0)
                     ? filteredData
