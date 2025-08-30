@@ -177,7 +177,9 @@ const Navbar: React.FC<NavbarProps> = ({
                       }
                     : null
                 }
-                onChange={async (selectedOption:any) => {
+                onChange={async (selectedOption:any
+                  
+                ) => {
                   const newVersion = selectedOption?.value;
                   if (newVersion !== undefined) {
                     await setSelectedVersion(newVersion);

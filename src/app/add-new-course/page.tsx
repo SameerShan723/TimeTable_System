@@ -140,18 +140,18 @@ export default function CourseForm() {
 
   const templateHeaders = useMemo(
     () => [
-      "Subject Code",
-      "Course Details",
-      "Section",
-      "Semester",
-      "Credit Hour",
-      "Faculty Assigned",
-      "Teacher Type",
-      "Domain",
-      "Subject Type",
-      "Semester Details",
-      "Theory Classes/Week",
-      "Lab Classes/Week",
+      "subject_code",
+      "course_details",
+      "section",
+      "semester",
+      "credit_hour",
+      "faculty_assigned",
+      "is_regular_teacher",
+      "domain",
+      "subject_type",
+      "semester_details",
+      "theory_classes_week",
+      "lab_classes_week",
     ],
     []
   );
