@@ -59,14 +59,12 @@ export default function Header() {
             height={52}
             priority
             className="object-contain w-[115px] md:w-[232px] h-auto"
-          
           />
-       
         </div>
 
         <div className="flex-1 flex justify-center px-2">
           <h1 className="text-blue-900 text-[9px] md:text-2xl font-bold text-center overflow-hidden text-ellipsis whitespace-nowrap hidden md:block ">
-            Weekly Timetable For The CS Department
+          School of Computing & Emerging Technologies SC&ET
           </h1>
         </div>
 

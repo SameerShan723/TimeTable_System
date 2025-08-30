@@ -17,6 +17,7 @@ import { computeConflicts, computeStats } from "@/lib/scheduler/analyze";
 import { Days, timeSlots } from "@/helpers/page";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useTimetableVersion } from "@/context/TimetableContext";
 
 
 // Default rules that will be included directly in the prompt
@@ -240,6 +241,7 @@ const RulesAutocomplete = ({
 export default function GenerateTimeTable() {
   const { courses } = useCourses();
   const router = useRouter();
+  const { fetchVersions, fetchGlobalVersion } = useTimetableVersion();
   useEffect(() => {
     router.prefetch("/");
   }, [router]);
@@ -486,6 +488,10 @@ export default function GenerateTimeTable() {
         if (!saveRes.ok) {
           throw new Error("Failed to save timetable");
         }
+        // Refetch versions/global before redirecting
+        try {
+          await Promise.all([fetchVersions(), fetchGlobalVersion()]);
+        } catch {}
         toast.success("Timetable generated and saved. Redirecting to Timetable...");
         setTimeout(() => {
           router.push("/");

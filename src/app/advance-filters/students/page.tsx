@@ -121,7 +121,7 @@ export default function StudentTimetable(): JSX.Element {
         sessions.forEach((session) => {
           if ("Section" in session && session.Section === selectedSection) {
             result.push({
-              Subject: session.Subject || "",
+              Subject: `${session.Subject || ""}${(session as Session).Type === "Lab" ? " (Lab)" : ""}`,
               Teacher: session.Teacher || "",
               Section: session.Section || "",
               Time: session.Time || "",

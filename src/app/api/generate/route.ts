@@ -5,106 +5,110 @@ import { Days, Rooms } from "@/helpers/page";
 import { generateDeterministicTimetable } from "@/lib/scheduler/engine";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+	apiKey: process.env.OPENAI_API_KEY,
 });
 
 // helper: build course summary from provided courses
 function buildCourseSummary(coursesInput: any[]) {
-  return (coursesInput || []).map((course) => ({
-    faculty: course.faculty_assigned,
-    subject: course.course_details,
-    section: course.section,
-    theory: course.theory_classes_week ?? course.credit_hour ?? 0,
-    labs: course.lab_classes_week ?? 0,
-    credit: course.credit_hour ?? null,
-  }));
+	return (coursesInput || []).map((course) => ({
+		faculty: course.faculty_assigned,
+		subject: course.course_details,
+		section: course.section,
+		theory: course.theory_classes_week ?? course.credit_hour ?? 0,
+		labs: course.lab_classes_week ?? 0,
+		credit: course.credit_hour ?? null,
+	}));
 }
 
 // helper: schema we want to enforce
 function buildJsonSchema() {
-  return {
-    type: "object",
-    properties: Days.reduce((acc: any, day: string) => {
-      acc[day] = {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            Room: { type: "string" },
-            Schedule: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  Time: { type: "string" },
-                  Teacher: { type: "string" },
-                  Subject: { type: "string" },
-                  Section: { type: "string" },
-                  Type: { type: "string", enum: ["Theory", "Lab"] },
-                },
-                required: ["Time", "Teacher", "Subject", "Section", "Type"],
-              },
-            },
-          },
-          required: ["Room", "Schedule"],
-        },
-      };
-      return acc;
-    }, {}),
-    required: Days,
-  };
+	return {
+		type: "object",
+		properties: Days.reduce((acc: any, day: string) => {
+			acc[day] = {
+				type: "array",
+				items: {
+					type: "object",
+					properties: {
+						Room: { type: "string" },
+						Schedule: {
+							type: "array",
+							items: {
+								type: "object",
+								properties: {
+									Time: { type: "string" },
+									Teacher: { type: "string" },
+									Subject: { type: "string" },
+									Section: { type: "string" },
+									Type: { type: "string", enum: ["Theory", "Lab"] },
+								},
+								required: ["Time", "Teacher", "Subject", "Section", "Type"],
+							},
+						},
+						required: ["Room", "Schedule"],
+					},
+				},
+			};
+			return acc;
+		}, {}),
+		required: Days,
+	};
 }
 
 export async function POST(req: Request) {
-  try {
-    const { 
-      prompt, 
-      customRules, 
-      maxClassesPerTeacherPerDay, 
-      maxClassesPerSectionPerDay,
-      rooms,
-      engine = "algorithmic",
-      courses: postedCourses,
-      visitingEarliestTime
-    } = await req.json();
+	try {
+		const { 
+			prompt, 
+			customRules, 
+			maxClassesPerTeacherPerDay, 
+			maxClassesPerSectionPerDay,
+			rooms,
+			engine = "algorithmic",
+			courses: postedCourses,
+			visitingEarliestTime,
+			teacherAvailability,
+		} = await req.json();
 
-    // Algorithmic engine: deterministic scheduler (default)
-    if (engine === "algorithmic") {
-      const { timetable, unscheduled, stats } = generateDeterministicTimetable({
-        courses: postedCourses || [],
-        rooms: (rooms || []).map((r: any) => ({
-          id: r.id,
-          name: r.name,
-          type: r.type,
-          capacity: r.capacity,
-        })),
-        maxClassesPerTeacherPerDay,
-        maxClassesPerSectionPerDay,
-        visitingEarliestTime,
-      });
-      return NextResponse.json({ timetable, unscheduled, stats });
-    }
+		// Algorithmic engine: deterministic scheduler (default)
+		if (engine === "algorithmic") {
+			const { timetable, unscheduled, stats } = generateDeterministicTimetable({
+				courses: postedCourses || [],
+				rooms: (rooms || []).map((r: any) => ({
+					id: r.id,
+					name: r.name,
+					type: r.type,
+					capacity: r.capacity,
+				})),
+				maxClassesPerTeacherPerDay,
+				maxClassesPerSectionPerDay,
+				visitingEarliestTime,
+				teacherAvailability,
+				// vary seed per request to produce unique combinations; still deterministic per seed
+				randomSeed: `${Date.now()}_${Math.random()}`,
+			});
+			return NextResponse.json({ timetable, unscheduled, stats });
+		}
 
-    // If a custom prompt is provided, or engine is LLM, use it
-    if (prompt || engine === "llm") {
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt || "" }],
-        response_format: { type: "json_object" },
-        temperature: 0.3,
-      });
+		// If a custom prompt is provided, or engine is LLM, use it
+		if (prompt || engine === "llm") {
+			const response = await openai.chat.completions.create({
+				model: "gpt-4o-mini",
+				messages: [{ role: "user", content: prompt || "" }],
+				response_format: { type: "json_object" },
+				temperature: 0.3,
+			});
 
-      const timetable = JSON.parse(response.choices[0].message?.content || "{}");
-      return NextResponse.json(timetable);
-    }
+			const timetable = JSON.parse(response.choices[0].message?.content || "{}");
+			return NextResponse.json(timetable);
+		}
 
-    // Otherwise (engine unspecified or hybrid), use the per-day LLM enhanced generation logic with posted courses
-    const summary = buildCourseSummary(postedCourses || []);
+		// Otherwise (engine unspecified or hybrid), use the per-day LLM enhanced generation logic with posted courses
+		const summary = buildCourseSummary(postedCourses || []);
 
-    const timetable: Record<string, any> = {};
+		const timetable: Record<string, any> = {};
 
-    for (const day of Days) {
-      const dayPrompt = `
+		for (const day of Days) {
+			const dayPrompt = `
 You are an AI assistant tasked with generating a university class timetable for **${day} only**.
 
 Scheduling Constraints:
@@ -131,26 +135,26 @@ ${JSON.stringify(rooms || Rooms)}
 
 Return strictly in JSON. 
 Follow this schema: ${JSON.stringify(buildJsonSchema())}
-      `;
+			`;
 
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: dayPrompt }],
-        response_format: { type: "json_object" }, // ensures valid JSON
-        temperature: 0.3,
-      });
+			const response = await openai.chat.completions.create({
+				model: "gpt-4o-mini",
+				messages: [{ role: "user", content: dayPrompt }],
+				response_format: { type: "json_object" }, // ensures valid JSON
+				temperature: 0.3,
+			});
 
-      const jsonDay = JSON.parse(response.choices[0].message?.content || "{}");
+			const jsonDay = JSON.parse(response.choices[0].message?.content || "{}");
 
-      timetable[day] = jsonDay[day];
-    }
+			timetable[day] = jsonDay[day];
+		}
 
-    return NextResponse.json(timetable);
-  } catch (err: any) {
-    console.error("Timetable generation failed:", err);
-    return NextResponse.json(
-      { error: "Failed to generate timetable" },
-      { status: 500 }
-    );
-  }
+		return NextResponse.json(timetable);
+	} catch (err: any) {
+		console.error("Timetable generation failed:", err);
+		return NextResponse.json(
+			{ error: "Failed to generate timetable" },
+			{ status: 500 }
+		);
+	}
 }

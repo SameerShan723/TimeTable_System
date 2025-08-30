@@ -5,6 +5,7 @@ export interface Session {
   Subject: string;
   Section?: string;
   Day?: string;
+  Type?: "Theory" | "Lab";
 }
 
 export interface EmptySlot {

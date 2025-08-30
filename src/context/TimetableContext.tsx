@@ -14,7 +14,7 @@ import {
   EmptySlot,
   RoomSchedule,
 } from "@/app/timetable/types";
-import { supabaseClient } from "@/lib/supabase/supabase";
+
 import { useAuth } from "@/context/AuthContext";
 interface Conflict {
   day: keyof TimetableData;
@@ -37,6 +37,8 @@ interface TimetableVersionContextType {
   deleteVersion: (version: number) => Promise<void>;
   checkConflicts: (data: TimetableData) => void;
   setTimetableData: (data: TimetableData) => void;
+  fetchVersions: () => Promise<void>;
+  fetchGlobalVersion: () => Promise<void>;
 }
 
 interface TimetableVersionProviderProps {
@@ -473,6 +475,8 @@ export const TimetableVersionProvider: React.FC<
         deleteVersion,
         checkConflicts,
         setTimetableData,
+        fetchVersions,
+        fetchGlobalVersion,
       }}
     >
       {children}

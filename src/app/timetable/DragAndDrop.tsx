@@ -189,6 +189,7 @@ export const SessionDetails: React.FC<SessionDetailsProps> = React.memo(
     >
       <div className="leading-tight font-bold text-sm">
         {session.Subject || "Unknown Course"}
+        {session.Type === "Lab" ? " (Lab)" : ""}
       </div>
       <div className="text-sm leading-tight">
         {session.Teacher || "No Faculty"}

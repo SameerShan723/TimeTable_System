@@ -6,6 +6,7 @@ import { Days } from "@/helpers/page";
 import { timeSlots } from "@/helpers/page";
 import ExportTimetable from "@/lib/download-timetable/ExportTimetable";
 import { useTimetableVersion } from "@/context/TimetableContext";
+import { Session } from "@/app/timetable/types";
 
 type DayType = (typeof Days)[number];
 type TimeSlotType = (typeof timeSlots)[number];
@@ -134,6 +135,7 @@ const handleSearch = useCallback(() => {
             cls.Time;
           foundClasses.push({
             ...cls,
+            Subject: `${cls.Subject || ""}${(cls as Session).Type === "Lab" ? " (Lab)" : ""}`,
             Room: roomName,
             Day: day,
             Time: normalizedTime,
