@@ -1,14 +1,19 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-import { Days } from "@/helpers/page";
-import { useForm, SubmitHandler } from "react-hook-form";
+import React, { useState, useRef } from "react";
+import { useForm, SubmitHandler, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   FormValues,
   timetableSchema,
+  Room,
 } from "@/lib/generate-timetable-schema/page";
 import { useCourses } from "@/context/CourseContext";
-import { Rooms } from "@/helpers/page";
+import { RegularRooms, LabRooms } from "@/helpers/page";
+import { RoomManagement } from "@/components/room-management";
+import { FormSection } from "@/components/ui/form-section";
+import { Button } from "@/components/ui/button";
+import { Zap, Loader2 } from "lucide-react";
+
 
 // Default rules that will be included directly in the prompt
 const defaultRules = [
@@ -30,7 +35,7 @@ const defaultRules = [
   "Spread free slots evenly across all weekdays",
   "Do NOT assign the same teacher to multiple classes in the same time slot",
   "Do NOT repeat the same subject in multiple rooms at the same time",
-  "If no class is scheduled in a slot, return: { \"Time\": \"X\"}",
+  'If no class is scheduled in a slot, return: { "Time": "X"}',
 ];
 
 // Custom rules that will be available in the autocomplete (1-3 rules)
@@ -41,11 +46,11 @@ const customRules = [
 ];
 
 // Custom Multi-Select Component
-const RulesAutocomplete = ({ 
-  value, 
-  onChange, 
+const RulesAutocomplete = ({
+  value,
+  onChange,
   placeholder = "Enter or select rules...",
-  className = ""
+  className = "",
 }: {
   value: string[];
   onChange: (value: string[]) => void;
@@ -60,13 +65,14 @@ const RulesAutocomplete = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Filter rules based on input
-  const filteredRules = savedRules.filter(rule =>
-    rule.toLowerCase().includes(inputValue.toLowerCase()) &&
-    !value.includes(rule)
+  const filteredRules = savedRules.filter(
+    (rule) =>
+      rule.toLowerCase().includes(inputValue.toLowerCase()) &&
+      !value.includes(rule)
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value,"changes");
+    console.log(e.target.value, "changes");
     setInputValue(e.target.value);
     setIsOpen(true);
   };
@@ -83,47 +89,51 @@ const RulesAutocomplete = ({
     if (inputValue.trim() && !value.includes(inputValue.trim())) {
       const newRule = inputValue.trim();
       onChange([...value, newRule]);
-      
+
       // Add to saved rules if it's a new rule
       if (!savedRules.includes(newRule)) {
         const updatedRules = [...savedRules, newRule];
         setSavedRules(updatedRules);
       }
-      
+
       setInputValue("");
       setIsOpen(false);
     }
   };
 
   const handleRemoveRule = (ruleToRemove: string) => {
-    onChange(value.filter(rule => rule !== ruleToRemove));
+    onChange(value.filter((rule) => rule !== ruleToRemove));
     // Also remove from saved rules
-    setSavedRules(savedRules.filter(rule => rule !== ruleToRemove));
+    setSavedRules(savedRules.filter((rule) => rule !== ruleToRemove));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       handleAddCustomRule();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       setIsOpen(false);
-    } else if (e.key === 'Backspace' && inputValue === '' && value.length > 0) {
+    } else if (e.key === "Backspace" && inputValue === "" && value.length > 0) {
       // Remove last item on backspace when input is empty
       handleRemoveRule(value[value.length - 1]);
     }
   };
 
   // Close dropdown when clicking outside
-  useEffect(() => {
+  React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
-          inputRef.current && !inputRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -146,7 +156,7 @@ const RulesAutocomplete = ({
               </button>
             </span>
           ))}
-          
+
           {/* Input field */}
           <input
             ref={inputRef}
@@ -155,22 +165,34 @@ const RulesAutocomplete = ({
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             onFocus={() => setIsOpen(true)}
-            placeholder={value.length === 0 ? placeholder : "Type to add more rules..."}
+            placeholder={
+              value.length === 0 ? placeholder : "Type to add more rules..."
+            }
             className="flex-1 min-w-[150px] outline-none bg-transparent text-gray-700 placeholder-gray-400"
           />
-          
+
           {/* Dropdown arrow */}
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
             className="text-gray-400 hover:text-gray-600 transition-colors duration-200 p-1 rounded-md hover:bg-gray-100"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
         </div>
-        
+
         {/* Dropdown menu */}
         {isOpen && (
           <div
@@ -186,7 +208,7 @@ const RulesAutocomplete = ({
                 <span className="font-medium text-blue-700">{inputValue}</span>
               </div>
             )}
-            
+
             {filteredRules.map((rule, index) => (
               <div
                 key={index}
@@ -196,7 +218,7 @@ const RulesAutocomplete = ({
                 {rule}
               </div>
             ))}
-            
+
             {filteredRules.length === 0 && !inputValue && (
               <div className="px-4 py-3 text-gray-500 text-center">
                 No matching rules found
@@ -209,65 +231,104 @@ const RulesAutocomplete = ({
   );
 };
 
-// export interface FormValues {
-//   preferMorningClass: boolean;
-//   teacherData: [Record<string, string>, ...Record<string, string>[]]; // Updated to match Zod's non-empty array
-//   rulesData: [Record<string, string>, ...Record<string, string>[]]; // Updated to match Zod's non-empty array
-// }
 
-// export const timetableSchema = z.object({
-//   teacherData: z
-//     .array(z.record(z.string()))
-//     .min(1, "Teacher data is required")
-//     .nonempty("Teacher data is required"),
-//   rulesData: z
-//     .array(z.record(z.string()))
-//     .min(1, "Rules data is required")
-//     .nonempty("Rules data is required"),
-//   preferMorningClass: z.boolean(),
-// });
 
 export default function GenerateTimeTable() {
   const { courses } = useCourses();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedCustomRules, setSelectedCustomRules] = useState<string[]>(customRules);
-  const {
-    register,
-    handleSubmit,
-    reset,
-  } = useForm<FormValues>({
+  
+  const { register, handleSubmit, reset, control, watch } = useForm<FormValues>({
     resolver: zodResolver(timetableSchema),
     defaultValues: {
-      preferMorningClass: false,
+      useCustomPrompt: false,
+      customPrompt: "",
+      maxClassesPerTeacherPerDay: 4,
+      maxClassesPerSectionPerDay: 6,
+      rooms: [
+        ...RegularRooms.map((roomName, index) => ({
+          id: `regular-${index}`,
+          name: roomName,
+          type: "Regular" as const,
+          capacity: 40,
+          isNew: false,
+        })),
+        ...LabRooms.map((roomName, index) => ({
+          id: `lab-${index}`,
+          name: roomName,
+          type: "Lab" as const,
+          capacity: 40,
+          isNew: false,
+        })),
+      ],
     },
   });
 
+  const { fields: roomFields, update: updateRoom, append: appendRoom, remove: removeRoom } = useFieldArray({
+    control,
+    name: "rooms",
+  });
+
+  const useCustomPrompt = watch("useCustomPrompt");
+
+  const handleRoomEdit = (roomId: string, field: keyof Room, value: string | number) => {
+    const roomIndex = roomFields.findIndex(room => room.id === roomId);
+    if (roomIndex >= 0) {
+      updateRoom(roomIndex, { ...roomFields[roomIndex], [field]: value });
+    }
+  };
+
+  const handleAddRoom = (room: Omit<Room, 'id'>) => {
+    const newRoom: Room = {
+      ...room,
+      id: `new-${Date.now()}`,
+    };
+    appendRoom(newRoom);
+  };
+
+  const handleRemoveRoom = (roomId: string) => {
+    const roomIndex = roomFields.findIndex(room => room.id === roomId);
+    if (roomIndex >= 0) {
+      removeRoom(roomIndex);
+    }
+  };
 
   const generateDynamicPrompt = (data: FormValues): string => {
+    // If using custom prompt, return it directly
+    if (data.useCustomPrompt && data.customPrompt) {
+      return data.customPrompt;
+    }
+
     let prompt = `You are an AI assistant tasked with generating a university-level class timetable in strict JSON format. Follow every rule below carefully. Your response must ONLY be valid JSON.\n\n`;
 
+    prompt += `Scheduling Constraints:\n`;
+    prompt += `- Maximum classes per teacher per day: ${data.maxClassesPerTeacherPerDay}\n`;
+    prompt += `- Maximum classes per section per day: ${data.maxClassesPerSectionPerDay}\n\n`;
+
     prompt += `Default Rules:\n`;
-    // Include all default rules directly in the prompt
     defaultRules.forEach((rule, index) => {
       prompt += `${index + 1}. ${rule}\n`;
     });
 
-    prompt += `\nPrefer morning classes: ${
-      data.preferMorningClass ? "Yes" : "No"
-    }.\n`;
+
 
     prompt += `\nWeekly class frequency based on credit hours:\n`;
-
-    // Use courses from context instead of uploaded data
     courses.forEach((course) => {
       const faculty = course.faculty_assigned;
       const subject = course.course_details;
+      const section = course.section;
       const creditHours = course.credit_hour;
+      const theoryClasses = course.theory_classes_week ?? creditHours;
+      const labClasses = course.lab_classes_week ?? 0;
+      
       if (faculty && subject && creditHours) {
-        prompt += `  - ${faculty} (${subject}) must teach ${creditHours} time${
-          creditHours > 1 ? "s" : ""
-        } per week.\n`;
+        if (theoryClasses && theoryClasses > 0) {
+          prompt += `  - ${faculty} (${subject} - ${section}) Theory classes: ${theoryClasses} times per week\n`;
+        }
+        if (labClasses && labClasses > 0) {
+          prompt += `  - ${faculty} (${subject} - ${section}) Lab classes: ${labClasses} times per week\n`;
+        }
       }
     });
 
@@ -279,20 +340,18 @@ export default function GenerateTimeTable() {
       });
     }
 
-    prompt += `\nTeachers:\n`;
+    prompt += `\nTeachers and Courses:\n`;
     courses.forEach((course, index) => {
-      prompt += `${index + 1}. Faculty: ${
-        course.faculty_assigned || "N/A"
-      }, Subject: ${course.course_details || "N/A"}, Section: ${
-        course.section || "N/A"
-      }, Credit Hours: ${course.credit_hour || "N/A"}\n`;
+      const theoryClasses = course.theory_classes_week ?? course.credit_hour ?? 3;
+      const labClasses = course.lab_classes_week ?? 0;
+      const subjectType = course.subject_type ?? "Theory";
+      
+      prompt += `${index + 1}. Faculty: ${course.faculty_assigned || "N/A"}, Subject: ${course.course_details || "N/A"}, Section: ${course.section || "N/A"}, Type: ${subjectType}, Theory/Week: ${theoryClasses}, Lab/Week: ${labClasses}\n`;
     });
 
-  
-
     prompt += `\nAvailable Rooms:\n`;
-    Rooms.forEach((room, index) => {
-      prompt += `${index + 1}. ${room}\n`;
+    data.rooms.forEach((room, index) => {
+      prompt += `${index + 1}. ${room.name} (${room.type}${room.capacity ? `, Capacity: ${room.capacity}` : ''})\n`;
     });
 
     prompt += `\n---\n`;
@@ -300,25 +359,27 @@ export default function GenerateTimeTable() {
     prompt += `Return JSON like this. DO NOT include code blocks or markdown. Only valid raw JSON:\n\n`;
     prompt += `{\n`;
     prompt += `  "Monday": [\n`;
-    Rooms.forEach((room, index) => {
+    data.rooms.forEach((room, index) => {
       prompt += `    {\n`;
-      prompt += `      "${room}": [\n`;
+      prompt += `      "${room.name}": [\n`;
       prompt += `        {\n`;
-      prompt += `          "Room": "${room}",\n`;
+      prompt += `          "Room": "${room.name}",\n`;
       prompt += `          "Time": "9:30-10:30",\n`;
       prompt += `          "Teacher": "Teacher Name",\n`;
       prompt += `          "Subject": "Subject Name",\n`;
-      prompt += `          "Section": "Class Section"\n`;
+      prompt += `          "Section": "Class Section",\n`;
+      prompt += `          "Type": "Theory/Lab"\n`;
       prompt += `        }\n`;
       prompt += `        // ... more class objects, total 7 per room\n`;
       prompt += `      ]\n`;
-      prompt += `    }${index < Rooms.length - 1 ? "," : ""}\n`;
+      prompt += `    }${index < data.rooms.length - 1 ? "," : ""}\n`;
     });
     prompt += `  ],\n  "Tuesday": [/* same format */],\n  "Wednesday": [/* same format */],\n  "Thursday": [/* same format */],\n  "Friday": [/* same format */]\n}`;
     prompt += `\n\nImportant Rules:\n`;
     prompt += `- Do NOT assign the same teacher to multiple classes in the same time slot.\n`;
     prompt += `- Do NOT repeat the same subject in multiple rooms at the same time.\n`;
     prompt += `- If no class is scheduled in a slot, return: { "Time": "X"}\n`;
+    prompt += `- Respect the maximum classes per teacher and section per day limits.\n`;
     prompt += `- Return ONLY the JSON object, with no additional comments, explanations, or markdown.\n`;
 
     return prompt;
@@ -329,76 +390,52 @@ export default function GenerateTimeTable() {
       setError("Please add some courses first before generating timetable.");
       return;
     }
-
+  
     setIsLoading(true);
     setError("");
+  
     try {
-      // Create a complete data object that includes both form values and custom rules
+      // Create complete data object with custom rules
       const completeData = {
         ...values,
         selectedCustomRules,
       };
+      
       const prompt = generateDynamicPrompt(completeData);
+      
       const res = await fetch("/api/generate", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt,
+          customRules: selectedCustomRules,
+          maxClassesPerTeacherPerDay: values.maxClassesPerTeacherPerDay,
+          maxClassesPerSectionPerDay: values.maxClassesPerSectionPerDay,
+          rooms: values.rooms,
+        }),
       });
-
+  
       if (!res.ok) {
-        throw new Error(`HTTP error: ${res.status} ${res.statusText}`);
+        throw new Error(`HTTP error: ${res.status}`);
       }
-
-      const reader = res.body?.getReader();
-      if (!reader) {
-        throw new Error("Failed to get response reader");
-      }
-
-      const decoder = new TextDecoder();
-      let fullText = "";
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value);
-        fullText += chunk;
-      }
-
-      // Parse the response as JSON
-      let parsedTimetable;
-      try {
-        parsedTimetable = JSON.parse(fullText);
-      } catch (parseError) {
-        throw new Error(`Failed to parse response as JSON: ${parseError}`);
-      }
-
-      const missingDays = Days.filter((day) => !parsedTimetable[day]);
-      if (missingDays.length > 0) {
-        throw new Error(
-          `Incomplete timetable: missing days - ${missingDays.join(", ")}`
-        );
-      }
-
-      // setTimetable(parsedTimetable);
-
-      // Reset form only after successful submission
+  
+      const timetable = await res.json();
+  
+      // TODO: Save timetable to DB or state
+      console.log("Generated Timetable:", timetable);
+  
       reset();
-      // Don't reset custom rules - keep them for next use
     } catch (err) {
       console.error("Error:", err);
-      setError(
-        "Failed to generate timetable. Please check your courses and try again."
-      );
+      setError("Failed to generate timetable.");
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <main className="flex h-[calc(100vh-4rem)] justify-center overflow-y-auto mb-10">
       <div className="flex justify-center rounded-2xl border-[#416697]">
-        <div className="lg:w-[800px] md:max-w-[800px] px-6">
+        <div className="lg:w-[1000px] md:max-w-[1000px] px-6">
           <h1 className="font-bold text-4xl mb-4 text-[#194c87] pt-8">
             Generate Timetable from Courses
           </h1>
@@ -418,44 +455,132 @@ export default function GenerateTimeTable() {
             ) : (
               <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                 <p className="text-green-800 text-sm">
-                  Found {courses.length} course{courses.length > 1 ? 's' : ''} from the database.
+                  Found {courses.length} course{courses.length > 1 ? "s" : ""} from the database.
                 </p>
               </div>
             )}
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Custom Timetable Rules (Optional)
-              </label>
+            {/* Room Management */}
+            <RoomManagement
+              rooms={roomFields}
+              onRoomEdit={handleRoomEdit}
+              onAddRoom={handleAddRoom}
+              onRemoveRoom={handleRemoveRoom}
+            />
+
+            {/* Scheduling Constraints */}
+            <FormSection
+              title="Scheduling Constraints"
+              description="Configure daily limits for teachers and student sections to ensure balanced workloads."
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Max Classes Per Teacher Per Day
+                  </label>
+                  <select
+                    {...register("maxClassesPerTeacherPerDay")}
+                    className="w-full border-2 border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7].map(num => (
+                      <option key={num} value={num}>{num} classes</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Max Classes Per Section Per Day
+                  </label>
+                  <select
+                    {...register("maxClassesPerSectionPerDay")}
+                    className="w-full border-2 border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7].map(num => (
+                      <option key={num} value={num}>{num} classes</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </FormSection>
+
+            {/* Custom Rules */}
+            <FormSection
+              title="Custom Timetable Rules"
+              description="Add custom rules to fine-tune your timetable generation. You can type new rules or select from predefined suggestions."
+            >
               <RulesAutocomplete
                 value={selectedCustomRules}
                 onChange={setSelectedCustomRules}
                 placeholder="Type to add custom rules or select from existing ones..."
                 className="w-full"
               />
-        
-            </div>
+            </FormSection>
 
-            <div className="flex flex-col gap-2">
-              <div className="flex gap-9 items-center w-full px-3">
-                <p className="text-[22px] text-[#416697]">
-                  Prefer morning classes:
+            {/* Prompt Configuration */}
+            <FormSection
+              title="Prompt Configuration"
+              description="Advanced users can override the default AI prompt with their own custom instructions."
+            >
+              <div className="mb-4">
+                <label className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    {...register("useCustomPrompt")}
+                    className="h-5 w-5 accent-[#416697] rounded"
+                  />
+                  <span className="text-lg text-[#416697] font-medium">Use Custom Prompt</span>
+                </label>
+                <p className="text-sm text-gray-600 mt-1">
+                  Enable this to override the default prompt generation with your own custom prompt.
                 </p>
-                <input
-                  type="checkbox"
-                  {...register("preferMorningClass")}
-                  className="h-5 w-5 accent-[#416697] rounded-full"
-                />
               </div>
-              <button
+              
+              {useCustomPrompt && (
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Custom Prompt
+                  </label>
+                  <Controller
+                    name="customPrompt"
+                    control={control}
+                    render={({ field }) => (
+                      <textarea
+                        {...field}
+                        rows={8}
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
+                        placeholder="Enter your custom prompt here..."
+                      />
+                    )}
+                  />
+                  <p className="text-sm text-gray-600 mt-1">
+                    Your custom prompt will be sent directly to the AI model. Make sure to include all necessary instructions for timetable generation.
+                  </p>
+                </div>
+              )}
+            </FormSection>
+
+
+
+            {/* Submit Button */}
+            <div className="flex justify-center">
+              <Button
                 type="submit"
-                className={`bg-[#194c87] text-white p-3 mt-4 ${
-                  isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-[#060d16]"
-                } rounded-md`}
+                size="lg"
                 disabled={isLoading}
+                className="w-full max-w-md px-8 py-4 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg transform hover:scale-105"
               >
-                {isLoading ? "Generating..." : "Generate TimeTable"}
-              </button>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="w-5 h-5" />
+                    Generate TimeTable
+                  </>
+                )}
+              </Button>
             </div>
           </form>
         </div>

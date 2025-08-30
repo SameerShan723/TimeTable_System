@@ -1,131 +1,136 @@
-
-
-
-
-
-import { OpenAI } from "openai";
-import { NextRequest } from "next/server";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { NextResponse } from "next/server";
+import OpenAI from "openai";
+import { Days, Rooms } from "@/helpers/page";
+import courses from "@/data/courses.json"; // adjust import if path differs
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!, // Make sure your .env has OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function POST(req: NextRequest) {
-  try {
-    const { prompt } = await req.json();
-
-    const stream = await openai.chat.completions.create({
-      model: "gpt-4.1",
-      stream: true,
-      messages: [
-        {
-          role: "system",
-          content: "You are a university timetable generator.",
-        },
-        { role: "user", content: prompt },
-      ],
-    });
-
-    const encoder = new TextEncoder();
-    const readable = new ReadableStream({
-      async start(controller) {
-        try {
-          for await (const chunk of stream) {
-            controller.enqueue(
-              encoder.encode(chunk.choices[0]?.delta?.content || "")
-            );
-          }
-          controller.close();
-        } catch (streamError) {
-          controller.error(streamError);
-        }
-      },
-    });
-
-    return new Response(readable, {
-      headers: { "Content-Type": "text/plain" },
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error("API error:", error);
-      return new Response(JSON.stringify({ error: error.message }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-  }
+// helper: build course summary from courses.json
+function buildCourseSummary() {
+  return courses.map((course) => ({
+    faculty: course.faculty_assigned,
+    subject: course.course_details,
+    section: course.section,
+    theory: course.theory_classes_week,
+    labs: course.lab_classes_week,
+    credit: course.credit_hour,
+  }));
 }
 
-// import { NextRequest, NextResponse } from "next/server";
+// helper: schema we want to enforce
+function buildJsonSchema() {
+  return {
+    type: "object",
+    properties: Days.reduce((acc: any, day: string) => {
+      acc[day] = {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            Room: { type: "string" },
+            Schedule: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  Time: { type: "string" },
+                  Teacher: { type: "string" },
+                  Subject: { type: "string" },
+                  Section: { type: "string" },
+                  Type: { type: "string", enum: ["Theory", "Lab"] },
+                },
+                required: ["Time", "Teacher", "Subject", "Section", "Type"],
+              },
+            },
+          },
+          required: ["Room", "Schedule"],
+        },
+      };
+      return acc;
+    }, {}),
+    required: Days,
+  };
+}
 
-// export async function POST(req: NextRequest) {
-//   try {
-//     const { prompt } = await req.json();
-//     if (!prompt) {
-//       return NextResponse.json(
-//         { error: "Missing data in request body" },
-//         { status: 400 }
-//       );
-//     }
+export async function POST(req: Request) {
+  try {
+    const { 
+      prompt, 
+      customRules, 
+      maxClassesPerTeacherPerDay, 
+      maxClassesPerSectionPerDay,
+      rooms 
+    } = await req.json();
 
-//     // Make the API call to xAI Grok API
-//     const response = await fetch("https://api.x.ai/v1/chat/completions", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${process.env.XAI_API_KEY}`,
-//       },
-//       body: JSON.stringify({
-//         model: "grok-3",
-//         messages: [
-//           {
-//             role: "system",
-//             content:
-//               "You are a university timetable generator. Return ONLY valid JSON in the format specified, with no additional text.",
-//           },
-//           { role: "user", content: prompt },
-//         ],
-//         stream: true,
-//         // max_tokens: 128000, // Adjust based on your tier's limit
-//       }),
-//     });
+    // If a custom prompt is provided, use it directly
+    if (prompt) {
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        temperature: 0.3,
+      });
 
-//     if (!response.ok) {
-//       throw new Error(`Grok API error: ${response.statusText}`);
-//     }
+      const timetable = JSON.parse(response.choices[0].message?.content || "{}");
+      return NextResponse.json(timetable);
+    }
 
-//     // Accumulate the streamed response
-//     let fullResponse = "";
-//     const reader = response.body?.getReader();
-//     const decoder = new TextDecoder();
-//     if (!reader) {
-//       throw new Error("Failed to get response reader");
-//     }
+    // Otherwise, use the enhanced generation logic
+    const summary = buildCourseSummary();
 
-//     while (true) {
-//       const { done, value } = await reader.read();
-//       if (done) break;
-//       fullResponse += decoder.decode(value);
-//     }
+    const timetable: Record<string, any> = {};
 
-//     // Parse the full timetable
-//     let timetable;
-//     try {
-//       timetable = JSON.parse(fullResponse);
-//     } catch (parseError) {
-//       throw new Error(`Failed to parse JSON: ${parseError}`);
-//     }
+    for (const day of Days) {
+      const dayPrompt = `
+You are an AI assistant tasked with generating a university class timetable for **${day} only**.
 
-//     // Return the complete timetable
-//     return NextResponse.json(timetable, {
-//       headers: { "Content-Type": "application/json" },
-//     });
-//   } catch (error) {
-//     console.error("API error:", error);
-//     return NextResponse.json(
-//       { error: error instanceof Error ? error.message : "Unknown error" },
-//       { status: 500 }
-//     );
-//   }
-// }
+Scheduling Constraints:
+- Maximum classes per teacher per day: ${maxClassesPerTeacherPerDay || 4}
+- Maximum classes per section per day: ${maxClassesPerSectionPerDay || 6}
 
+Rules:
+- Each subject's total weekly classes must equal theory_classes_week + lab_classes_week.
+- Labs must only be scheduled in Lab rooms.
+- No teacher can appear in two rooms at the same time.
+- No subject can appear in two rooms at the same time.
+- Distribute classes evenly across days (avoid overloading).
+- University hours: 9:30 AM – 4:30 PM (7 slots).
+- Respect the maximum classes per teacher and section per day limits.
+
+Extra preferences:
+- Custom Rules: ${customRules?.join(", ") || "None"}.
+
+Courses:
+${JSON.stringify(summary, null, 2)}
+
+Rooms:
+${JSON.stringify(rooms || Rooms)}
+
+Return strictly in JSON. 
+Follow this schema: ${JSON.stringify(buildJsonSchema())}
+      `;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [{ role: "user", content: dayPrompt }],
+        response_format: { type: "json_object" }, // ensures valid JSON
+        temperature: 0.3,
+      });
+
+      const jsonDay = JSON.parse(response.choices[0].message?.content || "{}");
+
+      timetable[day] = jsonDay[day];
+    }
+
+    return NextResponse.json(timetable);
+  } catch (err: any) {
+    console.error("Timetable generation failed:", err);
+    return NextResponse.json(
+      { error: "Failed to generate timetable" },
+      { status: 500 }
+    );
+  }
+}

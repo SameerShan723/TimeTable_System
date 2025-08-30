@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -7,12 +8,16 @@ import {
   FaFileExcel,
   FaFilePdf,
 } from "react-icons/fa";
-import Select from "react-select";
+import dynamic from "next/dynamic";
 import { TimetableData, Session, EmptySlot, RoomSchedule } from "./types";
 import { Days } from "@/helpers/page";
 import { useTimetableVersion } from "@/context/TimetableContext";
 import { useAuth } from "@/context/AuthContext";
 import { Checkbox } from "@/components/ui/checkbox";
+
+const Select = dynamic(() => import("react-select"), { ssr: false });
+
+
 interface NavbarProps {
   versionId: string;
   versions: number[];
@@ -155,6 +160,7 @@ const Navbar: React.FC<NavbarProps> = ({
                 Select Version:
               </label>
               <Select
+            
                 instanceId={versionId}
                 options={
                   versions.length > 0
@@ -172,7 +178,7 @@ const Navbar: React.FC<NavbarProps> = ({
                       }
                     : null
                 }
-                onChange={async (selectedOption) => {
+                onChange={async (selectedOption:any) => {
                   const newVersion = selectedOption?.value;
                   if (newVersion !== undefined) {
                     await setSelectedVersion(newVersion);
@@ -182,7 +188,7 @@ const Navbar: React.FC<NavbarProps> = ({
                 placeholder="Select Version"
                 isDisabled={isSaving !== "none" || isDeleting || !isSuperadmin}
                 components={{
-                  Option: ({ innerRef, innerProps, data, isSelected }) => (
+                  Option: ({ innerRef, innerProps, data, isSelected }:any) => (
                     <div
                       ref={innerRef}
                       {...innerProps}
@@ -231,7 +237,7 @@ const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
         )}
-        <div className=" w-full  md:w-60 lg:w-70 lg:max-w-70  flex items-center text-sm ">
+        <div suppressHydrationWarning className=" w-full  md:w-60 lg:w-70 lg:max-w-70  flex items-center text-sm ">
           <label className="text-white mr-2 text-xs sm:text-sm">
             Filter Teachers:
           </label>
@@ -239,9 +245,9 @@ const Navbar: React.FC<NavbarProps> = ({
             instanceId={`teacher-filter-${versionId}`}
             options={teacherOptions}
             isMulti
-            onChange={(selectedOptions) => {
+            onChange={(selectedOptions:any) => {
               const selectedTeachers = selectedOptions
-                ? selectedOptions.map((option) => option.value)
+                ? selectedOptions.map((option:any) => option.value)
                 : null;
               setSelectedTeacher(selectedTeachers);
             }}
@@ -273,7 +279,7 @@ const Navbar: React.FC<NavbarProps> = ({
             }}
           />
         </div>
-        <div className=" w-full  md:w-60 lg:w-70 lg:max-w-70 flex items-center text-sm ">
+        <div suppressHydrationWarning className=" w-full  md:w-60 lg:w-70 lg:max-w-70 flex items-center text-sm ">
           <label className="text-white mr-2 text-xs sm:text-sm">
             Filter Subjects:
           </label>
@@ -281,9 +287,9 @@ const Navbar: React.FC<NavbarProps> = ({
             instanceId={`subject-filter-${versionId}`}
             options={subjectOptions}
             isMulti
-            onChange={(selectedOptions) => {
+            onChange={(selectedOptions:any) => {
               const selectedSubjects = selectedOptions
-                ? selectedOptions.map((option) => option.value)
+                ? selectedOptions.map((option:any) => option.value)
                 : null;
               setSelectedSubject(selectedSubjects);
             }}

@@ -8,24 +8,31 @@ export const timeSlots: string[] = [
   "3:30-4:30",
 ];
 
-export const Rooms: string[] = [
-  "New Academi c Block Room 16",
-  "New Academi c Block Room 02",
-  "NAB-1",
-  "NAB-2",
-  "NAB-3",
-  "NAB-4",
-  "NAB-5",
-  "Room 211",
-  "Room 247",
+export const RegularRooms: string[] = [
   "Room 229",
-  "New Academi c Block Room 12",
-  "Lab1",
-  "Lab2",
-  "Lab3",
-  "Lab4",
-  "Room 210(Lab)",
+  "Room 247",
+  "NAB 01",
+  "NAB 03",
+  "NAB 04",
+  "NAB 05",
+  "NAB 06",
+  "NAB 07",
+  "NAB 08",
+  "Extra Room 1",
+  "Extra Room 02",
 ];
+
+export const LabRooms: string[] = [
+  "Comp Lab 01",
+  "Comp Lab 02",
+  "Comp Lab 03",
+  "Comp Lab 04",
+  "Lab Room 210",
+  "Research Lab",
+];
+
+// Combined array for backward compatibility
+export const Rooms: string[] = [...RegularRooms, ...LabRooms];
 
 export const Days: string[] = [
   "Monday",
