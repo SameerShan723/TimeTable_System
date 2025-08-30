@@ -63,7 +63,7 @@ export default function Header() {
         </div>
 
         <div className="flex-1 flex justify-center px-2">
-          <h1 className="text-blue-900 text-[9px] md:text-2xl font-bold text-center overflow-hidden text-ellipsis whitespace-nowrap hidden md:block ">
+          <h1 className="text-blue-900 text-[9px] md:text-xl font-bold text-center overflow-hidden text-ellipsis whitespace-nowrap hidden md:block ">
           School of Computing & Emerging Technologies SC&ET
           </h1>
         </div>

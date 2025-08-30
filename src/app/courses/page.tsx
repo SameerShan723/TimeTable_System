@@ -160,14 +160,16 @@ export default function FacultyData() {
   const confirmDeleteAll = async () => {
     setIsDeletingAll(true);
     try {
-      // Delete all courses with a WHERE clause that matches all records
-      const { error } = await supabaseClient
-        .from("courses")
-        .delete()
-        .not("course_details", "is", null); // This matches all records that have course_details
+      const response = await fetch("/api/courses/delete-all", {
+        method: "DELETE",
+      });
 
-      if (error) {
-        throw new Error(error.message);
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => null);
+        const errMsg =
+          (errorBody && (errorBody.message || errorBody.error)) ||
+          `Request failed with status ${response.status}`;
+        throw new Error(errMsg);
       }
 
       setCourses([]);
@@ -602,7 +604,7 @@ export default function FacultyData() {
                       {course.lab_classes_week || "N/A"}
                     </td>
                     <td className="p-3 text-sm text-gray-600 border-2 border-gray-300">
-                      <div className="flex space-x-2 items-center h-full">
+                      <div className="flex gap-x-1 items-center h-full">
                         <button
                           onClick={() => handleEdit(course)}
                           className="px-4 py-2 transition-all duration-200 hover:scale-105 text-sm font-medium bg-[#042954] text-white rounded-lg"
