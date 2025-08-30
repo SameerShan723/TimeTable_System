@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { toast, ToastContainer, Bounce } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { z } from "zod";
 import { useForm, SubmitHandler, UseFormProps } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -1243,20 +1242,7 @@ export default function FacultyData() {
         )}
       </div>
 
-      {/* Toast Container for this page only */}
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-        transition={Bounce}
-      />
+
     </main>
   );
 }

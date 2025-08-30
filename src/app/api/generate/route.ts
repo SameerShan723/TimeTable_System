@@ -2,21 +2,21 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { Days, Rooms } from "@/helpers/page";
-import courses from "@/data/courses.json"; // adjust import if path differs
+import { generateDeterministicTimetable } from "@/lib/scheduler/engine";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// helper: build course summary from courses.json
-function buildCourseSummary() {
-  return courses.map((course) => ({
+// helper: build course summary from provided courses
+function buildCourseSummary(coursesInput: any[]) {
+  return (coursesInput || []).map((course) => ({
     faculty: course.faculty_assigned,
     subject: course.course_details,
     section: course.section,
-    theory: course.theory_classes_week,
-    labs: course.lab_classes_week,
-    credit: course.credit_hour,
+    theory: course.theory_classes_week ?? course.credit_hour ?? 0,
+    labs: course.lab_classes_week ?? 0,
+    credit: course.credit_hour ?? null,
   }));
 }
 
@@ -62,14 +62,34 @@ export async function POST(req: Request) {
       customRules, 
       maxClassesPerTeacherPerDay, 
       maxClassesPerSectionPerDay,
-      rooms 
+      rooms,
+      engine = "algorithmic",
+      courses: postedCourses,
+      visitingEarliestTime
     } = await req.json();
 
-    // If a custom prompt is provided, use it directly
-    if (prompt) {
+    // Algorithmic engine: deterministic scheduler (default)
+    if (engine === "algorithmic") {
+      const { timetable, unscheduled, stats } = generateDeterministicTimetable({
+        courses: postedCourses || [],
+        rooms: (rooms || []).map((r: any) => ({
+          id: r.id,
+          name: r.name,
+          type: r.type,
+          capacity: r.capacity,
+        })),
+        maxClassesPerTeacherPerDay,
+        maxClassesPerSectionPerDay,
+        visitingEarliestTime,
+      });
+      return NextResponse.json({ timetable, unscheduled, stats });
+    }
+
+    // If a custom prompt is provided, or engine is LLM, use it
+    if (prompt || engine === "llm") {
       const response = await openai.chat.completions.create({
         model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt }],
+        messages: [{ role: "user", content: prompt || "" }],
         response_format: { type: "json_object" },
         temperature: 0.3,
       });
@@ -78,8 +98,8 @@ export async function POST(req: Request) {
       return NextResponse.json(timetable);
     }
 
-    // Otherwise, use the enhanced generation logic
-    const summary = buildCourseSummary();
+    // Otherwise (engine unspecified or hybrid), use the per-day LLM enhanced generation logic with posted courses
+    const summary = buildCourseSummary(postedCourses || []);
 
     const timetable: Record<string, any> = {};
 

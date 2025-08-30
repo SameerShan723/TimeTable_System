@@ -15,8 +15,7 @@ import {
   DragOverlay,
 } from "@dnd-kit/core";
 import { produce } from "immer";
-import { toast, ToastContainer, Bounce } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { Session, EmptySlot, RoomSchedule, TimetableData } from "./types";
 import { timeSlots, Days } from "@/helpers/page";
 import { useTimetableVersion } from "@/context/TimetableContext";
@@ -1035,20 +1034,7 @@ export default function ClientTimetable() {
         </div>
       </DndContext>
       
-      {/* Toast Container for this page only */}
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-        transition={Bounce}
-      />
+
     </main>
   );
 }
