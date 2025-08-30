@@ -205,86 +205,86 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function PUT(request: NextRequest) {
-  const supabase = await createSupabaseServerClient();
-  try {
-    const { searchParams } = new URL(request.url);
-    const version = searchParams.get("version");
+// export async function PUT(request: NextRequest) {
+//   const supabase = await createSupabaseServerClient();
+//   try {
+//     const { searchParams } = new URL(request.url);
+//     const version = searchParams.get("version");
 
-    if (!version) {
-      return NextResponse.json(
-        { error: "Version parameter is required" },
-        { status: 400 }
-      );
-    }
+//     if (!version) {
+//       return NextResponse.json(
+//         { error: "Version parameter is required" },
+//         { status: 400 }
+//       );
+//     }
 
-    const versionNumber = parseInt(version);
-    if (isNaN(versionNumber) || versionNumber <= 0) {
-      return NextResponse.json(
-        { error: "Invalid version number" },
-        { status: 400 }
-      );
-    }
+//     const versionNumber = parseInt(version);
+//     if (isNaN(versionNumber) || versionNumber <= 0) {
+//       return NextResponse.json(
+//         { error: "Invalid version number" },
+//         { status: 400 }
+//       );
+//     }
 
-    // Get user from Supabase auth
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: "Unauthorized: User not authenticated" },
-        { status: 401 }
-      );
-    }
+//     // Get user from Supabase auth
+//     // const {
+//     //   data: { user },
+//     //   error: authError,
+//     // } = await supabase.auth.getUser();
+//     // if (authError || !user) {
+//     //   return NextResponse.json(
+//     //     { error: "Unauthorized: User not authenticated" },
+//     //     { status: 401 }
+//     //   );
+//     // }
 
-    // Verify superadmin status
-    const { data: roleData, error: roleError } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("id", user.id)
-      .eq("role", "superadmin")
-      .maybeSingle();
+//     // Verify superadmin status
+//     // const { data: roleData, error: roleError } = await supabase
+//     //   .from("user_roles")
+//     //   .select("role")
+//     //   .eq("id", user.id)
+//     //   .eq("role", "superadmin")
+//     //   .maybeSingle();
 
-    if (roleError || !roleData) {
-      return NextResponse.json(
-        { error: "Unauthorized: Superadmin access required" },
-        { status: 403 }
-      );
-    }
+//     // if (roleError || !roleData) {
+//     //   return NextResponse.json(
+//     //     { error: "Unauthorized: Superadmin access required" },
+//     //     { status: 403 }
+//     //   );
+//     // }
 
-    // Check if version exists in timetable_data
-    const { data: versionData, error: versionError } = await supabase
-      .from("timetable_data")
-      .select("version_number")
-      .eq("version_number", versionNumber)
-      .single();
+//     // Check if version exists in timetable_data
+//     const { data: versionData, error: versionError } = await supabase
+//       .from("timetable_data")
+//       .select("version_number")
+//       .eq("version_number", versionNumber)
+//       .single();
 
-    if (versionError || !versionData) {
-      return NextResponse.json(
-        { error: "Version not found in timetable data" },
-        { status: 404 }
-      );
-    }
+//     if (versionError || !versionData) {
+//       return NextResponse.json(
+//         { error: "Version not found in timetable data" },
+//         { status: 404 }
+//       );
+//     }
 
-    // Update global version (only update, no insert)
-    const { error: updateError } = await supabase
-      .from("selected_version")
-      .update({ version_number: versionNumber })
-      .eq("id", 1);
+//     // Update global version (only update, no insert)
+//     const { error: updateError } = await supabase
+//       .from("selected_version")
+//       .update({ version_number: versionNumber })
+//       .eq("id", 1);
 
-    if (updateError) {
-      throw new Error(updateError.message);
-    }
+//     if (updateError) {
+//       throw new Error(updateError.message);
+//     }
 
-    return NextResponse.json({ version_number: versionNumber });
-  } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Update failed" },
-      { status: 500 }
-    );
-  }
-}
+//     return NextResponse.json({ version_number: versionNumber });
+//   } catch (error) {
+//     return NextResponse.json(
+//       { error: error instanceof Error ? error.message : "Update failed" },
+//       { status: 500 }
+//     );
+//   }
+// }
 
 export async function PATCH(request: NextRequest) {
   const supabase = await createSupabaseServerClient();

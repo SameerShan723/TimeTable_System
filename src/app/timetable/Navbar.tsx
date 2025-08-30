@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -14,7 +13,6 @@ import { Days } from "@/helpers/page";
 import { useTimetableVersion } from "@/context/TimetableContext";
 import { useAuth } from "@/context/AuthContext";
 import { Checkbox } from "@/components/ui/checkbox";
-
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
 

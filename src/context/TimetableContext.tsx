@@ -300,40 +300,36 @@ export const TimetableVersionProvider: React.FC<
     [checkConflicts, showToast]
   );
 
-  const finalizeVersion = useCallback(
-    async (version: number) => {
-      // setLoading(true);
-      try {
-        const {
-          data: { user },
-        } = await supabaseClient.auth.getUser();
-        if (!user) {
-          throw new Error("User not authenticated");
-        }
+ const finalizeVersion = useCallback(
+  async (version: number) => {
+    try {
+      const response = await fetch(`/api/finalize-version?version=${version}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+      });
 
-        const response = await fetch(`/api/timetable?version=${version}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to finalize version");
-        }
-
-        showToast('success', `Version ${version} has been finalized as the global version!`);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to finalize version");
-        showToast('error',
-          err instanceof Error ? err.message : "Failed to finalize version"
-        );
-        throw err;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to finalize version");
       }
-    },
-    [showToast]
-  );
+
+      const data = await response.json();
+      showToast(
+        "success",
+        `Version ${data.version_number} has been finalized as the global version!`
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to finalize version");
+      showToast(
+        "error",
+        err instanceof Error ? err.message : "Failed to finalize version"
+      );
+      throw err;
+    }
+  },
+  [showToast]
+);
+
 
   const saveTimetableData = useCallback(
     async (data: TimetableData, version?: number) => {
@@ -408,12 +404,12 @@ export const TimetableVersionProvider: React.FC<
     async (version: number) => {
       // setLoading(true);
       try {
-        const {
-          data: { user },
-        } = await supabaseClient.auth.getUser();
-        if (!user) {
-          throw new Error("User not authenticated");
-        }
+        // const {
+        //   data: { user },
+        // } = await supabaseClient.auth.getUser();
+        // if (!user) {
+        //   throw new Error("User not authenticated");
+        // }
 
         const response = await fetch(
           `/api/timetable?version_number=${version}`,
@@ -434,7 +430,6 @@ export const TimetableVersionProvider: React.FC<
         if (selectedVersion === version) {
           await fetchGlobalVersion();
         }
-        showToast('success', `Version ${version} deleted successfully`);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
         showToast('error',
