@@ -46,8 +46,8 @@ export default function Sidebar({
   };
   const baseNavigationItems = [{ icon: Home, label: "Home", href: "/" }];
   const superadminNavigationItems = [
-    { icon: Plus, label: "Add New Course", href: "/add-new-course" },
     { icon: Users, label: "Courses", href: "/courses" },
+    { icon: Plus, label: "Add New Course", href: "/add-new-course" },
     {
       icon: Calendar,
       label: "Generate Timetable",

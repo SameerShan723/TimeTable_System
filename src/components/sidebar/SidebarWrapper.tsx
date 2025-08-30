@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import Sidebar from "./page";
+import Sidebar from ".";
 
 export default function SidebarWrapper() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
