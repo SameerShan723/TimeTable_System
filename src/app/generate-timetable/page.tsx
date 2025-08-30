@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo, useEffect } from "react";
 import { useForm, SubmitHandler, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -13,6 +13,10 @@ import { RoomManagement } from "@/components/room-management";
 import { FormSection } from "@/components/ui/form-section";
 import { Button } from "@/components/ui/button";
 import { Zap, Loader2 } from "lucide-react";
+import { computeConflicts, computeStats } from "@/lib/scheduler/analyze";
+import { Days, timeSlots } from "@/helpers/page";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 
 // Default rules that will be included directly in the prompt
@@ -235,9 +239,35 @@ const RulesAutocomplete = ({
 
 export default function GenerateTimeTable() {
   const { courses } = useCourses();
+  const router = useRouter();
+  useEffect(() => {
+    router.prefetch("/");
+  }, [router]);
+  const teacherOptions = useMemo(() => {
+    const names = (courses || [])
+      .map((c) => (typeof c.faculty_assigned === "string" ? c.faculty_assigned.trim() : ""))
+      .filter((n) => n && n.length > 0);
+    return Array.from(new Set(names)).sort((a, b) => a.localeCompare(b));
+  }, [courses]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedCustomRules, setSelectedCustomRules] = useState<string[]>(customRules);
+  const [progress, setProgress] = useState<number>(0);
+  const [resultStats, setResultStats] = useState<
+    | null
+    | {
+        totalSlots: number;
+        scheduled: number;
+        free: number;
+        roomsPerDay: Record<string, number>;
+        scheduledUnits?: number;
+        unscheduledUnits?: number;
+      }
+  >(null);
+  const [resultConflicts, setResultConflicts] = useState<string[]>([]);
+  const [unscheduled, setUnscheduled] = useState<
+    { teacher: string; subject: string; section: string; type: "Theory" | "Lab" }[]
+  >([]);
   
   const { register, handleSubmit, reset, control, watch } = useForm<FormValues>({
     resolver: zodResolver(timetableSchema),
@@ -246,6 +276,8 @@ export default function GenerateTimeTable() {
       customPrompt: "",
       maxClassesPerTeacherPerDay: 4,
       maxClassesPerSectionPerDay: 6,
+      engine: "algorithmic",
+      visitingEarliestTime: "11:30-12:30",
       rooms: [
         ...RegularRooms.map((roomName, index) => ({
           id: `regular-${index}`,
@@ -262,12 +294,17 @@ export default function GenerateTimeTable() {
           isNew: false,
         })),
       ],
+      teacherAvailabilities: [],
     },
   });
 
   const { fields: roomFields, update: updateRoom, append: appendRoom, remove: removeRoom } = useFieldArray({
     control,
     name: "rooms",
+  });
+  const { fields: availabilityFields, append: appendAvailability, remove: removeAvailability } = useFieldArray({
+    control,
+    name: "teacherAvailabilities",
   });
 
   const useCustomPrompt = watch("useCustomPrompt");
@@ -393,6 +430,10 @@ export default function GenerateTimeTable() {
   
     setIsLoading(true);
     setError("");
+    setProgress(5);
+    setResultStats(null);
+    setResultConflicts([]);
+    setUnscheduled([]);
   
     try {
       // Create complete data object with custom rules
@@ -403,6 +444,7 @@ export default function GenerateTimeTable() {
       
       const prompt = generateDynamicPrompt(completeData);
       
+      setProgress(15);
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -412,6 +454,18 @@ export default function GenerateTimeTable() {
           maxClassesPerTeacherPerDay: values.maxClassesPerTeacherPerDay,
           maxClassesPerSectionPerDay: values.maxClassesPerSectionPerDay,
           rooms: values.rooms,
+          engine: values.engine || "algorithmic",
+          courses, // send full course set for algorithmic engine
+          visitingEarliestTime: values.visitingEarliestTime,
+          teacherAvailability: (values.teacherAvailabilities || []).reduce((acc, cur) => {
+            if (!cur.teacher) return acc;
+            acc[cur.teacher] = {
+              days: cur.days,
+              earliestTime: cur.earliestTime || undefined,
+              latestTime: cur.latestTime || undefined,
+            };
+            return acc;
+          }, {} as Record<string, { days?: string[]; earliestTime?: string; latestTime?: string }>),
         }),
       });
   
@@ -419,10 +473,39 @@ export default function GenerateTimeTable() {
         throw new Error(`HTTP error: ${res.status}`);
       }
   
-      const timetable = await res.json();
-  
-      // TODO: Save timetable to DB or state
-      console.log("Generated Timetable:", timetable);
+      setProgress(50);
+      const payload = await res.json();
+
+      // Auto-save timetable when using algorithmic engine
+      if (values.engine !== "llm" && payload && payload.timetable) {
+        const saveRes = await fetch("/api/timetable", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload.timetable),
+        });
+        if (!saveRes.ok) {
+          throw new Error("Failed to save timetable");
+        }
+        toast.success("Timetable generated and saved. Redirecting to Timetable...");
+        setTimeout(() => {
+          router.push("/");
+        }, 900);
+      }
+
+      // Compute stats/conflicts for UI
+      if (payload?.timetable) {
+        const stats = computeStats(payload.timetable);
+        const conflicts = computeConflicts(payload.timetable);
+        setResultStats({
+          ...stats,
+          scheduledUnits: payload?.stats?.scheduled,
+          unscheduledUnits: payload?.stats?.unscheduled,
+        });
+        setResultConflicts(conflicts.map((c) => `${c.day} ${c.time}: ${c.message}`));
+        setUnscheduled(Array.isArray(payload.unscheduled) ? payload.unscheduled : []);
+      }
+      setProgress(100);
+      console.log("Generated Timetable:", payload);
   
       reset();
     } catch (err) {
@@ -430,6 +513,8 @@ export default function GenerateTimeTable() {
       setError("Failed to generate timetable.");
     } finally {
       setIsLoading(false);
+      // soft-finish progress bar
+      setTimeout(() => setProgress(0), 600);
     }
   };
   return (
@@ -500,6 +585,41 @@ export default function GenerateTimeTable() {
                     ))}
                   </select>
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Earliest Time for Visiting Teachers
+                  </label>
+                  <select
+                    {...register("visitingEarliestTime")}
+                    className="w-full border-2 border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    {["9:30-10:30","10:30-11:30","11:30-12:30","12:30-1:30","1:30-2:30","2:30-3:30","3:30-4:30"].map(t => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </FormSection>
+
+            {/* Generation Engine */}
+            <FormSection
+              title="Generation Engine"
+              description="Choose how to generate the timetable. Algorithmic is recommended for large datasets."
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Engine
+                  </label>
+                  <select
+                    {...register("engine")}
+                    className="w-full border-2 border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="algorithmic">Algorithmic (deterministic, fast)</option>
+                    <option value="llm">LLM (AI model, slower)</option>
+                    <option value="hybrid">Hybrid (algorithmic + AI) - beta</option>
+                  </select>
+                </div>
               </div>
             </FormSection>
 
@@ -559,6 +679,88 @@ export default function GenerateTimeTable() {
               )}
             </FormSection>
 
+            {/* Teacher Availability (optional) */}
+            <FormSection
+              title="Teacher Availability (optional)"
+              description="Limit specific teachers to certain days and times. Leave empty to allow any time."
+            >
+              <div className="space-y-4">
+                {availabilityFields.map((field, idx) => (
+                  <div key={field.id} className="p-4 border rounded-xl grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="md:col-span-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Teacher</label>
+                      <div className="relative">
+                        <select
+                          className="w-full border-2 border-gray-300 rounded-xl px-4 py-3 pr-10 appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          {...register(`teacherAvailabilities.${idx}.teacher` as const)}
+                        >
+                          <option value="">Select teacher</option>
+                          {teacherOptions.map((name) => (
+                            <option key={name} value={name}>{name}</option>
+                          ))}
+                        </select>
+                        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">▾</span>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">Options populated from Courses</p>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Days</label>
+                      <div className="flex flex-wrap gap-2">
+                        {Days.map((d) => (
+                          <label key={d} className="inline-flex items-center gap-2 text-sm px-2 py-1 border rounded-md bg-white">
+                            <input
+                              type="checkbox"
+                              value={d}
+                              className="accent-[#416697]"
+                              {...register(`teacherAvailabilities.${idx}.days` as const)}
+                            />
+                            <span className="text-gray-700">{d}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="md:col-span-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Earliest</label>
+                      <select
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-3 pr-10 appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        {...register(`teacherAvailabilities.${idx}.earliestTime` as const)}
+                      >
+                        <option value="">Any</option>
+                        {timeSlots.map((t) => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <label className="block text-sm font-medium text-gray-700 mb-2 mt-2">Latest</label>
+                      <select
+                        className="w-full border-2 border-gray-300 rounded-xl px-4 py-3 pr-10 appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        {...register(`teacherAvailabilities.${idx}.latestTime` as const)}
+                      >
+                        <option value="">Any</option>
+                        {timeSlots.map((t) => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="md:col-span-4 flex justify-between">
+                      <button
+                        type="button"
+                        onClick={() => removeAvailability(idx)}
+                        className="text-red-600 text-sm"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => appendAvailability({ teacher: "", days: [] })}
+                  className="px-4 py-2 bg-[#042954] text-white rounded-lg text-sm"
+                >
+                  Add Teacher Availability
+                </button>
+              </div>
+            </FormSection>
 
 
             {/* Submit Button */}
@@ -582,6 +784,75 @@ export default function GenerateTimeTable() {
                 )}
               </Button>
             </div>
+
+            {/* Progress Bar */}
+            {(isLoading || progress > 0) && (
+              <div className="mt-6 w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-2 bg-blue-600 transition-[width] duration-500 ease-out"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            )}
+
+            {/* Results: Stats and Conflicts */}
+            {(resultStats || resultConflicts.length > 0 || unscheduled.length > 0) && (
+              <div className="mt-8 grid grid-cols-1 gap-6">
+                {resultStats && (
+                  <div className="p-4 bg-white border rounded-xl">
+                    <h3 className="text-lg font-semibold text-[#416697] mb-2">Generation Summary</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div className="p-3 bg-gray-50 rounded-lg">
+                        <div className="text-gray-500">Total Slots</div>
+                        <div className="text-gray-900 font-semibold">{resultStats.totalSlots}</div>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-lg">
+                        <div className="text-gray-500">Scheduled</div>
+                        <div className="text-gray-900 font-semibold">{resultStats.scheduled}</div>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-lg">
+                        <div className="text-gray-500">Free</div>
+                        <div className="text-gray-900 font-semibold">{resultStats.free}</div>
+                      </div>
+                      {typeof resultStats.scheduledUnits === "number" && (
+                        <div className="p-3 bg-gray-50 rounded-lg">
+                          <div className="text-gray-500">Class Units Scheduled</div>
+                          <div className="text-gray-900 font-semibold">{resultStats.scheduledUnits}</div>
+                        </div>
+                      )}
+                      {typeof resultStats.unscheduledUnits === "number" && (
+                        <div className="p-3 bg-gray-50 rounded-lg">
+                          <div className="text-gray-500">Unscheduled Units</div>
+                          <div className="text-gray-900 font-semibold">{resultStats.unscheduledUnits}</div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {resultConflicts.length > 0 && (
+                  <div className="p-4 bg-white border rounded-xl">
+                    <h3 className="text-lg font-semibold text-[#416697] mb-2">Conflicts Detected</h3>
+                    <ul className="list-disc ml-5 text-sm text-red-600">
+                      {resultConflicts.map((c, idx) => (
+                        <li key={idx}>{c}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {unscheduled.length > 0 && (
+                  <div className="p-4 bg-white border rounded-xl">
+                    <h3 className="text-lg font-semibold text-[#416697] mb-2">Unscheduled Classes</h3>
+                    <ul className="list-disc ml-5 text-sm text-gray-800">
+                      {unscheduled.map((u, idx) => (
+                        <li key={idx}>{`${u.type}: ${u.subject} - ${u.teacher}${u.section ? ` (${u.section})` : ""}`}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
           </form>
         </div>
       </div>

@@ -5,8 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { supabaseClient } from "@/lib/supabase/supabase";
 import { useAuth } from "@/context/AuthContext";
-import { toast, ToastContainer, Bounce } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
 
 interface PasswordValidation {
@@ -582,20 +581,7 @@ const SuperadminDetails: React.FC<SuperadminDetailsProps> = ({
         )}
       </div>
       
-      {/* Toast Container for this page only */}
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-        transition={Bounce}
-      />
+
     </div>
   );
 };

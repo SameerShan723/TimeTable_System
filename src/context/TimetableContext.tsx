@@ -434,7 +434,7 @@ export const TimetableVersionProvider: React.FC<
         if (selectedVersion === version) {
           await fetchGlobalVersion();
         }
-        showToast('success', `Version ${version} deleted successfully`);
+        toast.success(`Version ${version} deleted successfully`);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
         showToast('error',

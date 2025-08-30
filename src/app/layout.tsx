@@ -6,6 +6,7 @@ import NextTopLoader from "nextjs-toploader";
 import { TimetableVersionProvider } from "@/context/TimetableContext";
 import { AuthProvider } from "@/context/AuthContext";
 import CourseDataFetcher from "@/lib/serverData/CourseDataFetcher";
+import { GlobalToastContainer } from "@/components/ui/GlobalToastContainer";
 import {
   getTimetableData,
   TimetableServerData,
@@ -56,6 +57,7 @@ export default async function RootLayout({
               </CourseDataFetcher>
             </div>
           </div>
+          <GlobalToastContainer />
         </AuthProvider>
       </body>
     </html>
