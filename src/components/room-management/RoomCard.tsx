@@ -97,9 +97,9 @@ export function RoomCard({ room, onEdit, onDelete, variant }: RoomCardProps) {
         <span className={theme.capacityLabel}>Capacity:</span>
         <Input
           type="number"
-          value={room.capacity || ""}
-          onChange={(e) => onEdit('capacity', e.target.value ? parseInt(e.target.value) : 0)}
-          placeholder="Not set"
+          value={room.capacity || 40}
+          onChange={(e) => onEdit('capacity', e.target.value ? parseInt(e.target.value) : 40)}
+          placeholder="40"
           className={`w-20 text-center h-auto py-0.5 ${theme.input}`}
         />
       </div>

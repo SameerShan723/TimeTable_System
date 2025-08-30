@@ -51,27 +51,35 @@ export function RoomManagement({
 
   return (
     <div className="bg-white rounded-xl border-2 border-gray-200 p-6 mb-6">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold text-[#194c87]">Room & Classroom Management</h3>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+        <div>
+          <h3 className="text-xl font-semibold text-[#194c87]">Room & Classroom Management</h3>
+          <p className="text-sm text-gray-600 mt-1">
+            Manage classrooms and laboratories for timetable generation
+          </p>
+        </div>
         <Button
           type="button"
           onClick={() => setShowAddForm(!showAddForm)}
           variant={showAddForm ? "outline" : "default"}
+          className="self-start sm:self-auto"
         >
           {showAddForm ? (
             <>
-              <X size={16} />
+              <X size={16} className="mr-1" />
               Cancel
             </>
           ) : (
             <>
-              <Plus size={16} />
+              <Plus size={16} className="mr-1" />
               Add New Room
             </>
           )}
         </Button>
       </div>
 
+      {/* Add Room Form */}
       {showAddForm && (
         <AddRoomForm 
           onAdd={handleAddRoom}
@@ -97,13 +105,21 @@ export function RoomManagement({
         onRoomDelete={handleDeleteRoom}
       />
 
-      <div className="mt-4 p-3 bg-gray-100 rounded-lg">
-        <p className="text-sm text-gray-600">
-          <strong>Total Rooms:</strong> {rooms.length} ({regularRooms.length} Regular, {labRooms.length} Labs)
-        </p>
-        <p className="text-xs text-gray-500 mt-1">
-          💡 Tips: Click room names to edit • Use ✏️ to edit or 🗑️ to delete • Lab courses will only be scheduled in Laboratory rooms
-        </p>
+      {/* Summary and Tips */}
+      <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+          <div>
+            <p className="text-sm font-medium text-gray-800">
+              Total Rooms: {rooms.length}
+            </p>
+            <p className="text-xs text-gray-600">
+              {regularRooms.length} Regular Classrooms • {labRooms.length} Laboratories
+            </p>
+          </div>
+          <div className="text-xs text-gray-500">
+            💡 Click names to edit • Lab courses scheduled only in labs
+          </div>
+        </div>
       </div>
 
       {/* Delete Confirmation Dialog */}

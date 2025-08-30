@@ -8,7 +8,7 @@ import {
   Room,
 } from "@/lib/generate-timetable-schema/page";
 import { useCourses } from "@/context/CourseContext";
-import { Rooms } from "@/helpers/page";
+import { RegularRooms, LabRooms } from "@/helpers/page";
 import { RoomManagement } from "@/components/room-management";
 import { FormSection } from "@/components/ui/form-section";
 import { Button } from "@/components/ui/button";
@@ -246,13 +246,22 @@ export default function GenerateTimeTable() {
       customPrompt: "",
       maxClassesPerTeacherPerDay: 4,
       maxClassesPerSectionPerDay: 6,
-      rooms: Rooms.map((roomName, index) => ({
-        id: `default-${index}`,
-        name: roomName,
-        type: roomName.toLowerCase().includes('lab') ? "Lab" : "Regular",
-        capacity: undefined,
-        isNew: false,
-      })),
+      rooms: [
+        ...RegularRooms.map((roomName, index) => ({
+          id: `regular-${index}`,
+          name: roomName,
+          type: "Regular" as const,
+          capacity: 40,
+          isNew: false,
+        })),
+        ...LabRooms.map((roomName, index) => ({
+          id: `lab-${index}`,
+          name: roomName,
+          type: "Lab" as const,
+          capacity: 40,
+          isNew: false,
+        })),
+      ],
     },
   });
 
