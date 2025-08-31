@@ -39,6 +39,7 @@ interface NavbarProps {
     action: "cancel" | "same" | "new",
     e?: React.MouseEvent<HTMLButtonElement>
   ) => Promise<void>;
+  openAddRoomDialog: () => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
@@ -60,6 +61,7 @@ const Navbar: React.FC<NavbarProps> = ({
   setSelectedSubject,
   versionPendingData,
   handleSaveAction,
+  openAddRoomDialog,
 }) => {
   const { timetableData, finalizeVersion: contextFinalizeVersion } =
     useTimetableVersion();
@@ -346,24 +348,33 @@ const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       <div className="flex items-center gap-2 mt-3 md:mt-0">
+        {isSuperadmin && (
+          <button
+            onClick={openAddRoomDialog}
+            className="bg-blue-900 hover:brightness-110 text-white px-2 py-1 rounded text-xs"
+            disabled={isVersionLoading}
+          >
+            Add Room
+          </button>
+        )}
         {selectedVersion !== null && versionPendingData[selectedVersion] && (
           <div className="hidden lg:flex items-center gap-2">
             <button
               onClick={() => handleSaveAction("cancel")}
-              className="bg-red-800 hover:bg-red-900 text-white px-3 py-1.5 rounded disabled:opacity-50 text-sm"
+              className="bg-red-800 hover:bg-red-900 text-white px-2 py-1 rounded disabled:opacity-50 text-xs"
               disabled={isSaving !== "none"}
             >
               Cancel
             </button>
             <button
               onClick={(e) => handleSaveAction("same", e)}
-              className="bg-blue-900 hover:brightness-110 text-white px-3 py-1.5 rounded flex items-center gap-2 disabled:opacity-50 text-sm "
+              className="bg-blue-900 hover:brightness-110 text-white px-2 py-1 rounded flex items-center gap-1 disabled:opacity-50 text-xs"
               disabled={isSaving !== "none"}
             >
-              Save in Same Version
+              Save Same
               {isSaving === "same" && (
                 <svg
-                  className="animate-spin h-4 w-4 text-white"
+                  className="animate-spin h-3 w-3 text-white"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -386,13 +397,13 @@ const Navbar: React.FC<NavbarProps> = ({
             </button>
             <button
               onClick={(e) => handleSaveAction("new", e)}
-              className="bg-blue-900 hover:brightness-110 text-white px-3 py-1.5 rounded flex items-center gap-2 disabled:opacity-50 text-xs sm:text-sm"
+              className="bg-blue-900 hover:brightness-110 text-white px-2 py-1 rounded flex items-center gap-1 disabled:opacity-50 text-xs"
               disabled={isSaving !== "none"}
             >
-              Save in New Version
+              Save New
               {isSaving === "new" && (
                 <svg
-                  className="animate-spin h-4 w-4 text-white"
+                  className="animate-spin h-3 w-3 text-white"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -418,10 +429,10 @@ const Navbar: React.FC<NavbarProps> = ({
         <div className="relative" ref={exportDropdownRef}>
           <button
             onClick={() => setShowExportDropdown(true)}
-            className="bg-[#042954] hover:brightness-110  text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#042954] hover:brightness-110  text-white px-3 py-1 rounded-lg flex items-center gap-1 text-xs font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isVersionLoading}
           >
-            <FaDownload className="text-lg" />
+            <FaDownload className="text-sm" />
             Download
           </button>
           {showExportDropdown && (
@@ -446,7 +457,7 @@ const Navbar: React.FC<NavbarProps> = ({
                 disabled={isVersionLoading}
               >
                 <FaFileExcel className="text-green-500 text-lg" />
-                Download as Xlsx
+                Download as Excel
               </button>
             </div>
           )}

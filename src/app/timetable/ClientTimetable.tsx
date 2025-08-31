@@ -23,6 +23,7 @@ import { useAuth } from "@/context/AuthContext";
 import debounce from "just-debounce-it";
 import { DraggableSession } from "./DragAndDrop";
 import AddClassDialog from "./AddClassDialog";
+import AddRoomDialog from "./AddRoomDialog";
 import Navbar from "./Navbar";
 import TimetableDisplay from "./TimetableDisplay";
 import DeleteClassDialog from "./DeleteClassDialog";
@@ -93,6 +94,7 @@ export default function ClientTimetable() {
   } | null>(null);
   const [isDeleteClassLoading, setIsDeleteClassLoading] = useState(false);
   const [isAddClassLoading, setIsAddClassLoading] = useState(false);
+  const [isAddRoomDialogOpen, setIsAddRoomDialogOpen] = useState(false);
   const timetableRef = useRef<HTMLDivElement | null>(null);
   const exportDropdownRef = useRef<HTMLDivElement | null>(null);
   const versionId = useId();
@@ -512,6 +514,33 @@ export default function ClientTimetable() {
     ]
   );
 
+  const handleAddRoom = useCallback(
+    (roomName: string) => {
+      if (selectedVersion === null) {
+        toast.error("Please select a version first");
+        return;
+      }
+
+      const updatedData = produce(data, (draft) => {
+        Days.forEach((day) => {
+          const dayArr = draft[day];
+          if (!Array.isArray(dayArr)) return;
+          (dayArr as RoomSchedule[]).push({
+            [roomName]: timeSlots.map((t) => ({ Time: t } as EmptySlot)),
+          } as RoomSchedule);
+        });
+      });
+
+      setVersionPendingData((prev) => ({
+        ...prev,
+        [selectedVersion]: updatedData,
+      }));
+
+      toast.success("Room added. Save the version to persist changes.");
+    },
+    [data, selectedVersion]
+  );
+
   const exportToPDF = useCallback(() => {
     try {
       const doc = new jsPDF({
@@ -900,6 +929,7 @@ export default function ClientTimetable() {
             setSelectedSubject={setSelectedSubjects}
             versionPendingData={versionPendingData}
             handleSaveAction={handleSaveAction}
+            openAddRoomDialog={() => setIsAddRoomDialogOpen(true)}
           />
 
           <TimetableDisplay
@@ -1029,6 +1059,14 @@ export default function ClientTimetable() {
               }
             }}
             isAddClassLoading={isAddClassLoading}
+          />
+
+          <AddRoomDialog
+            isOpen={isAddRoomDialogOpen}
+            onClose={() => setIsAddRoomDialogOpen(false)}
+            onSubmit={handleAddRoom}
+            existingRooms={allRooms}
+            isLoading={false}
           />
 
         </div>

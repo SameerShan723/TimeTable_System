@@ -552,6 +552,7 @@ export default function GenerateTimeTable() {
             )}
 
             {/* Room Management */}
+            <div id="rooms" />
             <RoomManagement
               rooms={roomFields}
               onRoomEdit={handleRoomEdit}
