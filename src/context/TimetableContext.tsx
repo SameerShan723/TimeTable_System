@@ -14,7 +14,6 @@ import {
   EmptySlot,
   RoomSchedule,
 } from "@/app/timetable/types";
-
 import { useAuth } from "@/context/AuthContext";
 interface Conflict {
   day: keyof TimetableData;
