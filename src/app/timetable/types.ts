@@ -6,6 +6,7 @@ export interface Session {
   Section?: string;
   Day?: string;
   Type?: "Theory" | "Lab";
+  CourseId?: string | number;
 }
 
 export interface EmptySlot {

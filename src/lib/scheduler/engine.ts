@@ -43,6 +43,7 @@ interface ClassUnit {
 	teacher: string;
 	subject: string;
 	section: string;
+	courseId?: string | number;
 	type: ClassType;
 	durationSlots: number; // number of 1-hour contiguous slots (1 for theory, often 2 for lab)
 	isRegularTeacher: boolean;
@@ -105,6 +106,7 @@ function buildClassUnits(courses: CourseInput[]): ClassUnit[] {
 		const teacher = normalizeString(c.faculty_assigned, "No Faculty");
 		const subject = normalizeString(c.course_details, "Unknown Course");
 		const section = normalizeString(c.section, "");
+
 		const isRegularTeacher = c.is_regular_teacher === true; // only explicit true counts as regular
 		const theoryCount = typeof c.theory_classes_week === "number" && c.theory_classes_week !== null
 			? c.theory_classes_week
@@ -113,9 +115,10 @@ function buildClassUnits(courses: CourseInput[]): ClassUnit[] {
 				: 0;
 		const labCount = typeof c.lab_classes_week === "number" && c.lab_classes_week !== null ? c.lab_classes_week : 0;
 
+
 		// Theory: schedule as 1-hour sessions based on theoryCount
 		for (let i = 0; i < theoryCount; i += 1) {
-			units.push({ teacher, subject, section, type: "Theory", durationSlots: 1, isRegularTeacher });
+			units.push({ teacher, subject, section, courseId: c.id, type: "Theory", durationSlots: 1, isRegularTeacher });
 		}
 
 		// Lab: treat labCount as total 1-hour slots per week.
@@ -123,10 +126,10 @@ function buildClassUnits(courses: CourseInput[]): ClassUnit[] {
 		const twoHourBlocks = Math.floor(labCount / 2);
 		const remainder = labCount % 2;
 		for (let i = 0; i < twoHourBlocks; i += 1) {
-			units.push({ teacher, subject, section, type: "Lab", durationSlots: 2, isRegularTeacher });
+			units.push({ teacher, subject, section, courseId: c.id, type: "Lab", durationSlots: 2, isRegularTeacher });
 		}
 		if (remainder === 1) {
-			units.push({ teacher, subject, section, type: "Lab", durationSlots: 1, isRegularTeacher });
+			units.push({ teacher, subject, section, courseId: c.id, type: "Lab", durationSlots: 1, isRegularTeacher });
 		}
 	}
 	return units;
@@ -368,6 +371,7 @@ export function generateDeterministicTimetable(options: SchedulerOptions): Sched
 							Subject: unit.subject,
 							Section: unit.section || undefined,
 							Type: unit.type,
+							CourseId: unit.courseId,
 						};
 						sessions[i] = session;
 					});

@@ -377,6 +377,8 @@ export async function PATCH(request: NextRequest) {
           Subject: classData.subject,
           Teacher: classData.teacher,
           Section: classData.section,
+          CourseId: classData.courseId ?? undefined,
+          Type: classData.type ?? undefined,
         };
       }
 

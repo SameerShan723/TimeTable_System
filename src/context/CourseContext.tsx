@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useState, ReactNode } from "react";
 import { Course } from "@/lib/serverData/CourseDataFetcher";
+import { useEffect } from "react";
+import { supabaseClient } from "@/lib/supabase/supabase";
 
 // Define the shape of the context
 interface CourseContextType {
@@ -27,6 +29,46 @@ export const CourseProvider: React.FC<{
   initialCourses: Course[];
 }> = ({ children, initialCourses }) => {
   const [courses, setCourses] = useState<Course[]>(initialCourses);
+
+  // Realtime sync with Supabase courses table so timetable reflects updated faculty
+  useEffect(() => {
+    const channel = supabaseClient
+      .channel("courses_changes")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "courses" },
+        (payload) => {
+          const newCourse = payload.new as Course;
+          setCourses((prev) => {
+            const exists = prev.some((c) => String(c.id) === String(newCourse.id));
+            return exists ? prev : [...prev, newCourse];
+          });
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "courses" },
+        (payload) => {
+          const updated = payload.new as Course;
+          setCourses((prev) =>
+            prev.map((c) => (String(c.id) === String(updated.id) ? { ...c, ...updated } : c))
+          );
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "courses" },
+        (payload) => {
+          const removed = payload.old as { id: string | number };
+          setCourses((prev) => prev.filter((c) => String(c.id) !== String(removed.id)));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabaseClient.removeChannel(channel);
+    };
+  }, []);
 
   return (
     <CourseContext.Provider value={{ courses, setCourses }}>

@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { toast } from "react-toastify";
@@ -15,6 +16,7 @@ import {
   RoomSchedule,
 } from "@/app/timetable/types";
 import { useAuth } from "@/context/AuthContext";
+import { useCourses } from "@/context/CourseContext";
 interface Conflict {
   day: keyof TimetableData;
   time: string;
@@ -80,6 +82,78 @@ export const TimetableVersionProvider: React.FC<
   const [conflicts, setConflicts] = useState<Conflict[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Build id->course and Subject+Section->Faculty maps from latest courses
+  const { courses } = useCourses();
+  const { idMap, facultyMap } = useMemo(() => {
+    const map = new Map<string, string>();
+    const idIndex = new Map<string | number, { faculty: string }>();
+    const isPlaceholder = (name: string) => {
+      const s = name.trim().toLowerCase();
+      return (
+        !s ||
+        s === "no faculty" ||
+        s === "n/a" ||
+        s === "na" ||
+        s === "none" ||
+        s.includes("unassign") ||
+        s.includes("tbd") ||
+        s.includes("unknown")
+      );
+    };
+    for (const c of courses) {
+      const subject = (c.course_details || "").trim();
+      const section = (c.section || "").trim();
+      const faculty = (c.faculty_assigned || "").trim();
+      if (c.id !== undefined && c.id !== null) {
+        idIndex.set(c.id, { faculty });
+      }
+      if (!subject) continue;
+      if (!faculty || isPlaceholder(faculty)) continue;
+      map.set(`${subject}__${section}`, faculty);
+    }
+    return { idMap: idIndex, facultyMap: map };
+  }, [courses]);
+
+  // Derive a resolved timetable where Teacher names are updated from courses
+  const resolvedTimetableData = useMemo(() => {
+    const days = Object.keys(timetableData) as (keyof TimetableData)[];
+    const next: TimetableData = {
+      Monday: [],
+      Tuesday: [],
+      Wednesday: [],
+      Thursday: [],
+      Friday: [],
+    };
+    for (const day of days) {
+      const dayData = timetableData[day] || [];
+      const newDay = dayData.map((roomSchedule: RoomSchedule) => {
+        const roomName = Object.keys(roomSchedule)[0];
+        const sessions = roomSchedule[roomName] || [];
+        const newSessions = sessions.map((s: Session | EmptySlot) => {
+          if (!("Teacher" in s)) return s;
+          // Prefer CourseId mapping when present; fallback to Subject+Section mapping
+          const courseId = (s as Session).CourseId;
+          const byId = courseId !== undefined ? idMap.get(courseId) : undefined;
+          if (byId && byId.faculty && byId.faculty !== s.Teacher) {
+            return { ...(s as Session), Teacher: byId.faculty };
+          }
+          const subject = (s.Subject || "").trim();
+          const section = (s.Section || "").trim();
+          if (!subject) return s;
+          const key = `${subject}__${section}`;
+          const updated = facultyMap.get(key);
+          if (updated && updated !== s.Teacher) {
+            return { ...(s as Session), Teacher: updated };
+          }
+          return s;
+        });
+        return { [roomName]: newSessions } as RoomSchedule;
+      });
+      next[day] = newDay;
+    }
+    return next;
+  }, [timetableData, facultyMap, idMap]);
 
   // Helper function to show toasts only on timetable pages
   const showToast = useCallback((type: 'success' | 'error' | 'warning', message: string) => {
@@ -214,7 +288,6 @@ export const TimetableVersionProvider: React.FC<
         }
         const data = await response.json();
         setTimetableData(data);
-        checkConflicts(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
         showToast('error', err instanceof Error ? err.message : "Failed to fetch timetable data");
@@ -285,7 +358,6 @@ export const TimetableVersionProvider: React.FC<
         const data = await response.json();
         setSelectedVersionState(version);
         setTimetableData(data);
-        checkConflicts(data);
         showToast('success', `Successfully loaded Version ${version}`);
       } catch (err) {
         setError(
@@ -448,6 +520,13 @@ export const TimetableVersionProvider: React.FC<
     }
   }, [initialData.timetableData, checkConflicts]);
 
+  // Recompute conflicts whenever resolved timetable changes
+  useEffect(() => {
+    if (resolvedTimetableData) {
+      checkConflicts(resolvedTimetableData);
+    }
+  }, [resolvedTimetableData, checkConflicts]);
+
   // Only fetch versions and global version if initial data is missing
   useEffect(() => {
     if (!initialData.versions.length) {
@@ -463,7 +542,7 @@ export const TimetableVersionProvider: React.FC<
       value={{
         versions,
         selectedVersion,
-        timetableData,
+        timetableData: resolvedTimetableData,
         conflicts,
         loading,
         error,

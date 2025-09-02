@@ -23,6 +23,8 @@ interface AddClassDialogProps {
     subject: string;
     teacher: string;
     section: string;
+    courseId?: string | number;
+    type?: "Theory" | "Lab";
   }) => void;
   isAddClassLoading: boolean;
 }
@@ -125,9 +127,34 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
     [courses, subject, teacher]
   );
 
+  // Resolve CourseId and type from selection
+  const resolvedCourse = useMemo(() => {
+    if (!subject || !teacher || !section) return null;
+    return (
+      courses.find(
+        (c) =>
+          c.course_details === subject &&
+          c.faculty_assigned === teacher &&
+          c.section === section
+      ) || null
+    );
+  }, [courses, subject, teacher, section]);
+
   const handleSubmit = () => {
     if (subject && teacher && section) {
-      onSubmit({ subject, teacher, section });
+      const inferredType: "Theory" | "Lab" | undefined =
+        resolvedCourse?.subject_type && resolvedCourse.subject_type.toLowerCase().includes("lab")
+          ? "Lab"
+          : resolvedCourse?.subject_type
+          ? "Theory"
+          : undefined;
+      onSubmit({
+        subject,
+        teacher,
+        section,
+        courseId: resolvedCourse?.id,
+        type: inferredType,
+      });
       // Don't clear values here - let the parent component handle closing
       // The useEffect will clear them when the dialog actually closes
     } else {
