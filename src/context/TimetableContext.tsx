@@ -85,9 +85,10 @@ export const TimetableVersionProvider: React.FC<
 
   // Build id->course and Subject+Section->Faculty maps from latest courses
   const { courses } = useCourses();
-  const { idMap, facultyMap } = useMemo(() => {
+  const { idMap, facultyMap, teacherSectionIndex } = useMemo(() => {
     const map = new Map<string, string>();
-    const idIndex = new Map<string | number, { faculty: string }>();
+    const idIndex = new Map<string | number, { faculty: string; subject: string; section: string }>();
+    const teacherSectionBuckets = new Map<string, Array<{ id: string | number; faculty: string; subject: string; section: string }>>();
     const isPlaceholder = (name: string) => {
       const s = name.trim().toLowerCase();
       return (
@@ -106,13 +107,24 @@ export const TimetableVersionProvider: React.FC<
       const section = (c.section || "").trim();
       const faculty = (c.faculty_assigned || "").trim();
       if (c.id !== undefined && c.id !== null) {
-        idIndex.set(c.id, { faculty });
+        idIndex.set(c.id, { faculty, subject, section });
       }
       if (!subject) continue;
       if (!faculty || isPlaceholder(faculty)) continue;
       map.set(`${subject}__${section}`, faculty);
+
+      // bucket by teacher+section for later unique resolution
+      const tsKey = `${faculty}__${section}`;
+      const item = { id: c.id as string | number, faculty, subject, section };
+      if (!teacherSectionBuckets.has(tsKey)) teacherSectionBuckets.set(tsKey, []);
+      teacherSectionBuckets.get(tsKey)!.push(item);
     }
-    return { idMap: idIndex, facultyMap: map };
+    // Reduce buckets to unique map (only keep keys with exactly one course)
+    const tsUnique = new Map<string, { id: string | number; faculty: string; subject: string; section: string }>();
+    for (const [key, arr] of teacherSectionBuckets.entries()) {
+      if (arr.length === 1) tsUnique.set(key, arr[0]!);
+    }
+    return { idMap: idIndex, facultyMap: map, teacherSectionIndex: tsUnique };
   }, [courses]);
 
   // Derive a resolved timetable where Teacher names are updated from courses
@@ -132,11 +144,54 @@ export const TimetableVersionProvider: React.FC<
         const sessions = roomSchedule[roomName] || [];
         const newSessions = sessions.map((s: Session | EmptySlot) => {
           if (!("Teacher" in s)) return s;
-          // Prefer CourseId mapping when present; fallback to Subject+Section mapping
+          // Prefer CourseId mapping when present; fallback to Teacher+Section unique mapping, then Subject+Section mapping
           const courseId = (s as Session).CourseId;
           const byId = courseId !== undefined ? idMap.get(courseId) : undefined;
-          if (byId && byId.faculty && byId.faculty !== s.Teacher) {
-            return { ...(s as Session), Teacher: byId.faculty };
+          if (byId) {
+            const isPlaceholderName = (name: string) => {
+              const t = name.trim().toLowerCase();
+              return (
+                !t ||
+                t === "no faculty" ||
+                t === "n/a" ||
+                t === "na" ||
+                t === "none" ||
+                t.includes("unassign") ||
+                t.includes("tbd") ||
+                t.includes("unknown")
+              );
+            };
+            const updates: Partial<Session> = {};
+            if (byId.faculty && !isPlaceholderName(byId.faculty) && byId.faculty !== s.Teacher) {
+              updates.Teacher = byId.faculty;
+            }
+            if (byId.subject && byId.subject !== s.Subject) {
+              updates.Subject = byId.subject;
+            }
+            if ((byId.section || "") !== (s.Section || "")) {
+              updates.Section = byId.section || undefined;
+            }
+            if (Object.keys(updates).length > 0) {
+              return { ...(s as Session), ...updates };
+            }
+          }
+          // Fallback 1: resolve uniquely by Teacher+Section bucket
+          const teacher = (s.Teacher || "").trim();
+          const sectionFromSession = (s.Section || "").trim();
+          if (teacher && teacherSectionIndex.size > 0) {
+            const tsKey = `${teacher}__${sectionFromSession}`;
+            const byTs = teacherSectionIndex.get(tsKey);
+            if (byTs) {
+              const updates: Partial<Session> = {};
+              if (byTs.faculty && byTs.faculty !== s.Teacher) updates.Teacher = byTs.faculty;
+              if (byTs.subject && byTs.subject !== s.Subject) updates.Subject = byTs.subject;
+              if ((byTs.section || "") !== (s.Section || "")) updates.Section = byTs.section || undefined;
+              // Attach CourseId ephemerally for future resolution
+              (updates as Partial<Session>).CourseId = byTs.id as Session["CourseId"];
+              if (Object.keys(updates).length > 0) {
+                return { ...(s as Session), ...updates };
+              }
+            }
           }
           const subject = (s.Subject || "").trim();
           const section = (s.Section || "").trim();
@@ -153,7 +208,7 @@ export const TimetableVersionProvider: React.FC<
       next[day] = newDay;
     }
     return next;
-  }, [timetableData, facultyMap, idMap]);
+  }, [timetableData, facultyMap, idMap, teacherSectionIndex]);
 
   // Helper function to show toasts only on timetable pages
   const showToast = useCallback((type: 'success' | 'error' | 'warning', message: string) => {
@@ -295,7 +350,7 @@ export const TimetableVersionProvider: React.FC<
         setLoading(false);
       }
     },
-    [checkConflicts, showToast]
+    [showToast]
   );
 
   const fetchVersions = useCallback(async () => {
@@ -370,7 +425,7 @@ export const TimetableVersionProvider: React.FC<
         setLoading(false);
       }
     },
-    [checkConflicts, showToast]
+    [showToast]
   );
 
  const finalizeVersion = useCallback(
