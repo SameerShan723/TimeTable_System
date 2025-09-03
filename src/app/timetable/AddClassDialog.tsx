@@ -39,9 +39,11 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
   const [subject, setSubject] = useState<string | null>(null);
   const [teacher, setTeacher] = useState<string | null>(null);
   const [section, setSection] = useState<string | null>(null);
+  const [classType, setClassType] = useState<"Theory" | "Lab">("Theory");
   const subjectId = useId();
   const teacherId = useId();
   const sectionId = useId();
+  const typeId = useId();
 
   // Clear form when dialog closes
   useEffect(() => {
@@ -49,6 +51,7 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
       setSubject(null);
       setTeacher(null);
       setSection(null);
+      setClassType("Theory");
     }
   }, [isOpen]);
 
@@ -142,18 +145,12 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
 
   const handleSubmit = () => {
     if (subject && teacher && section) {
-      const inferredType: "Theory" | "Lab" | undefined =
-        resolvedCourse?.subject_type && resolvedCourse.subject_type.toLowerCase().includes("lab")
-          ? "Lab"
-          : resolvedCourse?.subject_type
-          ? "Theory"
-          : undefined;
       onSubmit({
         subject,
         teacher,
         section,
         courseId: resolvedCourse?.id,
-        type: inferredType,
+        type: classType,
       });
       // Don't clear values here - let the parent component handle closing
       // The useEffect will clear them when the dialog actually closes
@@ -213,6 +210,24 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                 onChange={(option) => setSection(option ? option.value : null)}
                 placeholder="Select Section"
                 isDisabled={isAddClassLoading || !subject || sectionOptions.length === 0}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-gray-700 mb-2 block">
+                Class Type:
+              </label>
+              <ReactSelect
+                instanceId={typeId}
+                options={[
+                  { value: "Theory", label: "Theory" },
+                  { value: "Lab", label: "Lab" },
+                ]}
+                value={{ value: classType, label: classType }}
+                onChange={(option) =>
+                  setClassType(option ? (option.value as "Theory" | "Lab") : "Theory")
+                }
+                placeholder="Select Class Type"
+                isDisabled={isAddClassLoading}
               />
             </div>
           </div>

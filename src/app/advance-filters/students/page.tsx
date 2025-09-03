@@ -309,7 +309,7 @@ export default function StudentTimetable(): JSX.Element {
                     return (
                       <td
                         key={`${day}-${time}`}
-                        className={`border border-gray-300 p-2 hover:bg-gray-50 min-w ${
+                        className={`border border-gray-300 p-2 hover:bg-gray-50 min-w-[170px] ${
                           course ? "bg-blue-50" : ""
                         }`}
                       >
