@@ -41,13 +41,14 @@ const formSchema = z.object({
     .nonempty("Semester is required")
     .regex(/^[1-9]$/, "Semester must be a number from 1 to 9"),
   semester_details: z.string().trim().optional().nullable(),
-  credit_hour: z
-    .string()
-    .trim()
-    .regex(/^[0-9]$/, "Credit hour must be a number from 0 to 9")
+ credit_hour: z
+    .union([z.number(), z.string()])
     .optional()
     .nullable()
-    .transform((val) => val ? parseInt(val, 10) : null),
+    .transform((val) => {
+      if (val === null || val === undefined || val === "") return null;
+      return typeof val === 'string' ? parseInt(val, 10) : val;
+    }),
   faculty_assigned: z
     .string()
     .trim()
@@ -121,10 +122,10 @@ export default function CourseForm() {
     mode: "onTouched",
     defaultValues: {
       course_details: "",
-      section: "",F
+      section: "",
       semester: "",
       semester_details: "",
-      credit_hour: "",
+      credit_hour: 0,
       faculty_assigned: "",
       is_regular_teacher: false,
       domain: "",
@@ -845,7 +846,7 @@ if(response.ok){
                     maxLength={10}
 
                        placeholder="e.g., 3"
-                       type="text"
+                       type="number"
                        className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                        {...field}
                      />
