@@ -8,13 +8,12 @@ import {
   FaFileExcel,
   FaFilePdf,
 } from "react-icons/fa";
-import dynamic from "next/dynamic";
 import { TimetableData, Session, EmptySlot, RoomSchedule } from "./types";
 import { Days } from "@/helpers/page";
 import { useTimetableVersion } from "@/context/TimetableContext";
 import { useAuth } from "@/context/AuthContext";
 import { Checkbox } from "@/components/ui/checkbox";
-const Select = dynamic(() => import("react-select"), { ssr: false });
+import ReactSelect from "@/components/ui/ReactSelect";
 
 
 interface NavbarProps {
@@ -160,7 +159,7 @@ const Navbar: React.FC<NavbarProps> = ({
               <label className="text-white mr-2 text-xs sm:text-sm">
                 Select Version:
               </label>
-              <Select
+              <ReactSelect
             
                 instanceId={versionId}
                 options={
@@ -214,28 +213,8 @@ const Navbar: React.FC<NavbarProps> = ({
                   ),
                 }}
                 className="text-black w-full"
-                styles={{
-                  control: (provided, state) => ({
-                    ...provided,
-                    border: state.isFocused ? "0px" : provided.border,
-                    outline: state.isFocused ? "none" : provided.outline,
-                    boxShadow: state.isFocused ? "none" : provided.boxShadow,
-                    fontSize: "0.875rem",
-                    minHeight: "32px",
-                    width: "100%",
-                    maxWidth: "100%",
-                  }),
-                  menu: (provided) => ({
-                    ...provided,
-                    zIndex: 50,
-                    width: "100%",
-                    maxWidth: "100%",
-                  }),
-                  option: (provided) => ({
-                    ...provided,
-                    padding: "8px",
-                  }),
-                }}
+                variant="compact"
+                size="sm"
               />
             </div>
           </div>
@@ -244,7 +223,7 @@ const Navbar: React.FC<NavbarProps> = ({
           <label className="text-white mr-2 text-xs sm:text-sm">
             Filter Teachers:
           </label>
-          <Select
+          <ReactSelect
             instanceId={`teacher-filter-${versionId}`}
             options={teacherOptions}
             isMulti
@@ -257,36 +236,15 @@ const Navbar: React.FC<NavbarProps> = ({
             placeholder="Select Teachers"
             isDisabled={isSaving !== "none" || isDeleting}
             className="text-black w-full"
-            styles={{
-              control: (provided, state) => ({
-                ...provided,
-                border: state.isFocused ? "0px" : provided.border,
-                outline: "none",
-                boxShadow: "none",
-                fontSize: "0.875rem",
-                minHeight: "32px",
-                width: "100%",
-                maxWidth: "100%",
-              }),
-              menu: (provided) => ({
-                ...provided,
-                zIndex: 50,
-                width: "100%",
-                maxWidth: "100%",
-              }),
-              multiValue: (provided) => ({
-                ...provided,
-                maxWidth: "100%",
-                // flexWrap: "wrap",
-              }),
-            }}
+            variant="compact"
+            size="sm"
           />
         </div>
         <div suppressHydrationWarning className=" w-full  md:w-60 lg:w-70 lg:max-w-70 flex items-center text-sm ">
           <label className="text-white mr-2 text-xs sm:text-sm">
             Filter Subjects:
           </label>
-          <Select
+          <ReactSelect
             instanceId={`subject-filter-${versionId}`}
             options={subjectOptions}
             isMulti
@@ -299,29 +257,8 @@ const Navbar: React.FC<NavbarProps> = ({
             placeholder="Select Subjects"
             isDisabled={isSaving !== "none" || isDeleting}
             className="text-black w-full"
-            styles={{
-              control: (provided, state) => ({
-                ...provided,
-                border: state.isFocused ? "0px" : provided.border,
-                outline: "none",
-                boxShadow: "none",
-                fontSize: "0.875rem",
-                minHeight: "32px",
-                width: "100%",
-                maxWidth: "100%",
-              }),
-              menu: (provided) => ({
-                ...provided,
-                zIndex: 50,
-                width: "100%",
-                maxWidth: "100%",
-              }),
-              multiValue: (provided) => ({
-                ...provided,
-                maxWidth: "100%",
-                // flexWrap: "wrap",
-              }),
-            }}
+            variant="compact"
+            size="sm"
           />
         </div>
         <div>

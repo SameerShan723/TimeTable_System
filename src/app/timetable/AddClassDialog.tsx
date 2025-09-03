@@ -12,7 +12,7 @@ import {
   AlertDialogPortal,
   AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
-import Select from "react-select";
+import ReactSelect from "@/components/ui/ReactSelect";
 import { toast } from "react-toastify";
 import { useCourses } from "@/context/CourseContext";
 
@@ -180,188 +180,39 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
               <label className="text-sm font-semibold text-gray-700 mb-2 block">
                 Subject:
               </label>
-              <Select
+              <ReactSelect
                 instanceId={subjectId}
                 options={subjectOptions}
                 value={subject ? { value: subject, label: subject } : null}
                 onChange={(option) => setSubject(option ? option.value : null)}
                 placeholder="Select Subject"
                 isDisabled={isAddClassLoading}
-                styles={{
-                  control: (base, state) => ({
-                    ...base,
-                    width: "100%",
-                    backgroundColor: "#f9fafb",
-                    border: state.isFocused
-                      ? "2px solid #3b82f6"
-                      : "1px solid #e5e7eb",
-                    borderRadius: "0.5rem",
-                    minHeight: "48px",
-                    boxShadow: state.isFocused
-                      ? "0 0 0 2px rgba(59, 130, 246, 0.1)"
-                      : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                    "&:hover": {
-                      borderColor: "#3b82f6",
-                    },
-                    color: "#111827",
-                    transition: "all 0.2s",
-                    fontSize: "0.875rem",
-                  }),
-                  singleValue: (base) => ({
-                    ...base,
-                    color: "#111827",
-                    fontSize: "0.875rem",
-                  }),
-                  menu: (base) => ({
-                    ...base,
-                    backgroundColor: "#ffffff",
-                    color: "#111827",
-                    fontSize: "0.875rem",
-                    borderRadius: "0.5rem",
-                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                    zIndex: 50,
-                  }),
-                  option: (base, state) => ({
-                    ...base,
-                    backgroundColor: state.isSelected
-                      ? "#3b82f6"
-                      : state.isFocused
-                      ? "#eff6ff"
-                      : "#ffffff",
-                    transition: "all 0.2s",
-                  }),
-                  placeholder: (base) => ({
-                    ...base,
-                    color: "#6b7280",
-                    fontSize: "0.875rem",
-                  }),
-                }}
               />
             </div>
             <div>
               <label className="text-sm font-semibold text-gray-700 mb-2 block">
                 Teacher:
               </label>
-              <Select
+              <ReactSelect
                 instanceId={teacherId}
                 options={teacherOptions}
                 value={teacher ? { value: teacher, label: teacher } : null}
                 onChange={(option) => setTeacher(option ? option.value : null)}
                 placeholder="Select Teacher"
                 isDisabled={isAddClassLoading || !subject || teacherOptions.length === 0}
-                styles={{
-                  control: (base, state) => ({
-                    ...base,
-                    width: "100%",
-                    backgroundColor: "#f9fafb",
-                    border: state.isFocused
-                      ? "2px solid #3b82f6"
-                      : "1px solid #e5e7eb",
-                    borderRadius: "0.5rem",
-                    minHeight: "48px",
-                    boxShadow: state.isFocused
-                      ? "0 0 0 2px rgba(59, 130, 246, 0.1)"
-                      : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                    "&:hover": {
-                      borderColor: "#3b82f6",
-                    },
-                    color: "#111827",
-                    transition: "all 0.2s",
-                    fontSize: "0.875rem",
-                    cursor: (!subject || teacherOptions.length === 0) ? "not-allowed" : "pointer",
-                  }),
-                  singleValue: (base) => ({
-                    ...base,
-                    color: "#111827",
-                    fontSize: "0.875rem",
-                  }),
-                  menu: (base) => ({
-                    ...base,
-                    backgroundColor: "#ffffff",
-                    color: "#111827",
-                    fontSize: "0.875rem",
-                    borderRadius: "0.5rem",
-                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                    zIndex: 50,
-                  }),
-                  option: (base, state) => ({
-                    ...base,
-                    backgroundColor: state.isSelected
-                      ? "#3b82f6"
-                      : state.isFocused
-                      ? "#eff6ff"
-                      : "#ffffff",
-                    transition: "all 0.2s",
-                  }),
-                  placeholder: (base) => ({
-                    ...base,
-                    color: "#6b7280",
-                    fontSize: "0.875rem",
-                  }),
-                }}
               />
             </div>
             <div>
               <label className="text-sm font-semibold text-gray-700 mb-2 block">
                 Section:
               </label>
-              <Select
+              <ReactSelect
                 instanceId={sectionId}
                 options={sectionOptions}
                 value={section ? { value: section, label: section } : null}
                 onChange={(option) => setSection(option ? option.value : null)}
                 placeholder="Select Section"
                 isDisabled={isAddClassLoading || !subject || sectionOptions.length === 0}
-                styles={{
-                  control: (base, state) => ({
-                    ...base,
-                    width: "100%",
-                    backgroundColor: "#f9fafb",
-                    border: state.isFocused
-                      ? "2px solid #3b82f6"
-                      : "1px solid #e5e7eb",
-                    borderRadius: "0.5rem",
-                    minHeight: "48px",
-                    boxShadow: state.isFocused
-                      ? "0 0 0 2px rgba(59, 130, 246, 0.1)"
-                      : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                    "&:hover": {
-                      borderColor: "#3b82f6",
-                    },
-                    color: "#111827",
-                    transition: "all 0.2s",
-                    fontSize: "0.875rem",
-                    cursor: (!subject || sectionOptions.length === 0) ? "not-allowed" : "pointer",
-                  }),
-                  singleValue: (base) => ({
-                    ...base,
-                    color: "#111827",
-                    fontSize: "0.875rem",
-                  }),
-                  menu: (base) => ({
-                    ...base,
-                    backgroundColor: "#ffffff",
-                    color: "#111827",
-                    fontSize: "0.875rem",
-                    borderRadius: "0.5rem",
-                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                    zIndex: 50,
-                  }),
-                  option: (base, state) => ({
-                    ...base,
-                    backgroundColor: state.isSelected
-                      ? "#3b82f6"
-                      : state.isFocused
-                      ? "#eff6ff"
-                      : "#ffffff",
-                    transition: "all 0.2s",
-                  }),
-                  placeholder: (base) => ({
-                    ...base,
-                    color: "#6b7280",
-                    fontSize: "0.875rem",
-                  }),
-                }}
               />
             </div>
           </div>

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import Select from "react-select";
+import ReactSelect from "@/components/ui/ReactSelect";
 import { toast } from "react-toastify";
 import { useRef, useState } from "react";
 import * as XLSX from "xlsx";
@@ -668,7 +668,7 @@ export default function CourseForm() {
                 <label className="text-sm font-medium text-gray-700">
                   Filter:
                 </label>
-                <Select
+                <ReactSelect
                   instanceId="filter-select"
                   options={[
                     { value: "all", label: "All Rows" },
@@ -690,18 +690,8 @@ export default function CourseForm() {
                   }}
                   className="w-48"
                   classNamePrefix="react-select"
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      height: "36px",
-                      backgroundColor: "#f9fafb",
-                      border: "1px solid #e5e7eb",
-                      borderRadius: "6px",
-                      "&:hover": {
-                        borderColor: "#3b82f6",
-                      },
-                    }),
-                  }}
+                  variant="compact"
+                  size="sm"
                 />
               </div>
 
@@ -870,7 +860,7 @@ export default function CourseForm() {
                       Semester
                     </FormLabel>
                     <FormControl>
-                      <Select
+                      <ReactSelect
                         instanceId="semester-select"
                         inputId="semester-select-input"
                         options={semesterOptions}
@@ -890,31 +880,6 @@ export default function CourseForm() {
                         placeholder="Select Semester"
                         className="w-full"
                         classNamePrefix="react-select"
-                        styles={{
-                          control: (provided) => ({
-                            ...provided,
-                            height: "48px",
-                            backgroundColor: "#f9fafb",
-                            border: "1px solid #e5e7eb",
-                            borderRadius: "8px",
-                            "&:hover": {
-                              borderColor: "#3b82f6",
-                            },
-                            "&:focus-within": {
-                              borderColor: "#3b82f6",
-                              boxShadow: "0 0 0 2px rgba(59, 130, 246, 0.1)",
-                            },
-                          }),
-                          option: (provided, state) => ({
-                            ...provided,
-                            backgroundColor: state.isSelected
-                              ? "#3b82f6"
-                              : state.isFocused
-                              ? "#eff6ff"
-                              : "white",
-                            color: state.isSelected ? "white" : "#374151",
-                          }),
-                        }}
                       />
                     </FormControl>
                     <FormMessage className="text-sm text-red-500 mt-1" />

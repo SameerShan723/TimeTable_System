@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useId, useCallback, useEffect, useMemo, JSX } from "react";
-import Select, { MultiValue } from "react-select";
+import ReactSelect from "@/components/ui/ReactSelect";
+import { MultiValue } from "react-select";
 import { Days } from "@/helpers/page";
 import { timeSlots } from "@/helpers/page";
 import ExportTimetable from "@/lib/download-timetable/ExportTimetable";
@@ -194,7 +195,7 @@ export default function TeacherTimetable(): JSX.Element {
         </h1>
         <div className="mb-4 flex flex-col w-full max-w-md">
           <label className="text-xl mb-2">Teacher:</label>
-          <Select<SelectOption, false>
+          <ReactSelect
             instanceId={teacherSelectedId}
             inputId={`${teacherSelectedId}-input`}
             options={teachers.map((teacher) => ({
@@ -212,12 +213,12 @@ export default function TeacherTimetable(): JSX.Element {
             isDisabled={loading || teachers.length === 0}
             isClearable
             menuPortalTarget={portalTarget}
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+            // customStyles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           />
         </div>
         <div className="mb-4 flex flex-col w-full max-w-md">
           <label className="text-xl mb-2">Days:</label>
-          <Select<SelectOption, true>
+          <ReactSelect
             instanceId={daySelectedId}
             inputId={`${daySelectedId}-input`}
             isMulti
@@ -230,7 +231,7 @@ export default function TeacherTimetable(): JSX.Element {
             )}
             isDisabled={loading}
             menuPortalTarget={portalTarget}
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+            // customStyles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           />
         </div>
         <div className="flex gap-3 flex-col  lg:flex-row md:flex-row mt-3 w-full max-w-md">
