@@ -308,23 +308,21 @@ export default function StudentTimetable(): JSX.Element {
                     return (
                       <td
                         key={`${day}-${time}`}
-                        className={`border border-gray-300 p-2 hover:bg-gray-50 ${
+                        className={`border border-gray-300 p-2 hover:bg-gray-50 min-w ${
                           course ? "bg-blue-50" : ""
                         }`}
                       >
                         {course && (
-                          <div className="flex justify-center">
-                            <div className="flex flex-col items-center text-sm">
-                              <p className="font-semibold text-blue-800">
+                            <div className="flex flex-col items-center text-sm p-2">
+                              <p className="font-bold text-blue-800 text-center">
                                 {course.Subject}
                               </p>
-                              <p className="text-gray-600">{course.Teacher}</p>
-                              <p className="text-gray-600">{course.Section}</p>
-                              <p className="text-gray-500 text-xs">
+                              <p className="text-gray-600 text-center">{course.Teacher}</p>
+                              <p className="text-gray-600 text-center">{course.Section}</p>
+                              <p className="text-black font-bold ">
                                 {course.Room}
                               </p>
                             </div>
-                          </div>
                         )}
                       </td>
                     );

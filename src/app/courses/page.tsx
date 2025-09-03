@@ -62,10 +62,11 @@ const formSchema = z.object({
   credit_hour: z
     .string()
     .trim()
-    .nonempty({ message: "Credit hour is required." })
-    .regex(/^[1-9]$/, {
-      message: "Credit hour must be a number from 1 to 9.",
-    }),
+    // .nonempty({ message: "Credit hour is required." })
+    // .regex(/^[0-9]$/, {
+    //   message: "Credit hour must be a number from 1 to 9.",
+    // }),
+    .optional(),
   faculty_assigned: z
     .string()
     .trim()
@@ -189,13 +190,20 @@ export default function FacultyData() {
     if (deletingCourseId) {
       setIsDeleting(true);
       try {
-        const { error } = await supabaseClient
-          .from("courses")
-          .delete()
-          .eq("id", deletingCourseId);
+        // const { error } = await supabaseClient
+        //   .from("courses")
+        //   .delete()
+        //   .eq("id", deletingCourseId);
 
-        if (error) {
-          throw new Error(error.message);
+        // if (error) {
+        //   throw new Error(error.message);
+        // }
+        const response = await fetch(`/api/courses/${deletingCourseId}`, {
+          method: "DELETE",
+        });
+        if (!response.ok) {
+          toast.error("Failed to delete course retry")
+        return;
         }
 
         setCourses((prev) =>
@@ -760,7 +768,64 @@ export default function FacultyData() {
                               placeholder="Select Semester"
                               className="w-full"
                               classNamePrefix="react-select"
-                              isDisabled={isUpdating}
+                                styles={{
+                                control: (base, state) => ({
+                                  ...base,
+                                  width: "100%",
+                                  backgroundColor: "#f9fafb",
+                                  border: form.formState.errors
+                                    .is_regular_teacher
+                                    ? "2px solid #ef4444"
+                                    : state.isFocused
+                                    ? "2px solid #3b82f6"
+                                    : "1px solid #e5e7eb",
+                                  borderRadius: "0.5rem",
+                                  minHeight: "48px",
+                                  boxShadow: state.isFocused
+                                    ? "0 0 0 2px rgba(59, 130, 246, 0.1)"
+                                    : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                                  "&:hover": {
+                                    borderColor: "#3b82f6",
+                                  },
+                                  color: "#111827",
+                                  transition: "all 0.2s",
+                                }),
+                                singleValue: (base) => ({
+                                  ...base,
+                                  color: "#111827",
+                                  fontSize: "0.875rem",
+                                }),
+                                menu: (base) => ({
+                                  ...base,
+                                  backgroundColor: "#ffffff",
+                                  color: "#111827",
+                                  fontSize: "0.875rem",
+                                  borderRadius: "0.5rem",
+                                  boxShadow:
+                                    "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                                  zIndex: 50,
+                                }),
+                                option: (base, state) => ({
+                                  ...base,
+                                  backgroundColor: state.isSelected
+                                    ? "#3b82f6"
+                                    : state.isFocused
+                                    ? "#eff6ff"
+                                    : "#ffffff",
+                                  color: state.isSelected
+                                    ? "#ffffff"
+                                    : "#374151",
+                                  "&:hover": {
+                                    backgroundColor: "#eff6ff",
+                                  },
+                                  transition: "all 0.2s",
+                                }),
+                                placeholder: (base) => ({
+                                  ...base,
+                                  color: "#6b7280",
+                                  fontSize: "0.875rem",
+                                }),
+                              }}
                             />
                           </FormControl>
                           <FormMessage className="text-sm text-red-500 mt-1" />
@@ -777,7 +842,7 @@ export default function FacultyData() {
                           </FormLabel>
                           <FormControl>
                             <Input
-                              type="text"
+                              type="number"
                               placeholder="e.g., 3"
                               maxLength={1}
                               className={`h-12 px-4 w-full bg-gray-50 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${

@@ -16,45 +16,57 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import Select from "react-select";
 import { toast } from "react-toastify";
-import { supabaseClient } from "@/lib/supabase/supabase";
 import { useMemo, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import { useCourses } from "@/context/CourseContext";
 import { Course } from "@/lib/serverData/CourseDataFetcher";
 
-// Validation schema
+
+// form validation
 const formSchema = z.object({
-  courseDetails: z
+  subject_code: z.string().trim().optional().nullable(),
+  course_details: z
     .string()
     .trim()
-    .min(3, { message: "Course details must be at least 3 characters." }),
+    .min(1, "Course details is required")
+    .min(2, "Course details must be at least 2 characters"),
   section: z
     .string()
     .trim()
-    .min(3, { message: "Section must be at least 3 characters." }),
+    .min(1, "Section is required")
+    .min(1, "Section must not be empty"),
   semester: z
     .string()
     .trim()
-    .nonempty({ message: "Semester is required." }),
-  semesterDetails: z.string().trim().optional(),
-  creditHour: z
+    .nonempty("Semester is required")
+    .regex(/^[1-9]$/, "Semester must be a number from 1 to 9"),
+  semester_details: z.string().trim().optional().nullable(),
+  credit_hour: z
     .string()
     .trim()
-    .nonempty({ message: "Credit hour is required." })
-    .regex(/^[1-9]$/, {
-      message: "Credit hour must be a number from 1 to 9.",
-    }),
-  facultyAssigned: z
+    .regex(/^[0-9]$/, "Credit hour must be a number from 0 to 9")
+    .optional()
+    .nullable()
+    .transform((val) => val ? parseInt(val, 10) : null),
+  faculty_assigned: z
     .string()
     .trim()
-    .min(3, { message: "Faculty name must be at least 3 characters." }),
-  isRegularTeacher: z.boolean().default(false),
-  domain: z.string().optional(),
-  subjectCode: z.string().optional(),
-  subjectType: z.string().optional(),
-  theoryClassesWeek: z.number().min(1, { message: "Theory classes per week is required and must be at least 1." }),
-  labClassesWeek: z.number().min(0).default(0),
+    .min(1, "Faculty assigned is required")
+    .min(2, "Faculty name must be at least 2 characters"),
+  is_regular_teacher: z.boolean().default(false),
+  domain: z.string().trim().optional().nullable(),
+  subject_type: z.string().trim().optional().nullable(),
+  theory_classes_week: z
+    .union([z.string(), z.number()])
+    .transform((val) => typeof val === 'string' ? parseInt(val, 10) || 1 : val)
+    .refine((val) => val >= 1, "Theory classes per week must be at least 1"),
+  lab_classes_week: z
+    .union([z.string(), z.number()])
+    .transform((val) => typeof val === 'string' ? parseInt(val, 10) || 0 : val)
+    .refine((val) => val >= 0, "Lab classes cannot be negative")
+    .default(0),
 });
+
 
 // Define form values type
 type FormValues = z.infer<typeof formSchema>;
@@ -108,18 +120,18 @@ export default function CourseForm() {
     resolver: zodResolver(formSchema) as UseFormProps<FormValues>["resolver"],
     mode: "onTouched",
     defaultValues: {
-      courseDetails: "",
+      course_details: "",
       section: "",
       semester: "",
-      semesterDetails: "",
-      creditHour: "",
-      facultyAssigned: "",
-      isRegularTeacher: false,
+      semester_details: "",
+      credit_hour: "",
+      faculty_assigned: "",
+      is_regular_teacher: false,
       domain: "",
-      subjectCode: "",
-      subjectType: "",
-             theoryClassesWeek: 1,
-       labClassesWeek: 0,
+      subject_code: "",
+      subject_type: "",
+             theory_classes_week: 1,
+       lab_classes_week: 0,
     },
   });
 
@@ -204,119 +216,112 @@ export default function CourseForm() {
     return Number.isFinite(n) ? Math.trunc(n) : NaN;
   };
 
-  const validateAndMap = (
-    row: Record<string, unknown>,
-  ): { errors: string[]; insertable?: CourseInsert } => {
-    const errors: string[] = [];
-    
-    const subject_code = String(
-      normalize(
-        getCell(row, "subject_code", "Subject Code")
-      )
-    ) || null;
+ const validateAndMap = (
+  row: Record<string, unknown>,
+): { errors: string[]; insertable?: CourseInsert } => {
+  const errors: string[] = [];
+  
+  // Extract and validate each field according to backend schema
+  const subject_code = String(
+    normalize(getCell(row, "subject_code", "Subject Code"))
+  ) || null;
 
-    const course_details = String(
-      normalize(
-        getCell(row, "course_details", "Course Details")
-      )
-    );
-    if (!course_details || course_details.trim() === "") {
-      errors.push("Course details cannot be empty");
+  const course_details = String(
+    normalize(getCell(row, "course_details", "Course Details"))
+  );
+  if (!course_details || course_details.length < 3) {
+    errors.push("Course details must be at least 3 characters");
+  }
+
+  const section = String(
+    normalize(getCell(row, "section", "Section"))
+  );
+  if (!section) {
+    errors.push("Section is required");
+  }
+
+  // FIXED: Properly handle semester conversion
+  const semesterRaw = normalize(getCell(row, "semester", "Semester"));
+  let semester: number;
+  if (typeof semesterRaw === 'string' && semesterRaw.trim() === '') {
+    errors.push("Semester is required");
+    semester = 1; // default but will be filtered out due to error
+  } else {
+    const semesterNum = toInt(semesterRaw);
+    if (!Number.isFinite(semesterNum) || semesterNum < 1) {
+      errors.push("Semester must be a number and at least 1");
+      semester = 1; // default but will be filtered out due to error
+    } else {
+      semester = semesterNum;
     }
+  }
 
-    const section = String(
-      normalize(
-        getCell(row, "section", "Section")
-      )
-    );
-    if (!section || section.trim() === "") {
-      errors.push("Section cannot be empty");
+  const credit_hourRaw = toInt(normalize(getCell(row, "credit_hour", "Credit Hour")));
+  const credit_hour = Number.isFinite(credit_hourRaw) ? credit_hourRaw : null;
+
+  const faculty_assigned = String(
+    normalize(getCell(row, "faculty_assigned", "Faculty Assigned"))
+  ) || null;
+
+  const is_regular_teacher = parseTeacherType(
+    normalize(getCell(row, "is_regular_teacher", "Teacher Type"))
+  );
+
+  const domain = String(
+    normalize(getCell(row, "domain", "Domain"))
+  ) || null;
+
+  const subject_type = String(
+    normalize(getCell(row, "subject_type", "Subject Type"))
+  ) || null;
+
+  const semester_details = String(
+    normalize(getCell(row, "semester_details", "Semester Details"))
+  ) || null;
+
+  // FIXED: Properly handle theory_classes_week conversion
+  const theoryClassesRaw = normalize(getCell(row, "theory_classes_week", "Theory Classes/Week"));
+  let theory_classes_week: number;
+  if (typeof theoryClassesRaw === 'string' && theoryClassesRaw.trim() === '') {
+    errors.push("Theory classes per week is required");
+    theory_classes_week = 1; // default but will be filtered out due to error
+  } else {
+    const theoryNum = toInt(theoryClassesRaw);
+    if (!Number.isFinite(theoryNum) || theoryNum < 1) {
+      errors.push("Theory classes per week must be at least 1");
+      theory_classes_week = 1; // default but will be filtered out due to error
+    } else {
+      theory_classes_week = theoryNum;
     }
+  }
 
-    const semesterRaw = toInt(
-      normalize(
-        getCell(row, "semester", "Semester")
-      )
-    ) as number;
+  const labClassesRaw = toInt(normalize(getCell(row, "lab_classes_week", "Lab Classes/Week")));
+  if (!Number.isFinite(labClassesRaw) || labClassesRaw < 0) {
+    errors.push("Lab classes per week cannot be negative");
+  }
+  const lab_classes_week = Number.isFinite(labClassesRaw) ? labClassesRaw : 0;
 
-    const creditHourRaw = toInt(
-      normalize(
-        getCell(row, "credit_hour", "Credit Hour")
-      )
-    ) as number;
+  // Only return insertable if there are no validation errors
+  const insertable = errors.length === 0 ? {
+    subject_code,
+    course_details,
+    section,
+    semester,
+    credit_hour,
+    faculty_assigned,
+    is_regular_teacher,
+    domain,
+    subject_type,
+    semester_details,
+    theory_classes_week,
+    lab_classes_week,
+  } : undefined;
 
-    const faculty_assigned = String(
-      normalize(
-        getCell(row, "faculty_assigned", "Faculty Assigned")
-      )
-    );
-    if (!faculty_assigned || faculty_assigned.trim() === "") {
-      errors.push("Faculty assigned cannot be empty");
-    }
-
-    const is_regular_teacher = parseTeacherType(
-      normalize(
-        getCell(row, "is_regular_teacher", "Teacher Type")
-      )
-    );
-
-    const domainRaw = String(
-      normalize(
-        getCell(row, "domain", "Domain")
-      )
-    ) as string;
-
-    const subject_typeRaw = String(
-      normalize(
-        getCell(row, "subject_type", "Subject Type")
-      )
-    ) as string;
-
-    const semester_detailsRaw = String(
-      normalize(
-        getCell(row, "semester_details", "Semester Details")
-      )
-    ) as string;
-
-    const theoryClassesRaw = toInt(
-      normalize(
-        getCell(row, "theory_classes_week", "Theory Classes/Week")
-      )
-    ) as number;
-
-    const labClassesRaw = toInt(
-      normalize(
-        getCell(row, "lab_classes_week", "Lab Classes/Week")
-      )
-    ) as number;
-
-    // Use default values for numeric fields
-    const semester = Number.isFinite(semesterRaw) ? semesterRaw : 1;
-    const credit_hour = Number.isFinite(creditHourRaw) ? creditHourRaw : 3;
-    const theory_classes_week = Number.isFinite(theoryClassesRaw) ? theoryClassesRaw : 2;
-    const lab_classes_week = Number.isFinite(labClassesRaw) ? labClassesRaw : 0;
-
-    // Only return insertable if there are no validation errors
-    const insertable = errors.length === 0 ? {
-      subject_code: subject_code || null,
-      course_details,
-      section,
-      semester,
-      credit_hour,
-      faculty_assigned,
-      is_regular_teacher,
-      domain: domainRaw ? domainRaw : null,
-      subject_type: subject_typeRaw ? subject_typeRaw : null,
-      semester_details: semester_detailsRaw ? semester_detailsRaw : null,
-      theory_classes_week,
-      lab_classes_week,
-    } : undefined;
-
-    return {
-      errors,
-      insertable,
-    };
+  return {
+    errors,
+    insertable,
   };
+};
 
   const handleExcelFile = async (file: File) => {
     setUploadedFileName(file.name);
@@ -362,23 +367,28 @@ export default function CourseForm() {
     }
     setIsBulkSaving(true);
     try {
-      const { data, error } = await supabaseClient
-        .from("courses")
-        .insert(validRows)
-        .select();
-      if (error) throw error;
-      if (data && data.length) {
-        setCourses([...courses, ...(data as Course[])]);
-        toast.success(`Inserted ${data.length} course(s)`);
+    const response = await fetch('/api/add-new-course/bulk', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(validRows),
+      });
+if(response.ok){
+      toast.success("courses added successfully");
+}
+      const result = await response.json();
+      if (result && result.length) {
+        setCourses([...courses, ...(result as Course[])]);
+        toast.success(`Inserted ${result.length} course(s)`);
         setBulkPreview([]);
         setUploadedFileName("");
         setIsPreviewOpen(false);
       } else {
-        toast.error("No data returned from insert operation");
       }
     } catch (err) {
       console.error("Bulk insert error:", err);
-      toast.error("Bulk insert failed");
+      toast.error("failed to insert courses");
     } finally {
       setIsBulkSaving(false);
     }
@@ -388,35 +398,40 @@ export default function CourseForm() {
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     setIsSubmitting(true);
     try {
-             // Insert the new course into Supabase and select the inserted row
-       const { data, error } = await supabaseClient
-         .from("courses")
-         .insert([
-           {
-             course_details: values.courseDetails,
-             section: values.section,
-             semester: parseInt(values.semester),
-             semester_details: values.semesterDetails || null,
-             credit_hour: parseInt(values.creditHour),
-             faculty_assigned: values.facultyAssigned,
-             is_regular_teacher: values.isRegularTeacher,
-             domain: values.domain || null,
-             subject_code: values.subjectCode || null,
-             subject_type: values.subjectType || null,
-             theory_classes_week: values.theoryClassesWeek,
-             lab_classes_week: values.labClassesWeek,
-           },
-         ])
-         .select()
-         .single();
+          // Prepare data for API
+      const courseData = {
+        subject_code: values.subject_code || null,
+        course_details: values.course_details,
+        section: values.section,
+        semester: parseInt(values.semester),
+        credit_hour: parseInt(values.credit_hour),
+        faculty_assigned: values.faculty_assigned,
+        is_regular_teacher: values.is_regular_teacher,
+        domain: values.domain || null,
+        subject_type: values.subject_type || null,
+        semester_details: values.semester_details || null,
+        theory_classes_week: values.theory_classes_week,
+        lab_classes_week: values.lab_classes_week,
+      };
+       // Call the API route
+      const response = await fetch('/api/add-new-course', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(courseData),
+      });
 
-      if (error) {
-        throw error;
+  const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to save course data');
       }
+    
 
       // Update the CourseContext with the new course
-      if (data) {
-        setCourses([...courses, data as Course]);
+      if (result) {
+        setCourses([...courses, result as Course]);
       }
 
       toast.success("Course data saved successfully!");
@@ -713,7 +728,7 @@ export default function CourseForm() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <FormField
               control={form.control}
-              name="courseDetails"
+              name="course_details"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-semibold text-gray-700">
@@ -798,7 +813,7 @@ export default function CourseForm() {
              />
              <FormField
                control={form.control}
-               name="semesterDetails"
+               name="semester_details"
                render={({ field }) => (
                  <FormItem>
                    <FormLabel className="text-sm font-semibold text-gray-700">
@@ -819,7 +834,7 @@ export default function CourseForm() {
                      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
              <FormField
                control={form.control}
-               name="creditHour"
+               name="credit_hour"
                render={({ field }) => (
                  <FormItem>
                    <FormLabel className="text-sm font-semibold text-gray-700">
@@ -827,6 +842,8 @@ export default function CourseForm() {
                    </FormLabel>
                    <FormControl>
                      <Input
+                    maxLength={10}
+
                        placeholder="e.g., 3"
                        type="number"
                        className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
@@ -839,7 +856,7 @@ export default function CourseForm() {
              />
              <FormField
                control={form.control}
-               name="facultyAssigned"
+               name="faculty_assigned"
                render={({ field }) => (
                  <FormItem>
                    <FormLabel className="text-sm font-semibold text-gray-700">
@@ -860,7 +877,7 @@ export default function CourseForm() {
            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                            <FormField
                 control={form.control}
-                name="theoryClassesWeek"
+                name="theory_classes_week"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-sm font-semibold text-gray-700">
@@ -883,7 +900,7 @@ export default function CourseForm() {
               />
                            <FormField
                 control={form.control}
-                name="labClassesWeek"
+                name="lab_classes_week"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-sm font-semibold text-gray-700">
@@ -927,7 +944,7 @@ export default function CourseForm() {
             />
             <FormField
               control={form.control}
-              name="subjectCode"
+              name="subject_code"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-semibold text-gray-700">
@@ -948,7 +965,7 @@ export default function CourseForm() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <FormField
               control={form.control}
-              name="subjectType"
+              name="subject_type"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-semibold text-gray-700">
@@ -967,7 +984,7 @@ export default function CourseForm() {
             />
             <FormField
               control={form.control}
-              name="isRegularTeacher"
+              name="is_regular_teacher"
               render={({ field }) => (
                 <FormItem className="flex items-center space-x-2 pt-4">
                   <FormLabel className="text-sm font-semibold text-gray-700">
