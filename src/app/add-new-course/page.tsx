@@ -21,7 +21,6 @@ import * as XLSX from "xlsx";
 import { useCourses } from "@/context/CourseContext";
 import { Course } from "@/lib/serverData/CourseDataFetcher";
 
-
 // form validation
 const formSchema = z.object({
   subject_code: z.string().trim().optional().nullable(),
@@ -41,13 +40,13 @@ const formSchema = z.object({
     .nonempty("Semester is required")
     .regex(/^[1-9]$/, "Semester must be a number from 1 to 9"),
   semester_details: z.string().trim().optional().nullable(),
- credit_hour: z
+  credit_hour: z
     .union([z.number(), z.string()])
     .optional()
     .nullable()
     .transform((val) => {
       if (val === null || val === undefined || val === "") return null;
-      return typeof val === 'string' ? parseInt(val, 10) : val;
+      return typeof val === "string" ? parseInt(val, 10) : val;
     }),
   faculty_assigned: z
     .string()
@@ -59,15 +58,18 @@ const formSchema = z.object({
   subject_type: z.string().trim().optional().nullable(),
   theory_classes_week: z
     .union([z.string(), z.number()])
-    .transform((val) => typeof val === 'string' ? parseInt(val, 10) || 1 : val)
+    .transform((val) =>
+      typeof val === "string" ? parseInt(val, 10) || 1 : val
+    )
     .refine((val) => val >= 1, "Theory classes per week must be at least 1"),
   lab_classes_week: z
     .union([z.string(), z.number()])
-    .transform((val) => typeof val === 'string' ? parseInt(val, 10) || 0 : val)
+    .transform((val) =>
+      typeof val === "string" ? parseInt(val, 10) || 0 : val
+    )
     .refine((val) => val >= 0, "Lab classes cannot be negative")
     .default(0),
 });
-
 
 // Define form values type
 type FormValues = z.infer<typeof formSchema>;
@@ -131,8 +133,8 @@ export default function CourseForm() {
       domain: "",
       subject_code: "",
       subject_type: "",
-             theory_classes_week: 1,
-       lab_classes_week: 0,
+      theory_classes_week: 1,
+      lab_classes_week: 0,
     },
   });
 
@@ -217,112 +219,118 @@ export default function CourseForm() {
     return Number.isFinite(n) ? Math.trunc(n) : NaN;
   };
 
- const validateAndMap = (
-  row: Record<string, unknown>,
-): { errors: string[]; insertable?: CourseInsert } => {
-  const errors: string[] = [];
-  
-  // Extract and validate each field according to backend schema
-  const subject_code = String(
-    normalize(getCell(row, "subject_code", "Subject Code"))
-  ) || null;
+  const validateAndMap = (
+    row: Record<string, unknown>
+  ): { errors: string[]; insertable?: CourseInsert } => {
+    const errors: string[] = [];
 
-  const course_details = String(
-    normalize(getCell(row, "course_details", "Course Details"))
-  );
-  if (!course_details || course_details.length < 3) {
-    errors.push("Course details must be at least 3 characters");
-  }
+    // Extract and validate each field according to backend schema
+    const subject_code =
+      String(normalize(getCell(row, "subject_code", "Subject Code"))) || null;
 
-  const section = String(
-    normalize(getCell(row, "section", "Section"))
-  );
-  if (!section) {
-    errors.push("Section is required");
-  }
+    const course_details = String(
+      normalize(getCell(row, "course_details", "Course Details"))
+    );
+    if (!course_details || course_details.length < 3) {
+      errors.push("Course details must be at least 3 characters");
+    }
 
-  // FIXED: Properly handle semester conversion
-  const semesterRaw = normalize(getCell(row, "semester", "Semester"));
-  let semester: number;
-  if (typeof semesterRaw === 'string' && semesterRaw.trim() === '') {
-    errors.push("Semester is required");
-    semester = 1; // default but will be filtered out due to error
-  } else {
-    const semesterNum = toInt(semesterRaw);
-    if (!Number.isFinite(semesterNum) || semesterNum < 1) {
-      errors.push("Semester must be a number and at least 1");
+    const section = String(normalize(getCell(row, "section", "Section")));
+    if (!section) {
+      errors.push("Section is required");
+    }
+
+    // FIXED: Properly handle semester conversion
+    const semesterRaw = normalize(getCell(row, "semester", "Semester"));
+    let semester: number;
+    if (typeof semesterRaw === "string" && semesterRaw.trim() === "") {
+      errors.push("Semester is required");
       semester = 1; // default but will be filtered out due to error
     } else {
-      semester = semesterNum;
+      const semesterNum = toInt(semesterRaw);
+      if (!Number.isFinite(semesterNum) || semesterNum < 1) {
+        errors.push("Semester must be a number and at least 1");
+        semester = 1; // default but will be filtered out due to error
+      } else {
+        semester = semesterNum;
+      }
     }
-  }
 
-  const credit_hourRaw = toInt(normalize(getCell(row, "credit_hour", "Credit Hour")));
-  const credit_hour = Number.isFinite(credit_hourRaw) ? credit_hourRaw : null;
+    const credit_hourRaw = toInt(
+      normalize(getCell(row, "credit_hour", "Credit Hour"))
+    );
+    const credit_hour = Number.isFinite(credit_hourRaw) ? credit_hourRaw : null;
 
-  const faculty_assigned = String(
-    normalize(getCell(row, "faculty_assigned", "Faculty Assigned"))
-  ) || null;
+    const faculty_assigned =
+      String(normalize(getCell(row, "faculty_assigned", "Faculty Assigned"))) ||
+      null;
 
-  const is_regular_teacher = parseTeacherType(
-    normalize(getCell(row, "is_regular_teacher", "Teacher Type"))
-  );
+    const is_regular_teacher = parseTeacherType(
+      normalize(getCell(row, "is_regular_teacher", "Teacher Type"))
+    );
 
-  const domain = String(
-    normalize(getCell(row, "domain", "Domain"))
-  ) || null;
+    const domain = String(normalize(getCell(row, "domain", "Domain"))) || null;
 
-  const subject_type = String(
-    normalize(getCell(row, "subject_type", "Subject Type"))
-  ) || null;
+    const subject_type =
+      String(normalize(getCell(row, "subject_type", "Subject Type"))) || null;
 
-  const semester_details = String(
-    normalize(getCell(row, "semester_details", "Semester Details"))
-  ) || null;
+    const semester_details =
+      String(normalize(getCell(row, "semester_details", "Semester Details"))) ||
+      null;
 
-  // FIXED: Properly handle theory_classes_week conversion
-  const theoryClassesRaw = normalize(getCell(row, "theory_classes_week", "Theory Classes/Week"));
-  let theory_classes_week: number;
-  if (typeof theoryClassesRaw === 'string' && theoryClassesRaw.trim() === '') {
-    errors.push("Theory classes per week is required");
-    theory_classes_week = 1; // default but will be filtered out due to error
-  } else {
-    const theoryNum = toInt(theoryClassesRaw);
-    if (!Number.isFinite(theoryNum) || theoryNum < 1) {
-      errors.push("Theory classes per week must be at least 1");
+    // FIXED: Properly handle theory_classes_week conversion
+    const theoryClassesRaw = normalize(
+      getCell(row, "theory_classes_week", "Theory Classes/Week")
+    );
+    let theory_classes_week: number;
+    if (
+      typeof theoryClassesRaw === "string" &&
+      theoryClassesRaw.trim() === ""
+    ) {
+      errors.push("Theory classes per week is required");
       theory_classes_week = 1; // default but will be filtered out due to error
     } else {
-      theory_classes_week = theoryNum;
+      const theoryNum = toInt(theoryClassesRaw);
+      if (!Number.isFinite(theoryNum) || theoryNum < 1) {
+        errors.push("Theory classes per week must be at least 1");
+        theory_classes_week = 1; // default but will be filtered out due to error
+      } else {
+        theory_classes_week = theoryNum;
+      }
     }
-  }
 
-  const labClassesRaw = toInt(normalize(getCell(row, "lab_classes_week", "Lab Classes/Week")));
-  if (!Number.isFinite(labClassesRaw) || labClassesRaw < 0) {
-    errors.push("Lab classes per week cannot be negative");
-  }
-  const lab_classes_week = Number.isFinite(labClassesRaw) ? labClassesRaw : 0;
+    const labClassesRaw = toInt(
+      normalize(getCell(row, "lab_classes_week", "Lab Classes/Week"))
+    );
+    if (!Number.isFinite(labClassesRaw) || labClassesRaw < 0) {
+      errors.push("Lab classes per week cannot be negative");
+    }
+    const lab_classes_week = Number.isFinite(labClassesRaw) ? labClassesRaw : 0;
 
-  // Only return insertable if there are no validation errors
-  const insertable = errors.length === 0 ? {
-    subject_code,
-    course_details,
-    section,
-    semester,
-    credit_hour,
-    faculty_assigned,
-    is_regular_teacher,
-    domain,
-    subject_type,
-    semester_details,
-    theory_classes_week,
-    lab_classes_week,
-  } : undefined;
+    // Only return insertable if there are no validation errors
+    const insertable =
+      errors.length === 0
+        ? {
+            subject_code,
+            course_details,
+            section,
+            semester,
+            credit_hour,
+            faculty_assigned,
+            is_regular_teacher,
+            domain,
+            subject_type,
+            semester_details,
+            theory_classes_week,
+            lab_classes_week,
+          }
+        : undefined;
 
-  return {
-    errors,
-    insertable,
+    return {
+      errors,
+      insertable,
+    };
   };
-};
 
   const handleExcelFile = async (file: File) => {
     setUploadedFileName(file.name);
@@ -368,16 +376,16 @@ export default function CourseForm() {
     }
     setIsBulkSaving(true);
     try {
-    const response = await fetch('/api/add-new-course/bulk', {
-        method: 'POST',
+      const response = await fetch("/api/add-new-course/bulk", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(validRows),
       });
-if(response.ok){
-      toast.success("courses added successfully");
-}
+      if (response.ok) {
+        toast.success("courses added successfully");
+      }
       const result = await response.json();
       if (result && result.length) {
         setCourses([...courses, ...(result as Course[])]);
@@ -399,7 +407,7 @@ if(response.ok){
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     setIsSubmitting(true);
     try {
-          // Prepare data for API
+      // Prepare data for API
       const courseData = {
         subject_code: values.subject_code || null,
         course_details: values.course_details,
@@ -414,21 +422,20 @@ if(response.ok){
         theory_classes_week: values.theory_classes_week,
         lab_classes_week: values.lab_classes_week,
       };
-       // Call the API route
-      const response = await fetch('/api/add-new-course', {
-        method: 'POST',
+      // Call the API route
+      const response = await fetch("/api/add-new-course", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(courseData),
       });
 
-  const result = await response.json();
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to save course data');
+        throw new Error(result.error || "Failed to save course data");
       }
-    
 
       // Update the CourseContext with the new course
       if (result) {
@@ -483,15 +490,23 @@ if(response.ok){
         <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 space-y-5">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="space-y-1">
-              <p className="text-lg font-semibold text-gray-900">Upload Excel File</p>
-              <p className="text-sm text-gray-600">Upload .xlsx/.xls using the official template.</p>
+              <p className="text-lg font-semibold text-gray-900">
+                Upload Excel File
+              </p>
+              <p className="text-sm text-gray-600">
+                Upload .xlsx/.xls using the official template.
+              </p>
             </div>
             <div className="flex gap-2">
               <Button type="button" onClick={downloadTemplate}>
                 Download Template
               </Button>
               {bulkPreview.length > 0 && (
-                <Button type="button" variant="secondary" onClick={() => setIsPreviewOpen((s) => !s)}>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setIsPreviewOpen((s) => !s)}
+                >
                   {isPreviewOpen ? "Hide Preview" : "Review Parsed Rows"}
                 </Button>
               )}
@@ -515,17 +530,28 @@ if(response.ok){
               if (f) handleExcelFile(f);
             }}
             className={`w-full rounded-xl border-2 border-dashed p-6 cursor-pointer transition ${
-              isDragOver ? "border-blue-400 bg-blue-50/50" : "border-gray-300 hover:border-gray-400"
+              isDragOver
+                ? "border-blue-400 bg-blue-50/50"
+                : "border-gray-300 hover:border-gray-400"
             }`}
           >
             <div className="flex flex-col items-center justify-center gap-2 text-center">
-              <div className="h-10 w-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-lg">⬆</div>
-              <div className="text-sm text-gray-700">
-                <span className="font-medium text-blue-900">Click to upload</span> or drag & drop
+              <div className="h-10 w-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
+                ⬆
               </div>
-              <div className="text-xs text-gray-500">Only .xlsx or .xls from the template</div>
+              <div className="text-sm text-gray-700">
+                <span className="font-medium text-blue-900">
+                  Click to upload
+                </span>{" "}
+                or drag & drop
+              </div>
+              <div className="text-xs text-gray-500">
+                Only .xlsx or .xls from the template
+              </div>
               {uploadedFileName && (
-                <div className="text-xs text-gray-600 mt-1">Selected: {uploadedFileName}</div>
+                <div className="text-xs text-gray-600 mt-1">
+                  Selected: {uploadedFileName}
+                </div>
               )}
             </div>
             <input
@@ -545,10 +571,14 @@ if(response.ok){
             <div className="space-y-4">
               {/* Summary Statistics */}
               <div className="bg-gray-50 p-4 rounded-lg border">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">File Analysis Summary</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  File Analysis Summary
+                </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-gray-900">{bulkPreview.length}</div>
+                    <div className="text-2xl font-bold text-gray-900">
+                      {bulkPreview.length}
+                    </div>
                     <div className="text-sm text-gray-600">Total Rows</div>
                   </div>
                   <div className="text-center">
@@ -565,9 +595,15 @@ if(response.ok){
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-blue-600">
-                      {bulkPreview.length > 0 
-                        ? Math.round((bulkPreview.filter((p) => p.errors.length === 0).length / bulkPreview.length) * 100)
-                        : 0}%
+                      {bulkPreview.length > 0
+                        ? Math.round(
+                            (bulkPreview.filter((p) => p.errors.length === 0)
+                              .length /
+                              bulkPreview.length) *
+                              100
+                          )
+                        : 0}
+                      %
                     </div>
                     <div className="text-sm text-blue-600">Success Rate</div>
                   </div>
@@ -577,18 +613,25 @@ if(response.ok){
               {/* Action Buttons */}
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <div className="text-sm">
-                  <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700 mr-2">Total: {bulkPreview.length}</span>
+                  <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700 mr-2">
+                    Total: {bulkPreview.length}
+                  </span>
                   <span className="px-2 py-1 rounded-full bg-green-100 text-green-700 mr-2">
-                    Valid: {bulkPreview.filter((p) => p.errors.length === 0).length}
+                    Valid:{" "}
+                    {bulkPreview.filter((p) => p.errors.length === 0).length}
                   </span>
                   <span className="px-2 py-1 rounded-full bg-red-100 text-red-700">
-                    Invalid: {bulkPreview.filter((p) => p.errors.length > 0).length}
+                    Invalid:{" "}
+                    {bulkPreview.filter((p) => p.errors.length > 0).length}
                   </span>
                 </div>
                 <div className="flex gap-2">
                   <Button
                     type="button"
-                    disabled={isBulkSaving || bulkPreview.every((p) => p.errors.length > 0)}
+                    disabled={
+                      isBulkSaving ||
+                      bulkPreview.every((p) => p.errors.length > 0)
+                    }
                     onClick={handleBulkInsert}
                     className="bg-[#042954] hover:bg-[#042954]/90"
                   >
@@ -613,22 +656,27 @@ if(response.ok){
             <div className="space-y-4">
               {/* Filter Options */}
               <div className="flex items-center gap-3">
-                <label className="text-sm font-medium text-gray-700">Filter:</label>
+                <label className="text-sm font-medium text-gray-700">
+                  Filter:
+                </label>
                 <Select
                   instanceId="filter-select"
                   options={[
                     { value: "all", label: "All Rows" },
                     { value: "valid", label: "Valid Rows Only" },
-                    { value: "invalid", label: "Invalid Rows Only" }
+                    { value: "invalid", label: "Invalid Rows Only" },
                   ]}
                   defaultValue={{ value: "all", label: "All Rows" }}
                   onChange={(option) => {
                     const filterValue = option?.value || "all";
-                    const filteredPreview = filterValue === "all" 
-                      ? bulkPreview 
-                      : bulkPreview.filter(p => 
-                          filterValue === "valid" ? p.errors.length === 0 : p.errors.length > 0
-                        );
+                    const filteredPreview =
+                      filterValue === "all"
+                        ? bulkPreview
+                        : bulkPreview.filter((p) =>
+                            filterValue === "valid"
+                              ? p.errors.length === 0
+                              : p.errors.length > 0
+                          );
                     setFilteredPreview(filteredPreview);
                   }}
                   className="w-48"
@@ -636,14 +684,14 @@ if(response.ok){
                   styles={{
                     control: (provided) => ({
                       ...provided,
-                      height: '36px',
-                      backgroundColor: '#f9fafb',
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '6px',
-                      '&:hover': {
-                        borderColor: '#3b82f6'
-                      }
-                    })
+                      height: "36px",
+                      backgroundColor: "#f9fafb",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "6px",
+                      "&:hover": {
+                        borderColor: "#3b82f6",
+                      },
+                    }),
                   }}
                 />
               </div>
@@ -667,48 +715,85 @@ if(response.ok){
                   </thead>
                   <tbody>
                     {filteredPreview.slice(0, 100).map((p) => (
-                      <tr key={p.rowNumber} className={`border-t ${p.errors.length === 0 ? 'bg-green-50' : 'bg-red-50'}`}>
+                      <tr
+                        key={p.rowNumber}
+                        className={`border-t ${
+                          p.errors.length === 0 ? "bg-green-50" : "bg-red-50"
+                        }`}
+                      >
                         <td className="px-3 py-2 font-medium">{p.rowNumber}</td>
                         <td className="px-3 py-2">
                           {p.errors.length === 0 ? (
-                            <span className="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs">✓ Valid</span>
+                            <span className="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs">
+                              ✓ Valid
+                            </span>
                           ) : (
-                            <span className="px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs">✗ Invalid</span>
+                            <span className="px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs">
+                              ✗ Invalid
+                            </span>
                           )}
                         </td>
-                        <td className="px-3 py-2">{String(p.data["Subject Code"] ?? "")}</td>
-                        <td className="px-3 py-2 max-w-32 truncate" title={String(p.data["Course Details"] ?? "")}>
+                        <td className="px-3 py-2">
+                          {String(p.data["Subject Code"] ?? "")}
+                        </td>
+                        <td
+                          className="px-3 py-2 max-w-32 truncate"
+                          title={String(p.data["Course Details"] ?? "")}
+                        >
                           {String(p.data["Course Details"] ?? "")}
                         </td>
-                        <td className="px-3 py-2 max-w-32 truncate" title={String(p.data["Section"] ?? "")}>
+                        <td
+                          className="px-3 py-2 max-w-32 truncate"
+                          title={String(p.data["Section"] ?? "")}
+                        >
                           {String(p.data["Section"] ?? "")}
                         </td>
-                        <td className="px-3 py-2">{String(p.data["Semester"] ?? "")}</td>
-                        <td className="px-3 py-2">{String(p.data["Credit Hour"] ?? "")}</td>
-                        <td className="px-3 py-2 max-w-24 truncate" title={String(p.data["Faculty Assigned"] ?? "")}>
+                        <td className="px-3 py-2">
+                          {String(p.data["Semester"] ?? "")}
+                        </td>
+                        <td className="px-3 py-2">
+                          {String(p.data["Credit Hour"] ?? "")}
+                        </td>
+                        <td
+                          className="px-3 py-2 max-w-24 truncate"
+                          title={String(p.data["Faculty Assigned"] ?? "")}
+                        >
                           {String(p.data["Faculty Assigned"] ?? "")}
                         </td>
-                        <td className="px-3 py-2">{String(p.data["Theory Classes/Week"] ?? "")}</td>
-                        <td className="px-3 py-2">{String(p.data["Lab Classes/Week"] ?? "")}</td>
+                        <td className="px-3 py-2">
+                          {String(p.data["Theory Classes/Week"] ?? "")}
+                        </td>
+                        <td className="px-3 py-2">
+                          {String(p.data["Lab Classes/Week"] ?? "")}
+                        </td>
                         <td className="px-3 py-2 text-red-600 max-w-48">
                           {p.errors.length > 0 ? (
                             <div className="space-y-1">
                               {p.errors.map((error, idx) => (
-                                <div key={idx} className="text-xs bg-red-100 p-1 rounded">
+                                <div
+                                  key={idx}
+                                  className="text-xs bg-red-100 p-1 rounded"
+                                >
                                   {error}
                                 </div>
                               ))}
                             </div>
                           ) : (
-                            <span className="text-green-600 text-xs">No errors</span>
+                            <span className="text-green-600 text-xs">
+                              No errors
+                            </span>
                           )}
                         </td>
                       </tr>
                     ))}
                     {filteredPreview.length > 100 && (
                       <tr className="bg-gray-50">
-                        <td colSpan={11} className="px-3 py-2 text-center text-gray-500 text-xs">
-                          Showing first 100 rows. Total rows: {filteredPreview.length}
+                        <td
+                          colSpan={11}
+                          className="px-3 py-2 text-center text-gray-500 text-xs"
+                        >
+                          Showing first 100 rows. Total rows:{" "}
+                          {filteredPreview.length}
                         </td>
                       </tr>
                     )}
@@ -726,157 +811,166 @@ if(response.ok){
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-8 bg-white p-8 rounded-2xl shadow-lg border border-gray-100 overflow-y-auto"
           >
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="course_details"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm font-semibold text-gray-700">
-                    Course Details
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="e.g., Introduction to Remote Sensing"
-                      className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-sm text-red-500 mt-1" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="section"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm font-semibold text-gray-700">
-                    Section
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="e.g., (BS (GIS &RS (2024-2028)) 2nd"
-                      className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-sm text-red-500 mt-1" />
-                </FormItem>
-              )}
-            />
-          </div>
-                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                       <FormField
-                         control={form.control}
-                         name="semester"
-                         render={({ field }) => (
-                           <FormItem>
-                             <FormLabel className="text-sm font-semibold text-gray-700">
-                               Semester
-                             </FormLabel>
-                             <FormControl>
-                               <Select
-                                 instanceId="semester-select"
-                                 inputId="semester-select-input"
-                                 options={semesterOptions}
-                                 value={semesterOptions.find(option => option.value === field.value) || null}
-                                 onChange={(selectedOption) => field.onChange(selectedOption?.value || "")}
-                                 placeholder="Select Semester"
-                                 className="w-full"
-                                 classNamePrefix="react-select"
-                                 styles={{
-                                   control: (provided) => ({
-                                     ...provided,
-                                     height: '48px',
-                                     backgroundColor: '#f9fafb',
-                                     border: '1px solid #e5e7eb',
-                                     borderRadius: '8px',
-                                     '&:hover': {
-                                       borderColor: '#3b82f6'
-                                     },
-                                     '&:focus-within': {
-                                       borderColor: '#3b82f6',
-                                       boxShadow: '0 0 0 2px rgba(59, 130, 246, 0.1)'
-                                     }
-                                   }),
-                                   option: (provided, state) => ({
-                                     ...provided,
-                                     backgroundColor: state.isSelected ? '#3b82f6' : state.isFocused ? '#eff6ff' : 'white',
-                                     color: state.isSelected ? 'white' : '#374151'
-                                   })
-                                 }}
-                               />
-                   </FormControl>
-                   <FormMessage className="text-sm text-red-500 mt-1" />
-                 </FormItem>
-               )}
-             />
-             <FormField
-               control={form.control}
-               name="semester_details"
-               render={({ field }) => (
-                 <FormItem>
-                   <FormLabel className="text-sm font-semibold text-gray-700">
-                     Semester Details (Optional)
-                   </FormLabel>
-                   <FormControl>
-                     <Input
-                       placeholder="e.g., Spring 2025"
-                       className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                       {...field}
-                     />
-                   </FormControl>
-                   <FormMessage className="text-sm text-red-500 mt-1" />
-                 </FormItem>
-               )}
-             />
-           </div>
-                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-             <FormField
-               control={form.control}
-               name="credit_hour"
-               render={({ field }) => (
-                 <FormItem>
-                   <FormLabel className="text-sm font-semibold text-gray-700">
-                     Credit Hour
-                   </FormLabel>
-                   <FormControl>
-                     <Input
-                    maxLength={10}
-
-                       placeholder="e.g., 3"
-                       type="number"
-                       className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                       {...field}
-                     />
-                   </FormControl>
-                   <FormMessage className="text-sm text-red-500 mt-1" />
-                 </FormItem>
-               )}
-             />
-             <FormField
-               control={form.control}
-               name="faculty_assigned"
-               render={({ field }) => (
-                 <FormItem>
-                   <FormLabel className="text-sm font-semibold text-gray-700">
-                     Faculty Assigned
-                   </FormLabel>
-                   <FormControl>
-                     <Input
-                       placeholder="e.g., Syed Najam Ul Hassan"
-                       className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                       {...field}
-                     />
-                   </FormControl>
-                   <FormMessage className="text-sm text-red-500 mt-1" />
-                 </FormItem>
-               )}
-             />
-           </div>
-           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                           <FormField
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="course_details"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-semibold text-gray-700">
+                      Course Details
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., Introduction to Remote Sensing"
+                        className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-sm text-red-500 mt-1" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="section"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-semibold text-gray-700">
+                      Section
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., (BS (GIS &RS (2024-2028)) 2nd"
+                        className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-sm text-red-500 mt-1" />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="semester"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-semibold text-gray-700">
+                      Semester
+                    </FormLabel>
+                    <FormControl>
+                      <Select
+                        instanceId="semester-select"
+                        inputId="semester-select-input"
+                        options={semesterOptions}
+                        value={
+                          semesterOptions.find(
+                            (option) => option.value === field.value
+                          ) || null
+                        }
+                        onChange={(selectedOption) =>
+                          field.onChange(selectedOption?.value || "")
+                        }
+                        placeholder="Select Semester"
+                        className="w-full"
+                        classNamePrefix="react-select"
+                        styles={{
+                          control: (provided) => ({
+                            ...provided,
+                            height: "48px",
+                            backgroundColor: "#f9fafb",
+                            border: "1px solid #e5e7eb",
+                            borderRadius: "8px",
+                            "&:hover": {
+                              borderColor: "#3b82f6",
+                            },
+                            "&:focus-within": {
+                              borderColor: "#3b82f6",
+                              boxShadow: "0 0 0 2px rgba(59, 130, 246, 0.1)",
+                            },
+                          }),
+                          option: (provided, state) => ({
+                            ...provided,
+                            backgroundColor: state.isSelected
+                              ? "#3b82f6"
+                              : state.isFocused
+                              ? "#eff6ff"
+                              : "white",
+                            color: state.isSelected ? "white" : "#374151",
+                          }),
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-sm text-red-500 mt-1" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="semester_details"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-semibold text-gray-700">
+                      Semester Details (Optional)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., Spring 2025"
+                        className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-sm text-red-500 mt-1" />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="credit_hour"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-semibold text-gray-700">
+                      Credit Hour
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        maxLength={10}
+                        placeholder="e.g., 3"
+                        type="number"
+                        className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-sm text-red-500 mt-1" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="faculty_assigned"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-semibold text-gray-700">
+                      Faculty Assigned
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., Syed Najam Ul Hassan"
+                        className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-sm text-red-500 mt-1" />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <FormField
                 control={form.control}
                 name="theory_classes_week"
                 render={({ field }) => (
@@ -891,7 +985,9 @@ if(response.ok){
                         min="1"
                         className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                         {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value) || 1)
+                        }
                         value={field.value}
                       />
                     </FormControl>
@@ -899,7 +995,7 @@ if(response.ok){
                   </FormItem>
                 )}
               />
-                           <FormField
+              <FormField
                 control={form.control}
                 name="lab_classes_week"
                 render={({ field }) => (
@@ -914,7 +1010,9 @@ if(response.ok){
                         min="0"
                         className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                         {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value) || 0)
+                        }
                         value={field.value}
                       />
                     </FormControl>
@@ -922,99 +1020,97 @@ if(response.ok){
                   </FormItem>
                 )}
               />
-           </div>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="domain"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm font-semibold text-gray-700">
-                    Domain (Optional)
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="e.g., CS"
-                      className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-sm text-red-500 mt-1" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="subject_code"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm font-semibold text-gray-700">
-                    Subject Code (Optional)
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="e.g., GIS-302"
-                      className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-sm text-red-500 mt-1" />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="subject_type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm font-semibold text-gray-700">
-                    Subject Type (Optional)
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="e.g., RS-Core"
-                      className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-sm text-red-500 mt-1" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="is_regular_teacher"
-              render={({ field }) => (
-                <FormItem className="flex items-center space-x-2 pt-4">
-                  <FormLabel className="text-sm font-semibold text-gray-700">
-                    Regular Teacher
-                  </FormLabel>
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      className="h-5 w-5"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-sm text-red-500 mt-1" />
-                </FormItem>
-              )}
-            />
-          </div>
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full h-12 text-white rounded-lg font-semibold text-lg"
-          >
-            {isSubmitting ? "Submitting..." : "Submit"}
-          </Button>
-        </form>
-      </Form>
+            </div>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="domain"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-semibold text-gray-700">
+                      Domain (Optional)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., CS"
+                        className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-sm text-red-500 mt-1" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="subject_code"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-semibold text-gray-700">
+                      Subject Code (Optional)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., GIS-302"
+                        className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-sm text-red-500 mt-1" />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="subject_type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-semibold text-gray-700">
+                      Subject Type (Optional)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., RS-Core"
+                        className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-sm text-red-500 mt-1" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="is_regular_teacher"
+                render={({ field }) => (
+                  <FormItem className="flex items-center space-x-2 pt-4">
+                    <FormLabel className="text-sm font-semibold text-gray-700">
+                      Regular Teacher
+                    </FormLabel>
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        className="h-5 w-5"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-sm text-red-500 mt-1" />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full h-12 text-white rounded-lg font-semibold text-lg"
+            >
+              {isSubmitting ? "Submitting..." : "Submit"}
+            </Button>
+          </form>
+        </Form>
       )}
-
-
     </div>
   );
 }

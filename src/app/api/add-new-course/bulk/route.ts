@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { supabaseClient } from '@/lib/supabase/supabase';
-import { z } from 'zod';
+import { NextRequest, NextResponse } from "next/server";
+import { supabaseClient } from "@/lib/supabase/supabase";
+import { z } from "zod";
 
 // Bulk upload validation schema
 const bulkCourseSchema = z.array(
@@ -55,48 +55,45 @@ const bulkCourseSchema = z.array(
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     // Validate the request body
     const validatedData = bulkCourseSchema.parse(body);
-    
+
     // Insert into Supabase
     const { data, error } = await supabaseClient
-      .from('courses')
+      .from("courses")
       .insert(validatedData)
       .select();
 
     if (error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
     return NextResponse.json(
-      { 
-        message: `${validatedData.length} courses created successfully`, 
+      {
+        message: `${validatedData.length} courses created successfully`,
         data,
-        createdCount: data?.length || 0
+        createdCount: data?.length || 0,
       },
       { status: 201 }
     );
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { 
-          error: 'Invalid data', 
-          details: error.errors.map(err => ({
-            field: err.path.join('.'),
-            message: err.message
-          }))
+        {
+          error: "Invalid data",
+          details: error.errors.map((err) => ({
+            field: err.path.join("."),
+            message: err.message,
+          })),
         },
         { status: 400 }
       );
     }
-    
-    console.error('Bulk course creation error:', error);
+
+    console.error("Bulk course creation error:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
