@@ -121,7 +121,7 @@ export default function CourseForm() {
     mode: "onTouched",
     defaultValues: {
       course_details: "",
-      section: "",
+      section: "",F
       semester: "",
       semester_details: "",
       credit_hour: "",
@@ -845,7 +845,7 @@ if(response.ok){
                     maxLength={10}
 
                        placeholder="e.g., 3"
-                       type="number"
+                       type="text"
                        className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                        {...field}
                      />
