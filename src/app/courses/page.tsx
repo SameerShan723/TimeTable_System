@@ -29,7 +29,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Select from "react-select";
 import { useCourses } from "@/context/CourseContext";
-import { supabaseClient } from "@/lib/supabase/supabase";
 import { Course } from "@/lib/serverData/CourseDataFetcher";
 import { useRouter } from "next/navigation";
 
@@ -190,14 +189,7 @@ export default function FacultyData() {
     if (deletingCourseId) {
       setIsDeleting(true);
       try {
-        // const { error } = await supabaseClient
-        //   .from("courses")
-        //   .delete()
-        //   .eq("id", deletingCourseId);
-
-        // if (error) {
-        //   throw new Error(error.message);
-        // }
+      
         const response = await fetch(`/api/courses/${deletingCourseId}`, {
           method: "DELETE",
         });
