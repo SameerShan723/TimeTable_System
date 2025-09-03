@@ -20,7 +20,7 @@ const bulkCourseSchema = z.array(
       .min(1, "Semester must be at least 1")
       .max(9, "Semester must be at most 9"),
     credit_hour: z
-      .union([z.number(), z.null()]) /
+      .union([z.number(), z.null()]) 
       .optional() 
       .nullable()
       .refine(
