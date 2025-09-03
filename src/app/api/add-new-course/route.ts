@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { supabaseClient } from '@/lib/supabase/supabase';
-import { z } from 'zod';
+import { NextRequest, NextResponse } from "next/server";
+import { supabaseClient } from "@/lib/supabase/supabase";
+import { z } from "zod";
 
-// Manual form validation schema (matching frontend field names)
+// Manual form validation schema (matching frontend exactly)
 const courseFormSchema = z.object({
   subject_code: z.string().trim().optional().nullable(),
   course_details: z
@@ -25,8 +25,7 @@ const courseFormSchema = z.object({
     .int("Credit hour must be an integer")
     .min(0, "Credit hour cannot be negative")
     .max(9, "Credit hour must be at most 9")
-    .optional()
-    .nullable(),
+    .nullable(), // Changed from optional().nullable() to just nullable()
   faculty_assigned: z
     .string()
     .trim()
@@ -59,36 +58,33 @@ export async function POST(req: NextRequest) {
 
     // Insert into Supabase
     const { data, error } = await supabaseClient
-      .from('courses')
+      .from("courses")
       .insert([validatedData])
       .select()
       .single();
 
     if (error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { 
-          error: 'Invalid data', 
-          details: error.errors.map(err => ({
-            field: err.path.join('.'),
-            message: err.message
-          }))
+        {
+          error: "Invalid data",
+          details: error.errors.map((err) => ({
+            field: err.path.join("."),
+            message: err.message,
+          })),
         },
         { status: 400 }
       );
     }
 
-    console.error('Course creation error:', error);
+    console.error("Course creation error:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

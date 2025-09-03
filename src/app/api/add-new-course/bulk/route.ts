@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseClient } from "@/lib/supabase/supabase";
 import { z } from "zod";
 
-// Bulk upload validation schema
+// Bulk upload validation schema (matching frontend exactly)
 const bulkCourseSchema = z.array(
   z.object({
     subject_code: z.string().trim().optional().nullable(),
@@ -14,8 +14,7 @@ const bulkCourseSchema = z.array(
     section: z
       .string()
       .trim()
-      .min(1, "Section is required")
-      .min(1, "Section must not be empty"),
+      .min(1, "Section is required"),
     semester: z
       .number()
       .int("Semester must be an integer")
@@ -26,8 +25,7 @@ const bulkCourseSchema = z.array(
       .int("Credit hour must be an integer")
       .min(0, "Credit hour cannot be negative")
       .max(9, "Credit hour must be at most 9")
-      .optional()
-      .nullable(),
+      .nullable(), 
     faculty_assigned: z
       .string()
       .trim()

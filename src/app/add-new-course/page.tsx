@@ -1,5 +1,5 @@
 "use client";
-
+import {useEffect} from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -38,7 +38,8 @@ const formSchema = z.object({
     .string()
     .trim()
     .nonempty("Semester is required")
-    .regex(/^[1-9]$/, "Semester must be a number from 1 to 9"),
+    .regex(/^[1-9]$/, "Semester must be a number from 1 to 9")
+    .transform((val) => parseInt(val, 10)),
   semester_details: z.string().trim().optional().nullable(),
   credit_hour: z
     .union([z.number(), z.string()])
@@ -46,8 +47,10 @@ const formSchema = z.object({
     .nullable()
     .transform((val) => {
       if (val === null || val === undefined || val === "") return null;
-      return typeof val === "string" ? parseInt(val, 10) : val;
-    }),
+      const num = typeof val === "string" ? parseInt(val, 10) : val;
+      return isNaN(num) ? null : num;
+    })
+    .refine((val) => val === null || (val >= 0 && val <= 9), "Credit hour must be between 0 and 9"),
   faculty_assigned: z
     .string()
     .trim()
@@ -101,7 +104,7 @@ export default function CourseForm() {
   >([]);
 
   // Initialize filteredPreview when bulkPreview changes
-  useMemo(() => {
+  useEffect(() => {
     setFilteredPreview(bulkPreview);
   }, [bulkPreview]);
 
@@ -231,8 +234,8 @@ const validateAndMap = (
   const course_details = String(
     normalize(getCell(row, "course_details", "Course Details"))
   );
-  if (!course_details || course_details.length < 3) {
-    errors.push("Course details must be at least 3 characters");
+  if (!course_details || course_details.length < 2) {
+    errors.push("Course details must be at least 2 characters");
   }
 
   const section = String(normalize(getCell(row, "section", "Section")));
@@ -240,33 +243,40 @@ const validateAndMap = (
     errors.push("Section is required");
   }
 
-  // FIXED: Properly handle semester conversion
+  // Validate semester with backend constraints
   const semesterRaw = normalize(getCell(row, "semester", "Semester"));
   let semester: number;
   if (typeof semesterRaw === "string" && semesterRaw.trim() === "") {
     errors.push("Semester is required");
-    semester = 1; // default but will be filtered out due to error
+    semester = 1;
   } else {
     const semesterNum = toInt(semesterRaw);
-    if (!Number.isFinite(semesterNum) || semesterNum < 1) {
-      errors.push("Semester must be a number and at least 1");
-      semester = 1; // default but will be filtered out due to error
+    if (!Number.isFinite(semesterNum) || semesterNum < 1 || semesterNum > 9) {
+      errors.push("Semester must be a number between 1 and 9");
+      semester = 1;
     } else {
       semester = semesterNum;
     }
   }
 
+  // Validate credit_hour with backend constraints
   const credit_hourRaw = toInt(
     normalize(getCell(row, "credit_hour", "Credit Hour"))
   );
-  const credit_hour = Number.isFinite(credit_hourRaw) ? credit_hourRaw : null;
+  let credit_hour: number | null = null;
+  if (Number.isFinite(credit_hourRaw)) {
+    if (credit_hourRaw < 0 || credit_hourRaw > 9) {
+      errors.push("Credit hour must be between 0 and 9");
+    } else {
+      credit_hour = credit_hourRaw;
+    }
+  }
 
-  // FIXED: Ensure faculty_assigned is never null
   const faculty_assigned = String(
     normalize(getCell(row, "faculty_assigned", "Faculty Assigned"))
   );
-  if (!faculty_assigned) {
-    errors.push("Faculty assigned is required");
+  if (!faculty_assigned || faculty_assigned.length < 2) {
+    errors.push("Faculty name must be at least 2 characters");
   }
 
   const is_regular_teacher = parseTeacherType(
@@ -274,15 +284,13 @@ const validateAndMap = (
   );
 
   const domain = String(normalize(getCell(row, "domain", "Domain"))) || null;
-
   const subject_type =
     String(normalize(getCell(row, "subject_type", "Subject Type"))) || null;
-
   const semester_details =
     String(normalize(getCell(row, "semester_details", "Semester Details"))) ||
     null;
 
-  // FIXED: Properly handle theory_classes_week conversion
+  // Validate theory_classes_week
   const theoryClassesRaw = normalize(
     getCell(row, "theory_classes_week", "Theory Classes/Week")
   );
@@ -292,24 +300,25 @@ const validateAndMap = (
     theoryClassesRaw.trim() === ""
   ) {
     errors.push("Theory classes per week is required");
-    theory_classes_week = 1; // default but will be filtered out due to error
+    theory_classes_week = 1;
   } else {
     const theoryNum = toInt(theoryClassesRaw);
     if (!Number.isFinite(theoryNum) || theoryNum < 1) {
       errors.push("Theory classes per week must be at least 1");
-      theory_classes_week = 1; // default but will be filtered out due to error
+      theory_classes_week = 1;
     } else {
       theory_classes_week = theoryNum;
     }
   }
 
+  // Validate lab_classes_week
   const labClassesRaw = toInt(
     normalize(getCell(row, "lab_classes_week", "Lab Classes/Week"))
   );
-  if (!Number.isFinite(labClassesRaw) || labClassesRaw < 0) {
+  const lab_classes_week = Number.isFinite(labClassesRaw) && labClassesRaw >= 0 ? labClassesRaw : 0;
+  if (Number.isFinite(labClassesRaw) && labClassesRaw < 0) {
     errors.push("Lab classes per week cannot be negative");
   }
-  const lab_classes_week = Number.isFinite(labClassesRaw) ? labClassesRaw : 0;
 
   // Only return insertable if there are no validation errors
   const insertable =
@@ -320,7 +329,7 @@ const validateAndMap = (
           section,
           semester,
           credit_hour,
-          faculty_assigned, // Now guaranteed to be a non-empty string
+          faculty_assigned,
           is_regular_teacher,
           domain,
           subject_type,
@@ -407,17 +416,16 @@ const validateAndMap = (
     }
   };
 
-  // Submit handler with explicit type
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
-    setIsSubmitting(true);
-    try {
-      // Prepare data for API
-     const courseData = {
+  setIsSubmitting(true);
+  try {
+    // Prepare data for API
+    const courseData = {
       subject_code: values.subject_code || null,
       course_details: values.course_details,
       section: values.section,
-      semester: parseInt(values.semester),
-      credit_hour: values.credit_hour || null, // Fix: Don't parse if already a number or null
+      semester: values.semester, // Already transformed to number by Zod
+      credit_hour: values.credit_hour, // Already transformed by Zod (number | null)
       faculty_assigned: values.faculty_assigned,
       is_regular_teacher: values.is_regular_teacher,
       domain: values.domain || null,
@@ -426,36 +434,37 @@ const validateAndMap = (
       theory_classes_week: values.theory_classes_week,
       lab_classes_week: values.lab_classes_week,
     };
-      // Call the API route
-      const response = await fetch("/api/add-new-course", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(courseData),
-      });
+    
+    // Call the API route
+    const response = await fetch("/api/add-new-course", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(courseData),
+    });
 
-      const result = await response.json();
+    const result = await response.json();
 
-      if (!response.ok) {
-        throw new Error(result.error || "Failed to save course data");
-      }
-
-      // Update the CourseContext with the new course
-      if (result) {
-        setCourses([...courses, result as Course]);
-      }
-
-      toast.success("Course data saved successfully!");
-      form.reset();
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error("Failed to save course data.");
-      }
-    } finally {
-      setIsSubmitting(false);
+    if (!response.ok) {
+      throw new Error(result.error || "Failed to save course data");
     }
-  };
+
+    // Update the CourseContext with the new course
+    if (result) {
+      setCourses([...courses, result as Course]);
+    }
+
+    toast.success("Course data saved successfully!");
+    form.reset();
+  } catch (error) {
+    if (error instanceof Error) {
+      toast.error("Failed to save course data.");
+    }
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-8">
