@@ -1,6 +1,6 @@
 "use client";
 import {useEffect} from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler,UseFormProps } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -38,8 +38,7 @@ const formSchema = z.object({
     .string()
     .trim()
     .nonempty("Semester is required")
-    .regex(/^[1-9]$/, "Semester must be a number from 1 to 9")
-    .transform((val) => parseInt(val, 10)),
+    .regex(/^[1-9]$/, "Semester must be a number from 1 to 9"),
   semester_details: z.string().trim().optional().nullable(),
   credit_hour: z
     .union([z.number(), z.string()])
@@ -47,10 +46,8 @@ const formSchema = z.object({
     .nullable()
     .transform((val) => {
       if (val === null || val === undefined || val === "") return null;
-      const num = typeof val === "string" ? parseInt(val, 10) : val;
-      return isNaN(num) ? null : num;
-    })
-    .refine((val) => val === null || (val >= 0 && val <= 9), "Credit hour must be between 0 and 9"),
+      return typeof val === "string" ? parseInt(val, 10) : val;
+    }),
   faculty_assigned: z
     .string()
     .trim()
@@ -74,8 +71,7 @@ const formSchema = z.object({
     .default(0),
 });
 
-// Define form values type
-type FormValues = z.infer<typeof formSchema>;
+
 
 export default function CourseForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -122,8 +118,8 @@ export default function CourseForm() {
   ];
 
   // Define form with explicit typing
-  const form = useForm<FormValues>({
-  resolver: zodResolver(formSchema),
+ const form = useForm<FormValues>({
+  resolver: zodResolver(formSchema) as UseFormProps<FormValues>["resolver"],
   mode: "onTouched",
   defaultValues: {
     course_details: "",
@@ -416,7 +412,8 @@ const validateAndMap = (
     }
   };
 
-  const onSubmit: SubmitHandler<FormValues> = async (values) => {
+  
+   const onSubmit: SubmitHandler<FormValues> = async (values) => {
   setIsSubmitting(true);
   try {
     // Prepare data for API
@@ -424,8 +421,8 @@ const validateAndMap = (
       subject_code: values.subject_code || null,
       course_details: values.course_details,
       section: values.section,
-      semester: values.semester, // Already transformed to number by Zod
-      credit_hour: values.credit_hour, // Already transformed by Zod (number | null)
+      semester: parseInt(values.semester),
+      credit_hour: values.credit_hour || null, // This handles the null case
       faculty_assigned: values.faculty_assigned,
       is_regular_teacher: values.is_regular_teacher,
       domain: values.domain || null,
@@ -434,6 +431,7 @@ const validateAndMap = (
       theory_classes_week: values.theory_classes_week,
       lab_classes_week: values.lab_classes_week,
     };
+
     
     // Call the API route
     const response = await fetch("/api/add-new-course", {
