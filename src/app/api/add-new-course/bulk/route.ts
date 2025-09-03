@@ -11,20 +11,18 @@ const bulkCourseSchema = z.array(
       .trim()
       .min(1, "Course details is required")
       .min(2, "Course details must be at least 2 characters"),
-    section: z
-      .string()
-      .trim()
-      .min(1, "Section is required"),
+    section: z.string().trim().min(1, "Section is required"),
     semester: z
       .number()
       .min(1, "Semester must be at least 1")
       .max(9, "Semester must be at most 9"),
     credit_hour: z
-      .union([z.number(), z.null()]) 
-      .optional() 
+      .union([z.number(), z.null()])
+      .optional()
       .nullable()
       .refine(
-        (val) => val === null || (Number.isInteger(val) && val >= 0 && val <= 9),
+        (val) =>
+          val === null || (val !== undefined && Number.isInteger(val) && val >= 0 && val <= 9),
         "Credit hour must be between 0 and 9 or null"
       ),
     faculty_assigned: z

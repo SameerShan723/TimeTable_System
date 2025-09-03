@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import Select from "react-select";
 import { toast } from "react-toastify";
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import { useCourses } from "@/context/CourseContext";
 import { Course } from "@/lib/serverData/CourseDataFetcher";
@@ -934,6 +934,7 @@ export default function CourseForm() {
                         placeholder="e.g., Spring 2025"
                         className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                         {...field}
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage className="text-sm text-red-500 mt-1" />
@@ -957,6 +958,12 @@ export default function CourseForm() {
                         type="number"
                         className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                         {...field}
+                        value={field.value ?? ""}
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value === "" ? null : parseInt(e.target.value, 10)
+                          )
+                        }
                       />
                     </FormControl>
                     <FormMessage className="text-sm text-red-500 mt-1" />
@@ -1049,6 +1056,7 @@ export default function CourseForm() {
                         placeholder="e.g., CS"
                         className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                         {...field}
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage className="text-sm text-red-500 mt-1" />
@@ -1068,6 +1076,7 @@ export default function CourseForm() {
                         placeholder="e.g., GIS-302"
                         className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                         {...field}
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage className="text-sm text-red-500 mt-1" />
@@ -1089,6 +1098,7 @@ export default function CourseForm() {
                         placeholder="e.g., RS-Core"
                         className="w-full h-12 px-4 text-gray-900 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                         {...field}
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage className="text-sm text-red-500 mt-1" />
