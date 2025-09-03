@@ -71,7 +71,8 @@ const formSchema = z.object({
     .default(0),
 });
 
-
+// Define form values type
+type FormValues = z.infer<typeof formSchema>;
 
 export default function CourseForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
