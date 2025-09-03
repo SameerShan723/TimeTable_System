@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseClient } from "@/lib/supabase/supabase";
 import { z } from "zod";
 
-// Manual form validation schema (matching frontend exactly)
 const courseFormSchema = z.object({
   subject_code: z.string().trim().optional().nullable(),
   course_details: z
@@ -15,38 +14,19 @@ const courseFormSchema = z.object({
     .trim()
     .min(1, "Section is required")
     .min(1, "Section must not be empty"),
-  semester: z
-    .number()
-    .int("Semester must be an integer")
-    .min(1, "Semester must be at least 1")
-    .max(9, "Semester must be at most 9"),
-  credit_hour: z
-    .number()
-    .int("Credit hour must be an integer")
-    .min(0, "Credit hour cannot be negative")
-    .max(9, "Credit hour must be at most 9")
-    .nullable(), // Changed from optional().nullable() to just nullable()
+  semester: z.number().min(1, "Semester must be at least 1").max(9, "Semester must be at most 9"),
+  credit_hour: z.union([z.number(), z.null()]).optional().nullable(),
   faculty_assigned: z
     .string()
     .trim()
     .min(1, "Faculty assigned is required")
     .min(2, "Faculty name must be at least 2 characters"),
-  is_regular_teacher: z.boolean({
-    required_error: "Teacher type is required",
-    invalid_type_error: "Teacher type must be a boolean",
-  }),
+  is_regular_teacher: z.boolean(),
   domain: z.string().trim().optional().nullable(),
   subject_type: z.string().trim().optional().nullable(),
   semester_details: z.string().trim().optional().nullable(),
-  theory_classes_week: z
-    .number()
-    .int("Theory classes must be an integer")
-    .min(1, "Theory classes per week must be at least 1"),
-  lab_classes_week: z
-    .number()
-    .int("Lab classes must be an integer")
-    .min(0, "Lab classes cannot be negative")
-    .default(0),
+  theory_classes_week: z.number().min(1, "Theory classes per week must be at least 1"),
+  lab_classes_week: z.number().min(0, "Lab classes cannot be negative").default(0),
 });
 
 export async function POST(req: NextRequest) {

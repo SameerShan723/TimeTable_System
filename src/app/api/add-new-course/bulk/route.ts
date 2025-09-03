@@ -17,34 +17,30 @@ const bulkCourseSchema = z.array(
       .min(1, "Section is required"),
     semester: z
       .number()
-      .int("Semester must be an integer")
       .min(1, "Semester must be at least 1")
       .max(9, "Semester must be at most 9"),
     credit_hour: z
-      .number()
-      .int("Credit hour must be an integer")
-      .min(0, "Credit hour cannot be negative")
-      .max(9, "Credit hour must be at most 9")
-      .nullable(), 
+      .union([z.number(), z.null()]) /
+      .optional() 
+      .nullable()
+      .refine(
+        (val) => val === null || (Number.isInteger(val) && val >= 0 && val <= 9),
+        "Credit hour must be between 0 and 9 or null"
+      ),
     faculty_assigned: z
       .string()
       .trim()
       .min(1, "Faculty assigned is required")
       .min(2, "Faculty name must be at least 2 characters"),
-    is_regular_teacher: z.boolean({
-      required_error: "Teacher type is required",
-      invalid_type_error: "Teacher type must be a boolean",
-    }),
+    is_regular_teacher: z.boolean(),
     domain: z.string().trim().optional().nullable(),
     subject_type: z.string().trim().optional().nullable(),
     semester_details: z.string().trim().optional().nullable(),
     theory_classes_week: z
       .number()
-      .int("Theory classes must be an integer")
       .min(1, "Theory classes per week must be at least 1"),
     lab_classes_week: z
       .number()
-      .int("Lab classes must be an integer")
       .min(0, "Lab classes cannot be negative")
       .default(0),
   })
