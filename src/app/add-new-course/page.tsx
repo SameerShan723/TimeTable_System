@@ -143,7 +143,7 @@ export default function CourseForm() {
     course_details: string;
     section: string;
     semester: number;
-    credit_hour: number;
+    credit_hour: number|null;
     faculty_assigned: string;
     is_regular_teacher: boolean;
     domain: string | null;

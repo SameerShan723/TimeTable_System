@@ -36,7 +36,7 @@ export default function TeacherTimetable(): JSX.Element {
     error: hookError,
   } = useTimetableVersion();
 
-  const [selectedTeacher, setSelectedTeacher] = useState<string|null>("");
+  const [selectedTeacher, setSelectedTeacher] = useState<string | null>("");
   const [selectedDay, setSelectedDay] = useState<DayType[]>(Days);
   const [results, setResults] = useState<EnhancedClassItem[]>([]);
   const [error, setError] = useState<string>("");
@@ -101,56 +101,58 @@ export default function TeacherTimetable(): JSX.Element {
 
   // Handle teacher selection changes
   const handleTeacherSelection = useCallback(
-    (selected:SelectOption|null) => {
+    (selected: SelectOption | null) => {
       if (!selected) {
         setSelectedTeacher(null);
         return;
       }
       setSelectedTeacher(selected.value);
-},
-[]
+    },
+    []
   );
 
   // Search for classes for selected teachers
-const handleSearch = useCallback(() => {
-  setError("");
-  if (!selectedTeacher) {
-    setError("Please select a teacher!");
-    setResults([]);
-    return;
-  }
+  const handleSearch = useCallback(() => {
+    setError("");
+    if (!selectedTeacher) {
+      setError("Please select a teacher!");
+      setResults([]);
+      return;
+    }
 
-  const foundClasses: EnhancedClassItem[] = [];
+    const foundClasses: EnhancedClassItem[] = [];
 
-  selectedDay.forEach((day) => {
-    const dayData = timetableData[day] || [];
-    dayData.forEach((roomObj) => {
-      const roomName = Object.keys(roomObj)[0];
-      const classes = roomObj[roomName] as ClassItem[];
+    selectedDay.forEach((day) => {
+      const dayData = timetableData[day] || [];
+      dayData.forEach((roomObj) => {
+        const roomName = Object.keys(roomObj)[0];
+        const classes = roomObj[roomName] as ClassItem[];
 
-      classes.forEach((cls) => {
-        if (cls.Teacher === selectedTeacher) {
-          const normalizedTime =
-            timeSlots.find((time) => cls.Time.includes(time.split("-")[0])) ||
-            cls.Time;
-          foundClasses.push({
-            ...cls,
-            Subject: `${cls.Subject || ""}${(cls as Session).Type === "Lab" ? " (Lab)" : ""}`,
-            Room: roomName,
-            Day: day,
-            Time: normalizedTime,
-          });
-        }
+        classes.forEach((cls) => {
+          if (cls.Teacher === selectedTeacher) {
+            const normalizedTime =
+              timeSlots.find((time) => cls.Time.includes(time.split("-")[0])) ||
+              cls.Time;
+            foundClasses.push({
+              ...cls,
+              Subject: `${cls.Subject || ""}${
+                (cls as Session).Type === "Lab" ? " (Lab)" : ""
+              }`,
+              Room: roomName,
+              Day: day,
+              Time: normalizedTime,
+            });
+          }
+        });
       });
     });
-  });
 
-  if (foundClasses.length === 0) {
-    setError("No classes found for the selected teacher on selected days.");
-  }
+    if (foundClasses.length === 0) {
+      setError("No classes found for the selected teacher on selected days.");
+    }
 
-  setResults(foundClasses);
-}, [selectedTeacher, selectedDay, timetableData]);
+    setResults(foundClasses);
+  }, [selectedTeacher, selectedDay, timetableData]);
 
   // Create class lookup for efficient rendering
   const classLookup = useMemo(() => {
@@ -190,29 +192,29 @@ const handleSearch = useCallback(() => {
         <h1 className="font-bold text-3xl mt-6 mb-6">
           Check Teachers Timetable
         </h1>
-       <div className="mb-4 flex flex-col w-full max-w-md">
-  <label className="text-xl mb-2">Teacher:</label>
-  <Select<SelectOption, false>   
-    instanceId={teacherSelectedId}
-    inputId={`${teacherSelectedId}-input`}
-    options={teachers.map((teacher) => ({
-      value: teacher,
-      label: teacher,
-    }))}
-    value={
-      selectedTeacher
-        ? { value: selectedTeacher, label: selectedTeacher }
-        : null
-    }
-    onChange={handleTeacherSelection}
-    className="text-black"
-    placeholder="Select a teacher"
-    isDisabled={loading || teachers.length === 0}
-    isClearable
-    menuPortalTarget={portalTarget}
-    styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-  />
-</div>
+        <div className="mb-4 flex flex-col w-full max-w-md">
+          <label className="text-xl mb-2">Teacher:</label>
+          <Select<SelectOption, false>
+            instanceId={teacherSelectedId}
+            inputId={`${teacherSelectedId}-input`}
+            options={teachers.map((teacher) => ({
+              value: teacher,
+              label: teacher,
+            }))}
+            value={
+              selectedTeacher
+                ? { value: selectedTeacher, label: selectedTeacher }
+                : null
+            }
+            onChange={handleTeacherSelection}
+            className="text-black"
+            placeholder="Select a teacher"
+            isDisabled={loading || teachers.length === 0}
+            isClearable
+            menuPortalTarget={portalTarget}
+            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+          />
+        </div>
         <div className="mb-4 flex flex-col w-full max-w-md">
           <label className="text-xl mb-2">Days:</label>
           <Select<SelectOption, true>
@@ -242,7 +244,7 @@ const handleSearch = useCallback(() => {
           {results.length > 0 && (
             <ExportTimetable
               results={results}
-              selectedSection={selectedTeacher || "" }
+              selectedSection={selectedTeacher || ""}
               selectedDays={selectedDay}
               selectedVersion={selectedVersion}
               isLoading={loading}
@@ -295,8 +297,12 @@ const handleSearch = useCallback(() => {
                             <p className="font-bold text-center text-blue-800">
                               {course.Subject}
                             </p>
-                            <p className="text-gray-600 text-center">{course.Teacher}</p>
-                            <p className="text-gray-600 text-center">{course.Section}</p>
+                            <p className="text-gray-600 text-center">
+                              {course.Teacher}
+                            </p>
+                            <p className="text-gray-600 text-center">
+                              {course.Section}
+                            </p>
                             <p className="text-black font-bold">
                               {course.Room}
                             </p>
