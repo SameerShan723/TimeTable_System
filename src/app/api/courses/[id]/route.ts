@@ -1,44 +1,9 @@
 // src/app/api/courses/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
+
 import { createSupabaseServerClient } from "@/lib/supabase/server"; // Updated import
 
-// Validation schema
-const courseSchema = z.object({
-  subject_code: z.string().trim().nullable().optional(),
-  course_details: z
-    .string()
-    .trim()
-    .nonempty({ message: "Course Detail is required" })
-    .min(5, { message: "Course details must be at least 5 characters." }),
-  section: z
-    .string()
-    .trim()
-    .nonempty({ message: "Section is required" })
-    .min(5, { message: "Section must be at least 5 characters." }),
-  semester: z
-    .string()
-    .trim()
-    .nonempty({ message: "Semester is required." })
-    .regex(/^[1-9]$/, {
-      message: "Semester must be a number from 1 to 9.",
-    }),
-  credit_hour: z
-    .string()
-    .trim()
-    .nonempty({ message: "Credit hour is required." })
-    .regex(/^[1-9]$/, {
-      message: "Credit hour must be a number from 1 to 9.",
-    }),
-  faculty_assigned: z
-    .string()
-    .trim()
-    .nonempty({ message: "Faculty Assigned is required." })
-    .min(5, { message: "Faculty name must be at least 5 characters." }),
-  is_regular_teacher: z.boolean({
-    invalid_type_error: "Teacher type must be a boolean.",
-  }),
-});
+
 
 export async function PUT(
   req: NextRequest,
@@ -56,22 +21,13 @@ export async function PUT(
     }
 
     const body = await req.json();
-    const parsedData = courseSchema.safeParse(body);
 
-    if (!parsedData.success) {
-      console.error("Validation errors:", parsedData.error.format());
-      return NextResponse.json(
-        { message: "Invalid course data", errors: parsedData.error.format() },
-        { status: 400 }
-      );
-    }
 
     const updateData = {
-      ...parsedData.data,
-      subject_code: parsedData.data.subject_code?.trim() || null,
-      credit_hour: parseInt(parsedData.data.credit_hour),
-      semester: parseInt(parsedData.data.semester),
+      ...body,
     };
+
+    console.log(updateData,"updated data")
 
     const { data, error } = await supabase
       .from("courses")

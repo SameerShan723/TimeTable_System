@@ -238,8 +238,9 @@ export default function FacultyData() {
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     if (!editingCourse) return;
 
-    setIsUpdating(true);
     try {
+    setIsUpdating(true);
+
       const payload = {
         subject_code: values.subject_code?.trim() || null,
         course_details: values.course_details,
