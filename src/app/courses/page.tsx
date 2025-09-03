@@ -31,7 +31,7 @@ import Select from "react-select";
 import { useCourses } from "@/context/CourseContext";
 import { supabaseClient } from "@/lib/supabase/supabase";
 import { Course } from "@/lib/serverData/CourseDataFetcher";
- import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 // Options for react-select
 const teacherTypeOptions = [
@@ -79,11 +79,9 @@ const formSchema = z.object({
   domain: z.string().trim().optional(),
   subject_type: z.string().trim().optional(),
   semester_details: z.string().trim().optional(),
-  theory_classes_week: z
-    .number()
-    .min(1, {
-      message: "Theory classes per week is required and must be at least 1.",
-    }),
+  theory_classes_week: z.number().min(1, {
+    message: "Theory classes per week is required and must be at least 1.",
+  }),
   lab_classes_week: z.number().min(0).default(0),
 });
 
@@ -259,16 +257,23 @@ export default function FacultyData() {
         lab_classes_week: values.lab_classes_week,
       };
 
-      const { data, error } = await supabaseClient
-        .from("courses")
-        .update(payload)
-        .eq("id", editingCourse.id)
-        .select()
-        .single();
+      const response = await fetch(`/api/courses/${editingCourse.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-      if (error) {
-        throw new Error(error.message);
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => null);
+        const errMsg =
+          (errorBody && (errorBody.message || errorBody.error)) ||
+          `Request failed with status ${response.status}`;
+        throw new Error(errMsg);
       }
+
+      const { data } = await response.json();
 
       setCourses((prev) =>
         prev.map((course) =>
@@ -447,22 +452,24 @@ export default function FacultyData() {
                     />
                   )}
                 </div>
-                <div >
-  <label className="block text-sm font-medium text-gray-700 mb-2 invisible">
-    Clear
-  </label>
-  <Button
-    onClick={() => {
-      setSelectedTeachers([]);
-      setSelectedSubjects([]);
-    }}
-    className="px-4 py-2 transition-all duration-200 hover:scale-105 text-sm font-medium w-full"
-    disabled={selectedTeachers.length === 0 && selectedSubjects.length === 0}
-  >
-    Clear Filters
-  </Button>
-</div>
-
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2 invisible">
+                    Clear
+                  </label>
+                  <Button
+                    onClick={() => {
+                      setSelectedTeachers([]);
+                      setSelectedSubjects([]);
+                    }}
+                    className="px-4 py-2 transition-all duration-200 hover:scale-105 text-sm font-medium w-full"
+                    disabled={
+                      selectedTeachers.length === 0 &&
+                      selectedSubjects.length === 0
+                    }
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
               </div>
               {(selectedTeachers.length > 0 || selectedSubjects.length > 0) && (
                 <div className="mt-3 text-sm text-gray-600">
@@ -482,8 +489,10 @@ export default function FacultyData() {
             </div>
 
             {/* Delete All Courses Container */}
-            <div className="flex lg:flex-col
-             gap-2 justify-center">
+            <div
+              className="flex lg:flex-col
+             gap-2 justify-center"
+            >
               <Button
                 onClick={handleDeleteAll}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-200 hover:scale-105 text-sm font-medium uppercase shadow-lg"
@@ -492,8 +501,8 @@ export default function FacultyData() {
                 Delete All Courses
               </Button>
 
-                 <Button
-                onClick={()=> router.push('/add-new-course')} 
+              <Button
+                onClick={() => router.push("/add-new-course")}
                 className="px-4 py-2transition-all duration-200 hover:scale-105 text-sm font-medium bg-[#042954]  uppercase shadow-lg"
                 disabled={isUpdating || isDeleting || isDeletingAll}
               >
@@ -1243,8 +1252,6 @@ export default function FacultyData() {
           </AlertDialog>
         )}
       </div>
-
-
     </main>
   );
 }
