@@ -400,7 +400,7 @@ export default function ClientTimetable() {
       day: string,
       room: string,
       time: string,
-      classData: { subject: string; teacher: string; section: string }
+      classData: { subject: string; teacher: string; section: string; courseId?: string | number; type?: "Theory" | "Lab" }
     ) => {
       if (!isSuperadmin) {
         openAuthModal();

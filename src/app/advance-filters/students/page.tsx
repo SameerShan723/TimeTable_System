@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useId, useCallback, useMemo, useEffect, JSX } from "react";
-import Select, { MultiValue, SingleValue } from "react-select";
+import ReactSelect from "@/components/ui/ReactSelect";
+import { MultiValue, SingleValue } from "react-select";
 import { useTimetableVersion } from "@/context/TimetableContext";
 import { timeSlots, Days } from "@/helpers/page";
 import ExportTimetable from "@/lib/download-timetable/ExportTimetable";
@@ -198,7 +199,7 @@ export default function StudentTimetable(): JSX.Element {
           <label className="text-[13px] mb-2 md:text-[17px] lg:text-xl">
             Section:
           </label>
-          <Select<SelectOption, false>
+          <ReactSelect
             instanceId={sectionSelectedId}
             inputId={`${sectionSelectedId}-input`}
             options={sections.map((section: string) => ({
@@ -218,7 +219,7 @@ export default function StudentTimetable(): JSX.Element {
             isDisabled={loading || sections.length === 0}
             isClearable
             menuPortalTarget={portalTarget}
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+            // customStyles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           />
           {sections.length === 0 && !loading && (
             <p className="text-sm text-gray-500 mt-1">
@@ -231,7 +232,7 @@ export default function StudentTimetable(): JSX.Element {
           <label className="text-[13px] mb-2 md:text-[17px] lg:text-xl">
             Days:
           </label>
-          <Select<SelectOption, true>
+          <ReactSelect
             instanceId={daySelectedId}
             inputId={`${daySelectedId}-input`}
             isMulti
@@ -244,7 +245,7 @@ export default function StudentTimetable(): JSX.Element {
             )}
             isDisabled={loading}
             menuPortalTarget={portalTarget}
-            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+            // customStyles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           />
         </div>
 
@@ -308,7 +309,7 @@ export default function StudentTimetable(): JSX.Element {
                     return (
                       <td
                         key={`${day}-${time}`}
-                        className={`border border-gray-300 p-2 hover:bg-gray-50 min-w ${
+                        className={`border border-gray-300 p-2 hover:bg-gray-50 min-w-[170px] ${
                           course ? "bg-blue-50" : ""
                         }`}
                       >
