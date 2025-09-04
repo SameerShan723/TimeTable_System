@@ -295,6 +295,7 @@ export const TimetableVersionProvider: React.FC<
         setLoading(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [checkConflicts, showToast]
   );
 
@@ -370,6 +371,7 @@ export const TimetableVersionProvider: React.FC<
         setLoading(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [checkConflicts, showToast]
   );
 

@@ -27,7 +27,6 @@ export async function PUT(
       ...body,
     };
 
-    console.log(updateData,"updated data")
 
     const { data, error } = await supabase
       .from("courses")
